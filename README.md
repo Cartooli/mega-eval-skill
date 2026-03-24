@@ -35,6 +35,12 @@ Phase 4: Assemble 6 deliverable .docx files
 | `04-critical-fixes-and-design.docx` | Prioritized fixes, design inconsistencies, non-breaking next steps |
 | `05-content-strategy-outline.docx` | Long-form outline for publicly positioning/pitching the idea |
 
+## Where it runs, privacy, and local files
+
+- **Host environment:** Mega-eval targets **Claude Code** (skills + **hater-mode**, **long-form-outline**, **docx**, and parallel subagents). Other Claude apps or agents may run the steps **partially** or need you to follow `SKILL.md` by hand—do not assume identical behavior.
+- **Sensitive data:** You may pass URLs, pitch text, or confidential documents into the pipeline. Treat generated `.docx` files, raw markdown intermediates, and optional **`run-log.md`** as **sensitive** unless you redact them. To skip writing a run log, set `MEGA_EVAL_LOG=off` (see [Run feedback](#run-feedback-optional)).
+- **PDF / Office inputs:** Extracting text from local `.pdf`, `.docx`, or `.pptx` via `scripts/ingest.py` requires **pdftotext** and **pandoc** ([optional tools](#optional-system-tools) below). Plain text, Markdown, pasted content, and many URLs work without them.
+
 ## Install
 
 ### Claude Code (CLI)
@@ -53,7 +59,7 @@ Or if you prefer, copy just the skill folder contents into any `.claude/skills/m
 
 ### Cowork (Desktop app)
 
-Download the `mega-eval.skill` file from this repo's root and open it in Cowork — it will show a "Copy to your skills" install button.
+If a **`mega-eval.skill`** bundle is available (e.g. from a project release or attachment), open it in Cowork and use **Copy to your skills**. **The repo root may not include a `.skill` file**—in that case install the same **`SKILL.md` + `references/` + `scripts/`** folder your app expects, using the layout under [Manual install](#manual-install).
 
 ### Manual install
 
@@ -89,12 +95,12 @@ These are available out of the box in Claude Code. If they're missing from your 
 
 ### Optional system tools
 
-For processing non-text input files via `scripts/ingest.py`:
+**Required only** when you want `scripts/ingest.py` to read **local** `.pdf`, `.docx`, or `.pptx` files:
 
-- **pdftotext** (from poppler) — for `.pdf` extraction. Install: `brew install poppler`
-- **pandoc** — for `.docx` and `.pptx` extraction. Install: `brew install pandoc`
+- **pdftotext** (poppler) — `.pdf` extraction. Example: `brew install poppler`
+- **pandoc** — `.docx` and `.pptx` extraction. Example: `brew install pandoc`
 
-These are only needed if you feed the pipeline local PDF/DOCX/PPTX files. Text, Markdown, URLs, and pasting content directly all work without them.
+Without these tools, use plain text, Markdown, pasted content, or URLs instead—or extract text another way before running mega-eval.
 
 ## Usage
 
