@@ -88,6 +88,7 @@ Append a timestamped line when any of these occur (not only at the end):
 | `quality_gate_fail` | Output too thin/generic before rework |
 | `implicit_signal` | Large rewrite of a raw file (if you observe it) |
 | `failure_mode` | Short tag for search: `grounding`, `tool_timeout`, `scope_creep`, `format_mismatch`, etc. |
+| `outcome_note` | Optional forensics only: e.g. `outcome_complete` or `outcome_abandoned` after Phase 4 (or if the user stops early)—**not** a measure of methodology quality |
 
 ### Learned patterns (human-curated)
 

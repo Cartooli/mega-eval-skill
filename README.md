@@ -67,8 +67,11 @@ mega-eval/
 │   ├── subagent-prompts.md      # Ready-to-use prompt templates
 │   └── learnings.md             # Human-reviewed methodology patterns (from run feedback)
 └── scripts/
-    └── ingest.py          # Input file extraction helper
+    ├── ingest.py                  # Input file extraction helper
+    └── suggest_learnings.py       # Optional: print promotion candidates from run-log (stdout only)
 ```
+
+At the **repository root** (when you clone this repo), see [`MAINTAINERS.md`](MAINTAINERS.md) for how to review and promote learnings over time.
 
 Copy that folder into wherever your Claude instance reads skills from.
 
@@ -130,6 +133,8 @@ Mega-eval can write an **append-only** `run-log.md` during a run so you can capt
 - **Examples:** See [`examples/run-feedback/`](examples/run-feedback/) for fictional `run-log` and promotion samples.
 
 This is **not** automatic self-modification of prompts; see promotion gates in `references/learnings.md`.
+
+**Sustaining the loop:** If you clone or maintain this repo, use **[`MAINTAINERS.md`](MAINTAINERS.md)** for the review ritual (at least **monthly** plus a quick pass on **merge to default branch** when `SKILL.md`, `references/`, or `examples/` change), redaction rules, and the optional `scripts/suggest_learnings.py` helper (stdout only).
 
 ## Customization
 
