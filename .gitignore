@@ -2,14 +2,14 @@
 .DS_Store
 Thumbs.db
 
-# Workspace artifacts (generated during runs)
-eval-brief.md
-phase1a-*.md
-phase1b-*.md
-phase1c-*.md
-phase2-*.md
-phase3-*.md
-*.docx
+# Workspace artifacts (generated during runs, not in examples/)
+/eval-brief.md
+/phase1a-*.md
+/phase1b-*.md
+/phase1c-*.md
+/phase2-*.md
+/phase3-*.md
+/*.docx
 
 # Node
 node_modules/
