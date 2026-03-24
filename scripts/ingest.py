@@ -18,11 +18,14 @@ from pathlib import Path
 
 def extract_text(file_path: str) -> str:
     """Extract text content from a file based on its extension."""
-    p = Path(file_path)
+    p = Path(file_path).resolve()
     ext = p.suffix.lower()
 
     if not p.exists():
         return f"[ERROR: File not found: {file_path}]"
+
+    if not p.is_file():
+        return f"[ERROR: Not a regular file: {file_path}]"
 
     if ext in ('.txt', '.md', '.html'):
         return p.read_text(encoding='utf-8', errors='replace')
@@ -118,7 +121,7 @@ def main():
 
     sources = []
     for f in args.files:
-        p = Path(f)
+        p = Path(f).resolve()
         content = extract_text(f)
         sources.append({
             'name': p.name,
@@ -128,7 +131,8 @@ def main():
         print(f"Extracted: {p.name} ({len(content.split())} words)", file=sys.stderr)
 
     brief = generate_brief_template(sources)
-    Path(args.output).write_text(brief)
+    output_path = Path(args.output).resolve()
+    output_path.write_text(brief)
     print(f"\nBrief template written to: {args.output}", file=sys.stderr)
     print(f"Total sources: {len(sources)}", file=sys.stderr)
 

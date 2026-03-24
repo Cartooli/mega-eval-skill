@@ -77,11 +77,11 @@ Copy that folder into wherever your Claude instance reads skills from.
 
 The pipeline orchestrates these Claude skills — install them before running:
 
-- **[hater-mode](https://github.com/anthropics/claude-code/tree/main/skills/hater-mode)** — Phase 1A critical feedback (12-persona teardown)
-- **[long-form-outline](https://github.com/anthropics/claude-code/tree/main/skills/long-form-outline)** — Phase 3 content strategy outline
-- **[docx](https://github.com/anthropics/claude-code/tree/main/skills/docx)** — Phase 4 Word document assembly
+- **hater-mode** — Phase 1A critical feedback (12-persona teardown). Ships with Claude Code as a built-in skill.
+- **long-form-outline** — Phase 3 content strategy outline. Ships with Claude Code as a built-in skill.
+- **docx** — Phase 4 Word document assembly. Ships with Claude Code as a built-in skill.
 
-If these aren't installed, the skill will still run using built-in prompt templates, but output quality will be lower.
+These are available out of the box in Claude Code. If they're missing from your environment for any reason, the skill will still run using built-in prompt templates, but output quality will be lower.
 
 ### Optional system tools
 
