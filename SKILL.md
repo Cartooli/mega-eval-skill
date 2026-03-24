@@ -52,9 +52,58 @@ The pipeline produces these files in the workspace folder:
 
 ---
 
+## Run feedback & run log (optional)
+
+This is **run feedback**, not model training: an **append-only Markdown log** so you can improve prompts and checklists over time. **Do not** silently rewrite `SKILL.md` or subagent prompts from logs—promotion goes through human review into `references/learnings.md` (see that file for promotion gates).
+
+### Opt out and privacy
+
+- **Disable logging:** If `MEGA_EVAL_LOG` is `0`, `off`, or `false`, skip creating or updating `run-log.md`. The pipeline runs unchanged.
+- **Default:** Logs stay **workspace-local** only. Never upload run logs or paste secrets into shared learnings.
+- **Redaction:** In logs and in promoted patterns, redact API keys, tokens, and sensitive URLs. Cap each log line at ~500 characters to avoid dumping huge tool output.
+
+### Where to write `run-log.md`
+
+Use one path consistently for the run (in order of preference):
+
+1. `<workspace>/sessions/<session>/run-log.md` (alongside `eval-brief.md`)
+2. `<workspace>/run-log.md` if session folders are not available
+3. `<workspace>/.mega-eval/runs/<ISO-timestamp>/run-log.md` if you need multiple runs in one repo
+
+### Run ID
+
+At **Phase 0**, generate a short `run_id` (e.g. 8 alphanumeric characters) or reuse the host session id when exposed. Pass the **same** `run_id` into every Phase 1 subagent prompt (1A/1B/1C) and Phase 3 so parallel work correlates to one evaluation.
+
+### What to append (taxonomy)
+
+Append a timestamped line when any of these occur (not only at the end):
+
+| Kind | When |
+|------|------|
+| `phase_start` / `phase_complete` | Entering or finishing a phase (0–4) |
+| `tool_error` | Web fetch, search, or other tool failed |
+| `retry` | Subagent or tool rerun |
+| `user_correction` | User asked to rewrite a section or fix factual content |
+| `assumption_flag` | Proceeded on explicit inference |
+| `quality_gate_fail` | Output too thin/generic before rework |
+| `implicit_signal` | Large rewrite of a raw file (if you observe it) |
+| `failure_mode` | Short tag for search: `grounding`, `tool_timeout`, `scope_creep`, `format_mismatch`, etc. |
+
+### Learned patterns (human-curated)
+
+Before **Phase 1**, skim `references/learnings.md` for methodological bullets that apply to this run (optional but recommended for maintainers).
+
+### Pre–Phase 4 review (required when logging is on)
+
+Before generating `.docx` files: read `run-log.md` (if present). Ensure final narrative deliverables **reflect** logged corrections and recovery paths. If `eval-brief.md` or `phase2-synthesis.md` is stale relative to corrections, reconcile them or call out the delta in the executive summary.
+
+---
+
 ## Phase 0: Input Ingestion
 
 Before anything else, normalize all inputs into a single **Evaluation Brief** — a structured text block that every downstream phase consumes. This ensures consistency regardless of input format.
+
+If run logging is enabled (`MEGA_EVAL_LOG` not opted out): generate a `run_id`, create `run-log.md` at the chosen path with a **Meta** section (`run_id`, `started` ISO time, `workspace`, `status: in_progress`), and append `phase_start phase0`.
 
 ### Handling Input Types
 
@@ -100,6 +149,8 @@ Produce a structured brief saved as a working file (`/sessions/<session>/eval-br
 
 If critical information is missing (e.g., the user gave a vague one-liner), ask ONE clarifying question before proceeding. Otherwise, infer what you can and note assumptions in the brief.
 
+When Phase 0 finishes, append `phase_complete phase0` to the run log (if logging).
+
 ---
 
 ## Phase 1: Parallel Analysis (use subagents)
@@ -117,6 +168,10 @@ You are running a critical feedback analysis. Read the hater-mode skill at:
 <hater-mode-skill-path>/SKILL.md
 and its references/audiences.md file.
 
+Run correlation (include in your output header comment or first line):
+- run_id: <run_id>
+- log path for this pipeline: <workspace>/<run-log.md path>
+
 Then analyze this Evaluation Brief:
 <paste eval-brief content>
 
@@ -132,6 +187,10 @@ Spawn a subagent with these instructions:
 
 ```
 You are running a competitive and market landscape analysis.
+
+Run correlation:
+- run_id: <run_id>
+- log path: <workspace>/<run-log.md path>
 
 Evaluation Brief:
 <paste eval-brief content>
@@ -160,6 +219,10 @@ Spawn a subagent with these instructions:
 ```
 You are running a strengths and opportunities analysis. This is deliberately the POSITIVE counterweight to the critical feedback track.
 
+Run correlation:
+- run_id: <run_id>
+- log path: <workspace>/<run-log.md path>
+
 Evaluation Brief:
 <paste eval-brief content>
 
@@ -183,6 +246,8 @@ Structure:
 ### Waiting for Phase 1
 
 After launching all three subagents, wait for them to complete. While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
+
+If logging: append `phase_start phase1` before launch and `phase_complete phase1` when all three raw files exist (or note `tool_error` / `retry` / partial output as needed).
 
 ---
 
@@ -226,6 +291,8 @@ Create `phase2-synthesis.md` with these sections:
 [Legitimate disagreements between the analysis tracks. Where the hater feedback conflicts with the strengths analysis, name the tension and present both sides.]
 ```
 
+If logging: append `phase_start phase2` and `phase_complete phase2` around synthesis. Log `user_correction` if the user steers synthesis before Phase 3.
+
 ---
 
 ## Phase 3: Content Strategy Outline
@@ -235,6 +302,10 @@ Spawn a subagent that uses the long-form-outline skill to create a content strat
 ```
 You are creating a content strategy outline. Read the long-form-outline skill at:
 <long-form-outline-skill-path>/SKILL.md
+
+Run correlation:
+- run_id: <run_id>
+- log path: <workspace>/<run-log.md path>
 
 The topic is: How to position and communicate [subject name] to its target audience.
 
@@ -253,11 +324,17 @@ The outline should help the user write a compelling public piece (blog post, lau
 Save the full outline to: <workspace>/phase3-content-outline-raw.md
 ```
 
+If logging: append `phase_start phase3` / `phase_complete phase3` around the subagent.
+
 ---
 
 ## Phase 4: Deliverable Assembly
 
+Perform the **pre–Phase 4 review** from [Run feedback & run log](#run-feedback--run-log-optional) if logging is enabled: reconcile `run-log.md` with the latest brief/synthesis/raw files.
+
 Now compile all raw outputs into polished .docx files. Use the docx skill (read its SKILL.md for formatting instructions) to produce each deliverable.
+
+If logging: append `phase_start phase4`, then `phase_complete phase4`, and set `status: complete` (or `abandoned` if stopped early) in the run log Meta section.
 
 ### Assembly Order
 
@@ -332,3 +409,5 @@ This pipeline is designed to be efficient with tokens and time:
 - **Subagent timeout:** Read whatever partial output exists, note incompleteness, continue
 - **Input is extremely vague:** Ask the user ONE question, then proceed with assumptions noted
 - **Too many inputs:** Summarize each, then merge. Don't try to hold 10 documents in full context.
+
+When logging is enabled, record the corresponding `tool_error`, `retry`, or `failure_mode` lines in `run-log.md` for each of the above (redact URLs and secrets).

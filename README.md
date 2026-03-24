@@ -45,7 +45,7 @@ Copy the skill folder into your project:
 # Clone this repo
 git clone https://github.com/Cartooli/mega-eval-skill.git
 
-# Copy into your Claude Code skills directory
+# Copy into your Claude Code skills directory (include the whole references/ folder for learnings + prompts)
 cp -r mega-eval-skill/SKILL.md mega-eval-skill/references mega-eval-skill/scripts ~/.claude/skills/mega-eval/
 ```
 
@@ -64,7 +64,8 @@ mega-eval/
 ├── SKILL.md              # Main skill instructions
 ├── references/
 │   ├── pipeline-checklist.md    # Phase-by-phase checklist
-│   └── subagent-prompts.md      # Ready-to-use prompt templates
+│   ├── subagent-prompts.md      # Ready-to-use prompt templates
+│   └── learnings.md             # Human-reviewed methodology patterns (from run feedback)
 └── scripts/
     └── ingest.py          # Input file extraction helper
 ```
@@ -120,9 +121,21 @@ The [`examples/sample-run/`](examples/sample-run/) directory contains a complete
 
 Browse the `.docx` files to see what the pipeline produces, or read the raw `.md` intermediates for the unformatted analysis.
 
+## Run feedback (optional)
+
+Mega-eval can write an **append-only** `run-log.md` during a run so you can capture tool errors, retries, and user corrections—not for model training, but to **promote** stable methodology fixes into `references/learnings.md` after human review.
+
+- **Disable logging:** set `MEGA_EVAL_LOG=off` or `MEGA_EVAL_LOG=0` in the environment before running.
+- **Privacy:** Logs are **workspace-local** by default. Redact secrets before sharing or promoting bullets.
+- **Examples:** See [`examples/run-feedback/`](examples/run-feedback/) for fictional `run-log` and promotion samples.
+
+This is **not** automatic self-modification of prompts; see promotion gates in `references/learnings.md`.
+
 ## Customization
 
 The `references/subagent-prompts.md` file contains the exact prompts sent to each parallel analysis track. Edit these to adjust the evaluation dimensions, add new tracks, or change the focus areas.
+
+The `references/learnings.md` file is for **curated** methodological lessons promoted from run logs.
 
 The `SKILL.md` file controls the overall pipeline flow. You can reorder phases, skip phases, or add new ones.
 
