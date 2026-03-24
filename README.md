@@ -43,7 +43,7 @@ Copy the skill folder into your project:
 
 ```bash
 # Clone this repo
-git clone https://github.com/YOUR_USERNAME/mega-eval-skill.git
+git clone https://github.com/Cartooli/mega-eval-skill.git
 
 # Copy into your Claude Code skills directory
 cp -r mega-eval-skill/SKILL.md mega-eval-skill/references mega-eval-skill/scripts ~/.claude/skills/mega-eval/
@@ -70,6 +70,27 @@ mega-eval/
 ```
 
 Copy that folder into wherever your Claude instance reads skills from.
+
+## Prerequisites
+
+### Required skills
+
+The pipeline orchestrates these Claude skills — install them before running:
+
+- **[hater-mode](https://github.com/anthropics/claude-code/tree/main/skills/hater-mode)** — Phase 1A critical feedback (12-persona teardown)
+- **[long-form-outline](https://github.com/anthropics/claude-code/tree/main/skills/long-form-outline)** — Phase 3 content strategy outline
+- **[docx](https://github.com/anthropics/claude-code/tree/main/skills/docx)** — Phase 4 Word document assembly
+
+If these aren't installed, the skill will still run using built-in prompt templates, but output quality will be lower.
+
+### Optional system tools
+
+For processing non-text input files via `scripts/ingest.py`:
+
+- **pdftotext** (from poppler) — for `.pdf` extraction. Install: `brew install poppler`
+- **pandoc** — for `.docx` and `.pptx` extraction. Install: `brew install pandoc`
+
+These are only needed if you feed the pipeline local PDF/DOCX/PPTX files. Text, Markdown, URLs, and pasting content directly all work without them.
 
 ## Usage
 
