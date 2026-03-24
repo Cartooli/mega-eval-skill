@@ -1,6 +1,12 @@
+---
+last_reviewed: 2026-03-24
+---
+
 # Mega-eval learned patterns (promoted from run feedback)
 
 This file holds **methodological** lessons promoted from `run-log` artifacts after human review. It is **not** model training data and **does not** auto-update the skill.
+
+Update YAML **`last_reviewed`** above whenever you complete a review pass (even if you add zero new bullets).
 
 ## Do not promote without review
 
@@ -28,6 +34,14 @@ Each entry is a short **imperative** rule the orchestrator or subagent prompts s
 <!-- Example entry (fictional)—replace or extend as real promotions land. -->
 
 - **2026-03-24 (example):** When web search returns thin data for Phase 1B, state confidence explicitly and avoid inventing market statistics; say "limited public data" instead of padding.
+
+---
+
+## Retired patterns
+
+*Move superseded bullets here with a one-line reason, or delete in a PR with a short rationale.*
+
+- (none)
 
 ---
 
