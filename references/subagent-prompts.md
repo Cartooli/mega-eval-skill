@@ -9,6 +9,10 @@ These are ready-to-use prompt templates for each parallel subagent. Replace plac
 ```
 You are running a critical feedback analysis for a product/idea evaluation pipeline.
 
+Run correlation (repeat these in a one-line header comment at the top of the saved file):
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
+
 First, read the hater-mode skill instructions:
 - Read: <hater-mode-skill-path>/SKILL.md
 - Read: <hater-mode-skill-path>/references/audiences.md
@@ -32,6 +36,10 @@ Important:
 
 ```
 You are running a competitive and market landscape analysis for a product/idea evaluation pipeline.
+
+Run correlation:
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
 
 === EVALUATION BRIEF ===
 <paste eval-brief content here>
@@ -75,6 +83,10 @@ Be honest about confidence levels. If web search returns limited data, say so ra
 ```
 You are running a strengths and opportunities analysis for a product/idea evaluation pipeline. This is deliberately the POSITIVE counterweight to the critical feedback track — but honest, not cheerleading.
 
+Run correlation:
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
+
 === EVALUATION BRIEF ===
 <paste eval-brief content here>
 === END BRIEF ===
@@ -117,6 +129,10 @@ Save the complete output as structured markdown to: <workspace>/phase1c-strength
 
 ```
 You are creating a content strategy outline using the long-form-outline methodology.
+
+Run correlation:
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
 
 First, read the long-form-outline skill instructions:
 - Read: <long-form-outline-skill-path>/SKILL.md
