@@ -142,6 +142,14 @@ This is **not** automatic self-modification of prompts; see promotion gates in `
 
 **Sustaining the loop:** If you clone or maintain this repo, use **[`MAINTAINERS.md`](MAINTAINERS.md)** for the review ritual (at least **monthly** plus a quick pass on **merge to default branch** when `SKILL.md`, `references/`, or `examples/` change), redaction rules, and the optional `scripts/suggest_learnings.py` helper (stdout only).
 
+## Reporting issues and ideas
+
+**GitHub Issues** (this repo): use the **[bug](https://github.com/Cartooli/mega-eval-skill/issues/new?template=bug-report.md)**, **[improvement](https://github.com/Cartooli/mega-eval-skill/issues/new?template=improvement.md)**, or **[feature request](https://github.com/Cartooli/mega-eval-skill/issues/new?template=feature-request.md)** template. **Browse:** [Issues](https://github.com/Cartooli/mega-eval-skill/issues).
+
+When you file from a run, include **`run_id`** when you have it (see Phase 4 **Maintainer feedback** in `SKILL.md`).
+
+**Run feedback** (`run-log.md` → promotion to `references/learnings.md`) is separate from GitHub Issues; see [Run feedback](#run-feedback-optional) above and [`MAINTAINERS.md`](MAINTAINERS.md).
+
 ## Customization
 
 The `references/subagent-prompts.md` file contains the exact prompts sent to each parallel analysis track. Edit these to adjust the evaluation dimensions, add new tracks, or change the focus areas.

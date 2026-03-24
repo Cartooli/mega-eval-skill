@@ -388,6 +388,20 @@ All final .docx files go to the workspace output folder:
 - If you're running into context limits, produce the executive summary and the critical-fixes doc first (highest value), then the remaining docs.
 - If a phase produced thin results (e.g., web search found little competitive data), note that honestly in the doc rather than padding.
 
+### Maintainer feedback (optional)
+
+After presenting the final deliverables, you may offer this block so runners can report problems or ideas on the **canonical** repo. **Forks:** if you use a different GitHub tracker, edit these URLs in your copy of `SKILL.md`.
+
+**Something wrong or have an idea?** Open a new issue (pick the template that matches). Include this run’s **`run_id`** in the issue when you have it so maintainers can correlate with `run-log.md` or session files. **Redact** secrets, tokens, and sensitive subject matter in the issue body.
+
+| Intent | Link |
+|--------|------|
+| Bug / error | [New issue — Bug](https://github.com/Cartooli/mega-eval-skill/issues/new?template=bug-report.md) |
+| Improvement | [New issue — Improvement](https://github.com/Cartooli/mega-eval-skill/issues/new?template=improvement.md) |
+| Feature request | [New issue — Feature](https://github.com/Cartooli/mega-eval-skill/issues/new?template=feature-request.md) |
+
+**This run:** `run_id` = `<run_id>` (paste the same value passed to Phase 1 subagents and used in the run log if logging is on).
+
 ---
 
 ## Resource Optimization Notes

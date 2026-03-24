@@ -46,6 +46,7 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] `00-executive-summary.docx` created (LAST — draws from all others)
 - [ ] All files saved to workspace output folder
 - [ ] All files presented to user with links
+- [ ] Optional: offered maintainer feedback links (bug / improvement / feature) with `run_id` + redaction reminder — see **Maintainer feedback** in `SKILL.md` Phase 4
 - [ ] If logging: `phase4` complete, run `status` set to `complete` or `abandoned`
 
 ## Post-run promotion (optional, human-reviewed)
