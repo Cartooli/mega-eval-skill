@@ -40,6 +40,15 @@ A change set implementing this maintainer story should satisfy:
 - [ ] A new reader knows **when** to review, **where** `last_reviewed` lives, and **what** to redact before commit.
 - [ ] No script or CI **writes** to `references/learnings.md` or `SKILL.md` without a human edit.
 
+## GitHub Issues (skill bugs, improvements, features)
+
+**Run logs** capture operational signals for **promotion** into `references/learnings.md`. **GitHub Issues** are for **actionable** reports about the skill itself (bugs, doc/process improvements, feature ideas). They can share the same **`run_id`** for correlation; redact before posting.
+
+- **Templates:** [Bug](https://github.com/Cartooli/mega-eval-skill/issues/new?template=bug-report.md)
+  · [Improvement](https://github.com/Cartooli/mega-eval-skill/issues/new?template=improvement.md)
+  · [Feature](https://github.com/Cartooli/mega-eval-skill/issues/new?template=feature-request.md)
+- **Labels:** Ensure **`bug`**, **`improvement`**, and **`feature-request`** exist under **Settings → Labels** so template defaults apply. Create them once if missing.
+
 ## See also
 
 - [`references/learnings.md`](references/learnings.md) — promotion gates  
