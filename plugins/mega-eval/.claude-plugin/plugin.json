@@ -1,0 +1,13 @@
+{
+  "name": "mega-eval",
+  "version": "1.0.0",
+  "description": "Comprehensive multi-phase evaluation pipeline — critical feedback, competitive landscape, strengths analysis, synthesis, and content strategy. Accepts text, docs, or URLs.",
+  "author": {
+    "name": "Cartooli",
+    "url": "https://github.com/Cartooli"
+  },
+  "homepage": "https://github.com/Cartooli/mega-eval-skill",
+  "repository": "https://github.com/Cartooli/mega-eval-skill",
+  "license": "MIT",
+  "keywords": ["evaluation", "product-review", "competitive-analysis", "mega-eval", "feedback"]
+}

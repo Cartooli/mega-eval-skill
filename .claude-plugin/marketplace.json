@@ -1,0 +1,27 @@
+{
+  "name": "cartooli",
+  "owner": {
+    "name": "Cartooli"
+  },
+  "metadata": {
+    "description": "Mega-eval and related evaluation skills for Claude Code",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "mega-eval",
+      "source": "./plugins/mega-eval",
+      "description": "Comprehensive multi-phase evaluation pipeline — critical feedback, competitive landscape, strengths analysis, synthesis, and content strategy. Accepts text, docs, or URLs.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Cartooli"
+      },
+      "homepage": "https://github.com/Cartooli/mega-eval-skill",
+      "repository": "https://github.com/Cartooli/mega-eval-skill",
+      "license": "MIT",
+      "keywords": ["evaluation", "product-review", "competitive-analysis", "mega-eval", "feedback"],
+      "category": "productivity",
+      "tags": ["evaluation", "analysis", "research"]
+    }
+  ]
+}

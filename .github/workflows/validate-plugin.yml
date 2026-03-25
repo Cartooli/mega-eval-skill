@@ -1,0 +1,58 @@
+name: Validate plugin manifests
+
+on:
+  push:
+    paths:
+      - ".claude-plugin/**"
+      - "plugins/**/.claude-plugin/**"
+  pull_request:
+    paths:
+      - ".claude-plugin/**"
+      - "plugins/**/.claude-plugin/**"
+
+jobs:
+  validate-json:
+    name: Validate marketplace & plugin JSON
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate marketplace.json
+        run: python3 -m json.tool .claude-plugin/marketplace.json > /dev/null && echo "✓ .claude-plugin/marketplace.json is valid JSON"
+
+      - name: Validate plugin.json files
+        run: |
+          for f in $(find plugins -name "plugin.json" -path "*/.claude-plugin/*"); do
+            python3 -m json.tool "$f" > /dev/null && echo "✓ $f is valid JSON"
+          done
+
+      - name: Check marketplace name is not reserved
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          with open(".claude-plugin/marketplace.json") as f:
+              data = json.load(f)
+          name = data.get("name", "")
+          reserved = [
+              "claude-code-marketplace", "claude-code-plugins", "claude-plugins-official",
+              "anthropic-marketplace", "anthropic-plugins", "agent-skills",
+              "knowledge-work-plugins", "life-sciences"
+          ]
+          if name in reserved:
+              print(f"ERROR: marketplace name '{name}' is reserved by Anthropic", file=sys.stderr)
+              sys.exit(1)
+          if not name.replace("-", "").isalnum():
+              print(f"ERROR: marketplace name '{name}' must be kebab-case (letters, digits, hyphens only)", file=sys.stderr)
+              sys.exit(1)
+          print(f"✓ marketplace name '{name}' is valid and not reserved")
+          EOF
+
+      - name: Check symlinks resolve (local paths)
+        run: |
+          for f in $(find plugins -type l); do
+            if [ ! -e "$f" ]; then
+              echo "ERROR: broken symlink: $f -> $(readlink $f)"
+              exit 1
+            fi
+            echo "✓ $f"
+          done

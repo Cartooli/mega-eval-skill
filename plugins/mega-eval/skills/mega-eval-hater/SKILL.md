@@ -1,0 +1,1 @@
+../../../../skills/mega-eval-hater/SKILL.md
