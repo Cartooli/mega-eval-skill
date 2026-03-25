@@ -1,6 +1,6 @@
 ---
 name: mega-eval
-description: "Run a comprehensive, multi-phase evaluation of any idea, product, or feature set — producing multiple deliverable files covering critical feedback, competitive context, strengths & opportunities, design issues, proposed fixes, and a content strategy outline. Accepts any combination of raw text, uploaded documents, or crawlable URLs as input. Orchestrates parallel subagents for efficiency. Use this skill whenever someone says 'evaluate this idea', 'tear down this product', 'full analysis of', 'mega eval', 'comprehensive review', 'deep evaluation', 'assess this feature set', 'product review pipeline', or any request for a thorough multi-dimensional analysis of a concept, product, or feature. Also trigger when the user provides a URL, doc, or text block and asks for a complete picture — strengths, weaknesses, market context, and next steps."
+description: "Run a comprehensive, multi-phase evaluation of any idea, product, or feature set — producing multiple deliverable files covering critical feedback, competitive context, strengths & opportunities, design issues (including optional live-site visual/UX audit when an HTTPS product URL is in scope), proposed fixes, and a content strategy outline. Accepts any combination of raw text, uploaded documents, or crawlable URLs as input. Orchestrates parallel subagents for efficiency. Use this skill whenever someone says 'evaluate this idea', 'tear down this product', 'full analysis of', 'mega eval', 'comprehensive review', 'deep evaluation', 'assess this feature set', 'product review pipeline', or any request for a thorough multi-dimensional analysis of a concept, product, or feature. Also trigger when the user provides a URL, doc, or text block and asks for a complete picture — strengths, weaknesses, market context, and next steps."
 ---
 
 # Mega Eval — Multi-Phase Product & Idea Evaluation Pipeline
@@ -15,16 +15,17 @@ INPUT (text / doc / URL / combo)
         ▼
 ┌─ Phase 0: Ingestion ──────────────────────────────┐
 │  Parse all inputs into a unified brief             │
+│  (+ optional: pick primary URL for design audit)   │
 └────────────────────────┬───────────────────────────┘
                          │
-        ┌────────────────┼────────────────┐
-        ▼                ▼                ▼
-┌─ Phase 1A ──┐  ┌─ Phase 1B ──┐  ┌─ Phase 1C ──┐
-│ Hater Mode  │  │ Competitive │  │ Strengths & │
-│ (12 lenses) │  │ & Market    │  │ Opportunities│
-└──────┬──────┘  └──────┬──────┘  └──────┬───────┘
-       │                │               │
-       └────────────────┼───────────────┘
+        ┌────────────────┼────────────────┬────────────────┐
+        ▼                ▼                ▼                ▼
+┌─ Phase 1A ──┐  ┌─ Phase 1B ──┐  ┌─ Phase 1C ──┐  ┌─ Phase 1D ───────┐
+│ Hater Mode  │  │ Competitive │  │ Strengths & │  │ Live site design │
+│ (12 lenses) │  │ & Market    │  │ Opportunities│  │ audit (optional) │
+└──────┬──────┘  └──────┬──────┘  └──────┬───────┘  └────────┬─────────┘
+       │                │               │                   │
+       └────────────────┴───────────────┴───────────────────┘
                         ▼
 ┌─ Phase 2: Synthesis ──────────────────────────────┐
 │  Critical fixes, design issues, next steps         │
@@ -72,7 +73,7 @@ Use one path consistently for the run (in order of preference):
 
 ### Run ID
 
-At **Phase 0**, generate a short `run_id` (e.g. 8 alphanumeric characters) or reuse the host session id when exposed. Pass the **same** `run_id` into every Phase 1 subagent prompt (1A/1B/1C) and Phase 3 so parallel work correlates to one evaluation.
+At **Phase 0**, generate a short `run_id` (e.g. 8 alphanumeric characters) or reuse the host session id when exposed. Pass the **same** `run_id` into every Phase 1 subagent prompt (1A/1B/1C, and **1D** when run) and Phase 3 so parallel work correlates to one evaluation.
 
 ### What to append (taxonomy)
 
@@ -146,9 +147,23 @@ Produce a structured brief saved as a working file (`/sessions/<session>/eval-br
 
 ## Open Questions
 - [Anything unclear or missing from the inputs]
+
+## Live site / design audit (Phase 1D)
+- **Primary URL for Phase 1D:** [Single `https://` marketing/product URL, or `n/a`]
+- **Audit decision:** [run | skipped] — [one-line reason: no URL, user opt-out, PDF-only inputs, etc.]
 ```
 
 If critical information is missing (e.g., the user gave a vague one-liner), ask ONE clarifying question before proceeding. Otherwise, infer what you can and note assumptions in the brief.
+
+### Optional live-site design audit (Phase 1D) — Phase 0 decisions
+
+**Purpose:** When the subject has a **public web surface**, add a **report-only** visual/UX audit (`phase1d-design-raw.md`) in parallel with Phase 1A–1C. This is **not** the gstack `/design-review` fix-and-commit loop (which targets **your** codebase). Phase 1D only produces **markdown + optional screenshots** for synthesis.
+
+**Opt out:** If `MEGA_EVAL_DESIGN_AUDIT` is `0`, `off`, or `false`, set **Audit decision: skipped** (reason: env opt-out) and do **not** launch Phase 1D.
+
+**Default when env is unset:** **Run** Phase 1D when you can name **one** primary **`https://`** URL that reasonably represents the **marketing or product** experience. Prefer the URL the user highlighted; otherwise infer from **Source Material** (exclude obvious non-surfaces: direct `.pdf` links, raw file hosts, or pages that are clearly not the product).
+
+**Ambiguity:** If multiple URLs qualify, pick **one** and note the others under Open Questions — do not spawn multiple 1D tracks.
 
 When Phase 0 finishes, append `phase_complete phase0` to the run log (if logging).
 
@@ -156,9 +171,13 @@ When Phase 0 finishes, append `phase_complete phase0` to the run log (if logging
 
 ## Phase 1: Parallel Analysis (use subagents)
 
-Launch three analysis tracks simultaneously using subagents. Each subagent receives the Evaluation Brief as input.
+Launch **three** analysis tracks **always** (1A–1C). Launch **Phase 1D** in the same wave **only** when Phase 0 recorded **Audit decision: run**.
+
+Each subagent receives the Evaluation Brief as input; Phase 1D also receives the **Primary URL for Phase 1D** explicitly.
 
 The key efficiency principle: each subagent does ONE job thoroughly. Don't duplicate work across tracks.
+
+**Phase 1D failure isolation:** If Phase 1D subagent fails, times out, or produces Tier C “thin” output, log `tool_error` or `failure_mode` when logging is on — **do not** block Phase 2. Proceed once 1A–1C are complete.
 
 ### Phase 1A: Hater Mode Critical Feedback
 
@@ -244,21 +263,58 @@ Structure:
 ## Ideal Use Cases & Customer Profiles
 ```
 
+### Phase 1D: Live site design audit (optional)
+
+**Only if** Phase 0 **Audit decision** was **run**. Use the template in `references/design-audit-template.md` and the ready-made prompt in `references/subagent-prompts.md` (**Phase 1D**).
+
+Spawn a subagent with instructions equivalent to:
+
+```
+You are running a LIVE SITE DESIGN AUDIT (Phase 1D) — report only; no code changes.
+
+Run correlation:
+- run_id: <run_id>
+- log path: <workspace>/<run-log.md path>
+
+Read: <references-path>/design-audit-template.md
+
+Evaluation Brief:
+<paste eval-brief content>
+
+Primary URL to audit (HTTPS):
+<paste Primary URL for Phase 1D from brief>
+
+Tier A: use headless browse / screenshot tools if available; save screenshots under the workspace and reference paths.
+Tier B: if no browser, use WebFetch/HTML and state limits in the output Meta.
+Tier C: if the URL is unusable, write a short markdown explaining why.
+
+Save the output to: <workspace>/phase1d-design-raw.md
+
+Follow design-audit-template.md sections. This is not a WCAG compliance certificate.
+```
+
 ### Waiting for Phase 1
 
-After launching all three subagents, wait for them to complete. While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
+After launching subagents, wait until:
 
-If logging: append `phase_start phase1` before launch and `phase_complete phase1` when all three raw files exist (or note `tool_error` / `retry` / partial output as needed).
+- **`phase1a-hater-raw.md`**, **`phase1b-competitive-raw.md`**, and **`phase1c-strengths-raw.md`** exist (required), and
+- **If Phase 1D was launched:** `phase1d-design-raw.md` exists **or** you have logged abandonment / thin output for 1D and chosen to proceed.
+
+While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
+
+If logging: append `phase_start phase1` before launch and `phase_complete phase1` when the conditions above are met (note `tool_error` / `retry` / partial output for any track, including 1D, as needed).
 
 ---
 
 ## Phase 2: Synthesis — Critical Fixes, Design Issues, Next Steps
 
-Once all Phase 1 tracks complete, read all three raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent.
+Once all Phase 1 tracks complete, read the Phase 1 raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent.
 
 ### Read All Phase 1 Outputs
 
 Read `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, and `phase1c-strengths-raw.md`.
+
+**If `phase1d-design-raw.md` exists** (Phase 1D ran or produced a thin-failure stub), read it. Treat it as the **authoritative source for rendered-site visual/UX** observations. **Deduplicate** against Phase 1A where personas commented on “looks” — prefer Phase 1D for layout, typography, template tells, and interaction affordances; keep 1A for **reception / credibility narratives** that are not purely visual.
 
 ### Produce the Synthesis
 
@@ -280,6 +336,8 @@ Create `phase2-synthesis.md` with these sections:
 
 ## Design Inconsistencies to Resolve
 [UI/UX issues, branding mismatches, messaging contradictions, experience gaps. Be specific — "the onboarding flow contradicts the pricing page's promise of simplicity."]
+
+**When Phase 1D exists:** Incorporate **live-site audit** findings here (and in Critical Fixes if severity warrants). Cite **Headline for synthesis** / **Design risk band** from `phase1d-design-raw.md`. Merge **Quick wins** from 1D into **Proposed Next Steps** where they do not duplicate.
 
 ## Proposed Next Steps (Non-Breaking Changes)
 [Changes that improve the product/idea without disrupting what's working. Ordered by effort-to-impact ratio — quick wins first, then medium-term, then strategic.]
@@ -346,7 +404,7 @@ Process deliverables in this order — the executive summary comes LAST because 
 3. **`03-strengths-opportunities.docx`** — Format phase1c-strengths-raw.md
 4. **`04-critical-fixes-and-design.docx`** — Format phase2-synthesis.md
 5. **`05-content-strategy-outline.docx`** — Format phase3-content-outline-raw.md
-6. **`00-executive-summary.docx`** — Write fresh, drawing from all 5 documents above
+6. **`00-executive-summary.docx`** — Write fresh, drawing from all 5 documents above (include **Live Site / Product Surface** when `phase1d-design-raw.md` informed `phase2-synthesis.md`)
 
 ### Executive Summary Structure
 
@@ -374,6 +432,9 @@ The executive summary is a standalone document that a decision-maker can read wi
 
 ### Content Strategy Hook
 [The single strongest angle for publicly talking about this]
+
+### Live Site / Product Surface (only if Phase 1D ran)
+[2–4 bullets: design risk band, first-impression verdict, top UX credibility issue, top quick win — or state that Phase 1D was skipped/thin]
 ```
 
 ### File Output
@@ -408,12 +469,12 @@ After presenting the final deliverables, you may offer this block so runners can
 
 This pipeline is designed to be efficient with tokens and time:
 
-- **Phase 1 parallelism** is the main time saver — three analysis tracks run simultaneously
+- **Phase 1 parallelism** is the main time saver — three analysis tracks always; **optional fourth** (1D design audit) when a primary site URL is in scope
 - **Phase 2 synthesis** is done inline (no subagent) because it requires reading across all three tracks and exercising judgment
 - **Phase 3** can run as a subagent while you start Phase 4 assembly
 - **Phase 4 docs** can be produced sequentially — no need for parallel doc generation since each is independent and relatively quick
 - If the input is simple (just a text block, no URLs to crawl), Phase 0 takes seconds
-- If subagents are unavailable, run phases sequentially: 1A → 1B → 1C → 2 → 3 → 4. Slower but still works.
+- If subagents are unavailable, run phases sequentially: 1A → 1B → 1C → (optional 1D) → 2 → 3 → 4. Slower but still works.
 
 ---
 
@@ -424,5 +485,6 @@ This pipeline is designed to be efficient with tokens and time:
 - **Subagent timeout:** Read whatever partial output exists, note incompleteness, continue
 - **Input is extremely vague:** Ask the user ONE question, then proceed with assumptions noted
 - **Too many inputs:** Summarize each, then merge. Don't try to hold 10 documents in full context.
+- **Phase 1D unavailable or thin:** Record in `phase1d-design-raw.md` and proceed; synthesis should note **design audit limits** rather than inventing visual claims.
 
 When logging is enabled, record the corresponding `tool_error`, `retry`, or `failure_mode` lines in `run-log.md` for each of the above (redact URLs and secrets).

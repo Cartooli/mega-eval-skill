@@ -125,6 +125,50 @@ Save the complete output as structured markdown to: <workspace>/phase1c-strength
 
 ---
 
+## Phase 1D: Live Site Design Audit Subagent (optional)
+
+**When to use:** Parent run selected a **primary HTTPS URL** for a public marketing/product surface and did **not** opt out (`MEGA_EVAL_DESIGN_AUDIT` off). This track is **report-only** — no repo edits, no `/design-review` fix loop.
+
+```
+You are running a LIVE SITE DESIGN AUDIT for a product/idea evaluation pipeline (Phase 1D).
+
+Run correlation (repeat in a one-line HTML comment at the top of the saved file):
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
+
+Read the output template and rules:
+- Read: <references-path>/design-audit-template.md
+
+=== EVALUATION BRIEF ===
+<paste eval-brief content here>
+=== END BRIEF ===
+
+=== PRIMARY URL TO AUDIT ===
+<single https URL — marketing or product home>
+=== END URL ===
+
+Your job:
+
+1. **Evidence tier (pick honestly)**
+   - **Tier A:** Use headless browse / screenshot tools if the host provides them (e.g. gstack browse). Capture 1–3 screenshots to the workspace and reference paths in the doc. Visit homepage + up to 2 key paths (e.g. /pricing, /product) if reachable without login.
+   - **Tier B:** If no browser is available, use WebFetch/HTML-visible content only. State limits prominently in Meta (layout, motion, and many interaction states may be unknown).
+   - **Tier C:** If the URL fails, requires auth, or returns no meaningful HTML, write a short `phase1d-design-raw.md` explaining why and stop — do not block other pipeline tracks.
+
+2. **Content**
+   - Follow `design-audit-template.md` sections exactly (Meta, First impression, Inferred design system, Checklist highlights, AI slop, Litmus, Quick wins, Evidence, Headline for synthesis).
+   - Classify **MARKETING/LANDING** vs **APP UI** vs **HYBRID** from what you see.
+   - Be specific to this site — no generic design platitudes.
+
+3. **Scope discipline**
+   - This is NOT WCAG compliance certification. Say so in the disclaimer.
+   - Do NOT read or assume access to the product’s source repository unless the parent explicitly provided it.
+   - Do NOT claim you tested authenticated flows unless you actually did.
+
+Save the complete markdown to: <workspace>/phase1d-design-raw.md
+```
+
+---
+
 ## Phase 3: Content Strategy Outline Subagent
 
 ```

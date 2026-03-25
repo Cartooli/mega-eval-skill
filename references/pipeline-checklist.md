@@ -5,11 +5,12 @@ Use this as a quick reference while running the pipeline. Check off each step as
 ## Pre-Flight
 - [ ] All inputs received (text, docs, URLs)
 - [ ] Skill paths resolved for hater-mode, long-form-outline, docx
+- [ ] Design audit: skip Phase 1D if `MEGA_EVAL_DESIGN_AUDIT` is `off` / `0` / `false` (otherwise default **on** when a primary `https://` URL is chosen in Phase 0)
 - [ ] Run logging decision: skip if `MEGA_EVAL_LOG` is `off` / `0`; otherwise plan `run-log.md` path and `run_id`
 
 ## Phase 0: Ingestion
 - [ ] All inputs parsed and content extracted
-- [ ] Evaluation Brief written to `eval-brief.md`
+- [ ] Evaluation Brief written to `eval-brief.md` (includes **Live site / design audit** — primary URL or `n/a`, and run vs skipped)
 - [ ] Open questions noted (ask user if critical info is missing)
 - [ ] If logging: `run_id` assigned, `run-log.md` initialized, `phase_start phase0` / `phase_complete phase0` appended
 
@@ -18,14 +19,15 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Phase 1A subagent launched (Hater Mode) with `run_id` + `run_log` in prompt
 - [ ] Phase 1B subagent launched (Competitive & Market) with `run_id` + `run_log` in prompt
 - [ ] Phase 1C subagent launched (Strengths & Opportunities) with `run_id` + `run_log` in prompt
-- [ ] All three subagents completed
-- [ ] Raw outputs verified: `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, `phase1c-strengths-raw.md`
+- [ ] Phase 1D subagent launched **only if** brief says **Audit decision: run** (live-site design audit; prompt in `references/subagent-prompts.md`, template `references/design-audit-template.md`)
+- [ ] Required subagents completed (1A–1C); Phase 1D completed **or** logged thin failure — **do not** block Phase 2 on 1D alone
+- [ ] Raw outputs verified: `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, `phase1c-strengths-raw.md` (+ `phase1d-design-raw.md` when 1D ran)
 - [ ] If logging: Phase 1 events appended (`phase_start` / `phase_complete`, errors/retries as needed)
 
 ## Phase 2: Synthesis
-- [ ] All Phase 1 outputs read
+- [ ] All Phase 1 outputs read (including `phase1d-design-raw.md` **if present** — authoritative for rendered-site UX vs text-only inference)
 - [ ] Critical fixes identified and prioritized
-- [ ] Design inconsistencies catalogued
+- [ ] Design inconsistencies catalogued (merge Phase 1D quick wins / risk band when applicable; dedupe vs Phase 1A “looks” commentary)
 - [ ] Non-breaking next steps ordered by effort-to-impact
 - [ ] Unresolved tensions documented
 - [ ] Output written to `phase2-synthesis.md`
@@ -38,6 +40,7 @@ Use this as a quick reference while running the pipeline. Check off each step as
 
 ## Phase 4: Deliverable Assembly
 - [ ] **Pre-flight:** If logging, reviewed `run-log.md` and reconciled brief/synthesis with corrections
+- [ ] Executive summary includes **Live Site / Product Surface** when Phase 1D informed synthesis (see full `SKILL.md`)
 - [ ] `01-hater-mode-feedback.docx` created
 - [ ] `02-competitive-landscape.docx` created
 - [ ] `03-strengths-opportunities.docx` created
@@ -55,7 +58,7 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] If promoting: verified [Promotion gates](learnings.md#promotion-gates) in `references/learnings.md`
 
 ## Quality Checks
-- [ ] Executive summary is standalone-readable
+- [ ] Executive summary is standalone-readable (and reflects optional design audit when run)
 - [ ] Critical fixes are specific and actionable (not vague)
 - [ ] Competitive analysis cites real competitors (not fabricated)
 - [ ] Strengths analysis is honest (not cheerleading)

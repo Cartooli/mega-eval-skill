@@ -1,6 +1,6 @@
 # mega-eval
 
-A Claude skill that runs a comprehensive, multi-phase evaluation of any idea, product, or feature set. Feed it text, docs, URLs, or any combination — it produces 6 structured Word documents covering critical feedback, competitive landscape, strengths, design issues, action items, and content strategy.
+A Claude skill that runs a comprehensive, multi-phase evaluation of any idea, product, or feature set. Feed it text, docs, URLs, or any combination — it produces 6 structured Word documents covering critical feedback, competitive landscape, strengths, design issues, action items, and content strategy. When a **primary HTTPS site URL** is in scope, it can also run an **optional Phase 1D live-site design audit** (report-only markdown); set `MEGA_EVAL_DESIGN_AUDIT=off` to skip.
 
 ## What it does
 
@@ -12,7 +12,8 @@ Phase 0: Ingest & normalize all inputs into an Evaluation Brief
      │
      ├── Phase 1A: Hater Mode (12-persona critical feedback)
      ├── Phase 1B: Competitive & Market Landscape (web research)
-     └── Phase 1C: Strengths & Opportunities
+     ├── Phase 1C: Strengths & Opportunities
+     └── Phase 1D: Live-site design audit (optional, when URL in scope)
             │
             ▼
 Phase 2: Synthesis — critical fixes, design issues, next steps
@@ -62,7 +63,7 @@ Install the full pipeline and all phase skills via the Claude Code plugin system
 /reload-plugins
 ```
 
-That installs the **full pipeline skill** (`mega-eval`) plus all **seven phase-only skills** (`mega-eval-brief`, `mega-eval-competitive`, etc.) in one shot.
+That installs the **full pipeline skill** (`mega-eval`) plus all **eight phase-only skills** (`mega-eval-brief`, `mega-eval-competitive`, `mega-eval-design`, etc.) in one shot.
 
 **Why Git-based add (`owner/repo`) and not a direct URL?** The plugin tree uses relative paths to a shared `references/` directory. Relative paths only resolve when the marketplace is added via Git — a direct URL to the raw `marketplace.json` file cannot resolve them. Always use the `owner/repo` or `git URL` form.
 
@@ -101,7 +102,7 @@ Or if you prefer, copy just the skill folder contents into any `.claude/skills/m
 
 ### Phase-only skills (thin entrypoints)
 
-The repo includes **seven** additional skills under [`skills/`](skills/) — one per phase (0, 1A, 1B, 1C, 2, 3, 4) — so you can pick **e.g. competitive only** or **brief only** from the skill picker. Methodology is **not** duplicated: each thin `SKILL.md` points at the shared [`references/`](references/) folder and the [full `SKILL.md`](SKILL.md).
+The repo includes **eight** additional skills under [`skills/`](skills/) — phases 0, 1A, 1B, 1C, optional **1D** (design audit), 2, 3, and 4 — so you can pick **e.g. competitive only** or **brief only** from the skill picker. Methodology is **not** duplicated: each thin `SKILL.md` points at the shared [`references/`](references/) folder and the [full `SKILL.md`](SKILL.md).
 
 | Skill folder | Use when you want |
 |--------------|-------------------|
@@ -109,6 +110,7 @@ The repo includes **seven** additional skills under [`skills/`](skills/) — one
 | [`skills/mega-eval-hater`](skills/mega-eval-hater) | Phase 1A only → `phase1a-hater-raw.md` |
 | [`skills/mega-eval-competitive`](skills/mega-eval-competitive) | Phase 1B only → `phase1b-competitive-raw.md` |
 | [`skills/mega-eval-strengths`](skills/mega-eval-strengths) | Phase 1C only → `phase1c-strengths-raw.md` |
+| [`skills/mega-eval-design`](skills/mega-eval-design) | Phase 1D only → `phase1d-design-raw.md` (live-site UX audit) |
 | [`skills/mega-eval-synthesis`](skills/mega-eval-synthesis) | Phase 2 only → `phase2-synthesis.md` |
 | [`skills/mega-eval-content-outline`](skills/mega-eval-content-outline) | Phase 3 only → `phase3-content-outline-raw.md` |
 | [`skills/mega-eval-deliverables`](skills/mega-eval-deliverables) | Phase 4 only → `.docx` assembly |
@@ -235,6 +237,7 @@ Browse the `.docx` files to see what the pipeline produces, or read the raw `.md
 Mega-eval can write an **append-only** `run-log.md` during a run so you can capture tool errors, retries, and user corrections—not for model training, but to **promote** stable methodology fixes into `references/learnings.md` after human review.
 
 - **Disable logging:** set `MEGA_EVAL_LOG=off` or `MEGA_EVAL_LOG=0` in the environment before running.
+- **Disable optional design audit:** set `MEGA_EVAL_DESIGN_AUDIT=off` or `MEGA_EVAL_DESIGN_AUDIT=0` to skip Phase 1D even when an HTTPS URL is present (see `SKILL.md` Phase 0).
 - **Privacy:** Logs are **workspace-local** by default. Redact secrets before sharing or promoting bullets.
 - **Examples:** See [`examples/run-feedback/`](examples/run-feedback/) for fictional `run-log` and promotion samples.
 
@@ -252,7 +255,7 @@ When you file from a run, include **`run_id`** when you have it (see Phase 4 **M
 
 ## Customization
 
-The `references/subagent-prompts.md` file contains the exact prompts sent to each parallel analysis track. Edit these to adjust the evaluation dimensions, add new tracks, or change the focus areas.
+The `references/subagent-prompts.md` file contains the exact prompts sent to each parallel analysis track; `references/design-audit-template.md` defines Phase 1D output. Edit these to adjust the evaluation dimensions, add new tracks, or change the focus areas.
 
 The `references/learnings.md` file is for **curated** methodological lessons promoted from run logs.
 
