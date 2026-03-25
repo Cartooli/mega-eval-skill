@@ -1,0 +1,1 @@
+../../../../skills/mega-eval-competitive/SKILL.md

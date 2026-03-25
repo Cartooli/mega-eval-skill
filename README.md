@@ -43,7 +43,49 @@ Phase 4: Assemble 6 deliverable .docx files
 
 ## Install
 
-### Claude Code (CLI)
+### Claude Code plugin install (recommended)
+
+> **Requires:** Claude Code 1.0.33 or later. Run `claude --version` to check.
+>
+> **Security note:** Only add marketplaces from sources you trust — plugins run with your user privileges.
+
+Install the full pipeline and all phase skills via the Claude Code plugin system:
+
+```shell
+# Step 1 — register the marketplace (use owner/repo, NOT a raw URL)
+/plugin marketplace add Cartooli/mega-eval-skill
+
+# Step 2 — install the plugin
+/plugin install mega-eval@cartooli
+
+# Step 3 — activate without restarting
+/reload-plugins
+```
+
+That installs the **full pipeline skill** (`mega-eval`) plus all **seven phase-only skills** (`mega-eval-brief`, `mega-eval-competitive`, etc.) in one shot.
+
+**Why Git-based add (`owner/repo`) and not a direct URL?** The plugin tree uses relative paths to a shared `references/` directory. Relative paths only resolve when the marketplace is added via Git — a direct URL to the raw `marketplace.json` file cannot resolve them. Always use the `owner/repo` or `git URL` form.
+
+**Plugin not appearing after install?** Run `/reload-plugins` first. If still missing, clear the cache and reinstall:
+
+```shell
+rm -rf ~/.claude/plugins/cache
+# then re-run /plugin marketplace add ... and /plugin install ...
+```
+
+**Manage the marketplace:**
+
+```shell
+/plugin marketplace update cartooli   # pull latest version
+/plugin marketplace remove cartooli   # remove marketplace + uninstalls its plugins
+/plugin uninstall mega-eval@cartooli  # uninstall plugin only
+```
+
+> Third-party marketplaces (like this one) have **auto-update disabled by default.** Run `/plugin marketplace update cartooli` after new releases, or enable auto-update in the plugin UI (`/plugin` → Marketplaces → cartooli → Enable auto-update).
+
+---
+
+### Full pipeline only (`mega-eval`)
 
 Copy the skill folder into your project:
 
@@ -57,13 +99,69 @@ cp -r mega-eval-skill/SKILL.md mega-eval-skill/references mega-eval-skill/script
 
 Or if you prefer, copy just the skill folder contents into any `.claude/skills/mega-eval/` directory in your project.
 
+### Phase-only skills (thin entrypoints)
+
+The repo includes **seven** additional skills under [`skills/`](skills/) — one per phase (0, 1A, 1B, 1C, 2, 3, 4) — so you can pick **e.g. competitive only** or **brief only** from the skill picker. Methodology is **not** duplicated: each thin `SKILL.md` points at the shared [`references/`](references/) folder and the [full `SKILL.md`](SKILL.md).
+
+| Skill folder | Use when you want |
+|--------------|-------------------|
+| [`skills/mega-eval-brief`](skills/mega-eval-brief) | Phase 0 only → `eval-brief.md` |
+| [`skills/mega-eval-hater`](skills/mega-eval-hater) | Phase 1A only → `phase1a-hater-raw.md` |
+| [`skills/mega-eval-competitive`](skills/mega-eval-competitive) | Phase 1B only → `phase1b-competitive-raw.md` |
+| [`skills/mega-eval-strengths`](skills/mega-eval-strengths) | Phase 1C only → `phase1c-strengths-raw.md` |
+| [`skills/mega-eval-synthesis`](skills/mega-eval-synthesis) | Phase 2 only → `phase2-synthesis.md` |
+| [`skills/mega-eval-content-outline`](skills/mega-eval-content-outline) | Phase 3 only → `phase3-content-outline-raw.md` |
+| [`skills/mega-eval-deliverables`](skills/mega-eval-deliverables) | Phase 4 only → `.docx` assembly |
+
+**Path resolution:** Thin skills load `references/` from the first path that exists (see [skills/README.md](skills/README.md)): `./references/` next to the phase `SKILL.md`, `../../references/` when the whole **mega-eval-skill** repo is present, or `../mega-eval/references/` when the phase skill is a sibling of the full **`mega-eval`** folder.
+
+**Install one phase skill (portable):** copy the phase folder **and** `references/` into the same install directory so `./references/` resolves:
+
+```bash
+git clone https://github.com/Cartooli/mega-eval-skill.git
+mkdir -p ~/.claude/skills/mega-eval-competitive
+cp mega-eval-skill/skills/mega-eval-competitive/SKILL.md ~/.claude/skills/mega-eval-competitive/
+cp -r mega-eval-skill/references ~/.claude/skills/mega-eval-competitive/references
+```
+
+**Install from a full clone:** work inside `mega-eval-skill/` so `skills/<name>/SKILL.md` can resolve `../../references/` without copying.
+
+**Install next to the full `mega-eval` package:** put `~/.claude/skills/mega-eval-brief/SKILL.md` (etc.) beside `~/.claude/skills/mega-eval/references/` and use `../mega-eval/references/` per [skills/README.md](skills/README.md).
+
+Without **`references/`** (or a valid sibling / monorepo path), thin skills cannot load prompt templates and checklists.
+
+See **[skills/README.md](skills/README.md)** for path resolution order and artifact names.
+
 ### Cowork (Desktop app)
 
 If a **`mega-eval.skill`** bundle is available (e.g. from a project release or attachment), open it in Cowork and use **Copy to your skills**. **The repo root may not include a `.skill` file**—in that case install the same **`SKILL.md` + `references/` + `scripts/`** folder your app expects, using the layout under [Manual install](#manual-install).
 
 ### Manual install
 
-The skill is just a folder with this structure:
+The repository layout:
+
+```
+mega-eval-skill/
+├── SKILL.md                 # Full pipeline skill (mega-eval)
+├── references/
+│   ├── pipeline-checklist.md
+│   ├── subagent-prompts.md
+│   └── learnings.md
+├── scripts/
+│   ├── ingest.py
+│   └── suggest_learnings.py
+└── skills/                  # Thin phase-only skills (see "Phase-only skills" above)
+    ├── README.md
+    ├── mega-eval-brief/
+    ├── mega-eval-hater/
+    ├── mega-eval-competitive/
+    ├── mega-eval-strengths/
+    ├── mega-eval-synthesis/
+    ├── mega-eval-content-outline/
+    └── mega-eval-deliverables/
+```
+
+The **single** `mega-eval` install folder (what you copy to `~/.claude/skills/mega-eval/`) is:
 
 ```
 mega-eval/
@@ -104,12 +202,14 @@ Without these tools, use plain text, Markdown, pasted content, or URLs instead�
 
 ## Usage
 
-Once installed, trigger it with prompts like:
+Once installed, trigger the **full** skill with prompts like:
 
 - `"mega eval [paste your idea]"`
 - `"full evaluation of https://example.com/product"`
 - `"comprehensive review"` + attach a document
 - `"assess this feature set"` + describe it
+
+For **one phase only**, install the matching skill from [`skills/`](skills/) (see [Phase-only skills](#phase-only-skills-thin-entrypoints)) and invoke it by name, e.g. competitive-only analysis after you have an `eval-brief.md`, or deliverable assembly when markdown phases already exist.
 
 It accepts any combination of:
 - Raw text blocks
@@ -156,7 +256,9 @@ The `references/subagent-prompts.md` file contains the exact prompts sent to eac
 
 The `references/learnings.md` file is for **curated** methodological lessons promoted from run logs.
 
-The `SKILL.md` file controls the overall pipeline flow. You can reorder phases, skip phases, or add new ones.
+The root `SKILL.md` file controls the overall pipeline flow. You can reorder phases, skip phases, or add new ones.
+
+Phase-only skills under `skills/` intentionally stay thin; after changing prompts or phase behavior in `references/` or root `SKILL.md`, update a thin skill only if **inputs, outputs, or path resolution** wording needs to change.
 
 ## License
 
