@@ -1,7 +1,7 @@
 ---
 title: "feat: Claude Code plugin marketplace packaging (marketplace.json + manifests)"
 type: feat
-status: active
+status: completed
 date: 2026-03-24
 deepened: "2026-03-24 (pass 1); 2026-03-24 (pass 2: manifest + layout + CI)"
 ---
