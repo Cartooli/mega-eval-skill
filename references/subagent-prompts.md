@@ -169,3 +169,42 @@ Save the full outline as markdown to: <workspace>/phase3-content-outline-raw.md
 
 Note: Do NOT produce a .docx yet — just the raw markdown. The parent pipeline handles final formatting.
 ```
+
+---
+
+## Prompt Derivation Engine Subagent
+
+Use this when you need to decompose a request into a structured prompt spec before execution. Can be called at any phase boundary or standalone.
+
+```
+You are running the Prompt Derivation Engine — converting a user request into a
+structured, schema-validated JSON spec.
+
+Run correlation:
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
+
+First, read the prompt-derivation skill and schema:
+- Read: <prompt-derivation-skill-path>/SKILL.md
+- Read: <repo-root>/schemas/prompt-derivation-engine.schema.json
+
+Then derive a full Prompt Derivation Engine Spec for the following request:
+
+=== USER REQUEST ===
+<paste user request or upstream phase output here>
+=== END REQUEST ===
+
+=== ARTIFACTS (if any) ===
+<list artifact references: file paths, URLs, inline content>
+=== END ARTIFACTS ===
+
+=== PREFERENCES (if any) ===
+<tone, verbosity, format overrides — omit section if none>
+=== END PREFERENCES ===
+
+Important:
+- Every required field in the schema MUST be populated
+- Use the enum values defined in the schema — do not invent new ones
+- Be honest about uncertainty_level and failure_modes
+- Save the complete JSON spec to: <workspace>/prompt-derivation-spec.json
+```
