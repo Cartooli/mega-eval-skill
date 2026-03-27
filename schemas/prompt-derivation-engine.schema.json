@@ -1,0 +1,561 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/prompt-derivation-engine.schema.json",
+  "title": "Prompt Derivation Engine Spec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request",
+    "task_spec",
+    "latent_task_state",
+    "context_bundle",
+    "output_contract",
+    "instruction_package",
+    "eval_plan",
+    "execution_plan",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^1\\.0\\.0$"
+    },
+    "request": {
+      "$ref": "#/$defs/request"
+    },
+    "task_spec": {
+      "$ref": "#/$defs/taskSpec"
+    },
+    "latent_task_state": {
+      "$ref": "#/$defs/latentTaskState"
+    },
+    "context_bundle": {
+      "$ref": "#/$defs/contextBundle"
+    },
+    "output_contract": {
+      "$ref": "#/$defs/outputContract"
+    },
+    "instruction_package": {
+      "$ref": "#/$defs/instructionPackage"
+    },
+    "eval_plan": {
+      "$ref": "#/$defs/evalPlan"
+    },
+    "execution_plan": {
+      "$ref": "#/$defs/executionPlan"
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stringList": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["request_id", "user_input"],
+      "properties": {
+        "request_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "user_input": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "user_preferences": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tone": {
+              "type": "string",
+              "enum": ["neutral", "direct", "concise", "formal", "friendly", "technical"]
+            },
+            "verbosity": {
+              "type": "string",
+              "enum": ["minimal", "short", "medium", "long"]
+            },
+            "format_preference": {
+              "type": "string",
+              "enum": ["markdown", "json", "plain_text", "csv", "html"]
+            },
+            "citation_policy": {
+              "type": "string",
+              "enum": ["none", "when_available", "required"]
+            }
+          },
+          "default": {}
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/inputArtifact"
+          },
+          "default": []
+        }
+      }
+    },
+    "inputArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "artifact_type", "label"],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "artifact_type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "document",
+            "spreadsheet",
+            "slide_deck",
+            "image",
+            "audio",
+            "video",
+            "url",
+            "json",
+            "csv",
+            "other"
+          ]
+        },
+        "label": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "content": {
+          "type": ["string", "object", "array", "null"]
+        },
+        "uri": {
+          "type": ["string", "null"],
+          "format": "uri"
+        },
+        "mime_type": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "taskSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "goal",
+        "task_type",
+        "subject",
+        "requested_operations",
+        "constraints",
+        "success_criteria",
+        "freshness"
+      ],
+      "properties": {
+        "goal": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "task_type": {
+          "type": "string",
+          "enum": [
+            "summarize",
+            "extract",
+            "classify",
+            "compare",
+            "evaluate",
+            "generate",
+            "diagnose",
+            "transform",
+            "plan",
+            "answer",
+            "other"
+          ]
+        },
+        "subject": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "requested_operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "summarize",
+              "extract_fields",
+              "classify",
+              "rank",
+              "compare",
+              "evaluate",
+              "critique",
+              "rewrite",
+              "translate",
+              "plan",
+              "outline",
+              "detect_errors",
+              "ground_in_sources",
+              "format_output",
+              "other"
+            ]
+          },
+          "minItems": 1
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/constraint"
+          },
+          "default": []
+        },
+        "success_criteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "minItems": 1
+        },
+        "freshness": {
+          "$ref": "#/$defs/freshness"
+        },
+        "domain": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "value"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "length",
+            "format",
+            "style",
+            "scope",
+            "safety",
+            "citation",
+            "tooling",
+            "time",
+            "language",
+            "other"
+          ]
+        },
+        "value": {
+          "type": ["string", "number", "boolean", "object", "array"]
+        }
+      }
+    },
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required"],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "recency_days": {
+          "type": ["integer", "null"],
+          "minimum": 0
+        },
+        "notes": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "latentTaskState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intent_class",
+        "knowledge_mode",
+        "uncertainty_level",
+        "needs_external_data",
+        "needs_tools",
+        "failure_modes",
+        "minimal_context_keys",
+        "canonical_prompt_form"
+      ],
+      "properties": {
+        "intent_class": {
+          "type": "string",
+          "enum": [
+            "analysis",
+            "retrieval",
+            "transformation",
+            "generation",
+            "diagnosis",
+            "structured_extraction",
+            "mixed"
+          ]
+        },
+        "knowledge_mode": {
+          "type": "string",
+          "enum": ["closed_book", "retrieval_augmented", "tool_augmented", "hybrid"]
+        },
+        "uncertainty_level": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "needs_external_data": {
+          "type": "boolean"
+        },
+        "needs_tools": {
+          "type": "boolean"
+        },
+        "required_capabilities": {
+          "$ref": "#/$defs/stringList"
+        },
+        "failure_modes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "default": []
+        },
+        "minimal_context_keys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "default": []
+        },
+        "canonical_prompt_form": {
+          "type": "string",
+          "enum": [
+            "summarize",
+            "extract",
+            "classify",
+            "compare",
+            "evaluate",
+            "generate_options",
+            "diagnose_errors",
+            "mixed"
+          ]
+        }
+      }
+    },
+    "contextBundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context_items", "compression_policy"],
+      "properties": {
+        "context_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contextItem"
+          },
+          "default": []
+        },
+        "compression_policy": {
+          "type": "string",
+          "enum": ["minimal", "essential_only", "balanced"]
+        }
+      }
+    },
+    "contextItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "value", "source"],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "value": {
+          "type": ["string", "number", "boolean", "object", "array"]
+        },
+        "source": {
+          "type": "string",
+          "enum": ["user_input", "artifact", "system", "retrieval", "tool", "inferred"]
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "outputContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "must_include", "must_avoid"],
+      "properties": {
+        "format": {
+          "type": "string",
+          "enum": ["markdown", "json", "plain_text", "csv", "html"]
+        },
+        "schema_ref": {
+          "type": ["string", "null"],
+          "format": "uri"
+        },
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "default": []
+        },
+        "must_include": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "default": []
+        },
+        "must_avoid": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "default": []
+        },
+        "length_target": {
+          "type": ["string", "null"],
+          "enum": ["minimal", "short", "medium", "long", null]
+        }
+      }
+    },
+    "instructionPackage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system_instruction",
+        "user_instruction",
+        "instruction_style",
+        "banned_patterns"
+      ],
+      "properties": {
+        "system_instruction": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "user_instruction": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "instruction_style": {
+          "type": "string",
+          "enum": ["minimal", "plain", "structured_minimal"]
+        },
+        "banned_patterns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "default": []
+        }
+      }
+    },
+    "evalPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["checks", "repair_strategy"],
+      "properties": {
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evalCheck"
+          },
+          "minItems": 1
+        },
+        "repair_strategy": {
+          "type": "string",
+          "enum": ["state_repair", "contract_repair", "context_repair", "mixed"]
+        }
+      }
+    },
+    "evalCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "type", "severity"],
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "format",
+            "coverage",
+            "evidence",
+            "fidelity",
+            "concision",
+            "safety",
+            "schema_validation"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "params": {
+          "type": "object",
+          "default": {}
+        }
+      }
+    },
+    "executionPlan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool_calls", "ordered_steps"],
+      "properties": {
+        "tool_calls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/toolCall"
+          },
+          "default": []
+        },
+        "ordered_steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "toolCall": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool_name", "purpose"],
+      "properties": {
+        "tool_name": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "purpose": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        },
+        "arguments": {
+          "type": "object",
+          "default": {}
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["created_at", "engine_version"],
+      "properties": {
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "engine_version": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "trace_id": {
+          "type": ["string", "null"]
+        },
+        "debug": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}
