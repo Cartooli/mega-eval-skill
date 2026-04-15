@@ -5,6 +5,7 @@ These files illustrate **append-only run logs** and a **promoted learning** entr
 | File | Purpose |
 |------|---------|
 | [`run-log.example.md`](run-log.example.md) | Sample `run-log.md` with `run_id`, events, failure-mode tags, and promotion candidates |
+| [`run-log.example.jsonl`](run-log.example.jsonl) | Sample `run-log.jsonl` sidecar with structured phase, fallback, and validation events |
 | [`promoted-learning.example.md`](promoted-learning.example.md) | What a reviewed bullet might look like before merging into `references/learnings.md` |
 
 See `references/learnings.md` in the repo for the canonical template and promotion gates.

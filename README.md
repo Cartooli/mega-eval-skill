@@ -313,6 +313,8 @@ Mega-eval can write an **append-only** `run-log.md` during a run so you can capt
 
 When the runtime supports structured file appends, pair it with a **`run-log.jsonl`** sidecar for machine-readable execution telemetry. The markdown log stays human-facing; the JSONL sidecar records structured events like `phase_start`, `prompt_selected`, `artifact_validated`, and `fallback_used`. See [`docs/architecture/observability.md`](docs/architecture/observability.md) for the event model and [`scripts/log_event.py`](scripts/log_event.py) for the helper CLI.
 
+The root [`SKILL.md`](SKILL.md) now explicitly tells compatible runtimes to mirror key phase events into `run-log.jsonl` when `scripts/log_event.py` is available.
+
 - **Disable logging:** set `MEGA_EVAL_LOG=off` or `MEGA_EVAL_LOG=0` in the environment before running.
 - **Disable optional design audit:** set `MEGA_EVAL_DESIGN_AUDIT=off` or `MEGA_EVAL_DESIGN_AUDIT=0` to skip Phase 1D even when an HTTPS URL is present (see `SKILL.md` Phase 0).
 - **Disable optional security audit:** set `MEGA_EVAL_SECURITY_AUDIT=off` or `MEGA_EVAL_SECURITY_AUDIT=0` to skip Phase 1E.

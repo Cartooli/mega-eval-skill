@@ -94,6 +94,19 @@ This is **run feedback**, not model training: an **append-only Markdown log** so
 
 When the runtime can append structured files, prefer a matching **`run-log.jsonl`** sidecar beside `run-log.md`. Use the markdown file for human review and the JSONL sidecar for structured telemetry like phase timing, prompt selection, artifact validation, and fallback paths. See `docs/architecture/observability.md` for the event model.
 
+### Structured telemetry helper
+
+If the runtime can execute local scripts, use `scripts/log_event.py` to mirror important markdown log events into `run-log.jsonl`.
+
+Example:
+
+```bash
+python3 scripts/log_event.py path/to/run-log.jsonl phase_start \
+  --run-id <run_id> \
+  --phase phase0 \
+  --status ok
+```
+
 ### Opt out and privacy
 
 - **Disable logging:** If `MEGA_EVAL_LOG` is `0`, `off`, or `false`, skip creating or updating `run-log.md`. The pipeline runs unchanged.
@@ -161,6 +174,8 @@ Before anything else, normalize all inputs into a single **Evaluation Brief** �
 If run logging is enabled (`MEGA_EVAL_LOG` not opted out): generate a `run_id`, create `run-log.md` at the chosen path with a **Meta** section (`run_id`, `started` ISO time, `workspace`, `status: in_progress`), and append `phase_start phase0`.
 
 If the target workspace already contains canonical mega-eval artifacts from an earlier or partial run, inspect them before rerunning phases. Reuse valid outputs and continue from the **first incomplete phase** when appropriate instead of regenerating everything by default. The helper script `scripts/build_eval_bundle.py` can export `eval-bundle.json` with artifact presence, phase status, and a recommended next phase.
+
+If structured telemetry is enabled too and `scripts/log_event.py` is available, create `run-log.jsonl` beside `run-log.md` and append a matching `phase_start` event for `phase0`.
 
 ### Handling Input Types
 
@@ -251,7 +266,7 @@ Use the **same** primary **`https://`** URL for 1D, 1E, and 1F when more than on
 
 **Ambiguity:** If multiple URLs qualify for the primary site, pick **one** and note the others under Open Questions — do not spawn multiple primary-url tracks.
 
-When Phase 0 finishes, append `phase_complete phase0` to the run log (if logging).
+When Phase 0 finishes, append `phase_complete phase0` to the run log (if logging). If `run-log.jsonl` is enabled, append the matching structured `phase_complete` event too.
 
 ---
 
@@ -374,7 +389,7 @@ After launching subagents, wait until:
 
 While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
 
-If logging: append `phase_start phase1` before launch and `phase_complete phase1` when the conditions above are met (note `tool_error` / `retry` / `failure_mode` / partial output for any track, including 1D, 1E, and 1F, as needed).
+If logging: append `phase_start phase1` before launch and `phase_complete phase1` when the conditions above are met (note `tool_error` / `retry` / `failure_mode` / partial output for any track, including 1D, 1E, and 1F, as needed). If `run-log.jsonl` is enabled, mirror those events with `phase_start`, `phase_complete`, `tool_error`, `retry`, `fallback_used`, and `quality_gate_fail` as appropriate.
 
 ---
 
@@ -446,7 +461,7 @@ Create `phase2-synthesis.md` with these sections:
 **When relevant:** Name tensions such as security vs. speed-to-market, or durability vs. model-chasing, using 1E/1F evidence.
 ```
 
-If logging: append `phase_start phase2` and `phase_complete phase2` around synthesis. Log `user_correction` if the user steers synthesis before Phase 3.
+If logging: append `phase_start phase2` and `phase_complete phase2` around synthesis. Log `user_correction` if the user steers synthesis before Phase 3. If `run-log.jsonl` is enabled, mirror phase boundaries and any `artifact_validated` or `user_correction` events there too.
 
 ---
 
@@ -473,7 +488,7 @@ Non-negotiable output requirements:
 - Ground the outline in Phase 1 and Phase 2 analysis rather than speculation
 - Keep the output in raw markdown; `.docx` assembly still happens in Phase 4
 
-If logging: append `phase_start phase3` / `phase_complete phase3` around the subagent.
+If logging: append `phase_start phase3` / `phase_complete phase3` around the subagent. If `run-log.jsonl` is enabled, mirror those events and record `prompt_selected` for `phase3.content-outline.v1`.
 
 ---
 
@@ -483,7 +498,7 @@ Perform the **pre–Phase 4 review** from [Run feedback & run log](#run-feedback
 
 Now compile all raw outputs into polished .docx files. Use the docx skill (read its SKILL.md for formatting instructions) to produce each deliverable.
 
-If logging: append `phase_start phase4`, then `phase_complete phase4`, and set `status: complete` (or `abandoned` if stopped early) in the run log Meta section.
+If logging: append `phase_start phase4`, then `phase_complete phase4`, and set `status: complete` (or `abandoned` if stopped early) in the run log Meta section. If `run-log.jsonl` is enabled, mirror those events and record any `artifact_written` / `artifact_validated` events for the final deliverables.
 
 ### Assembly Order
 
