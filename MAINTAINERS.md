@@ -2,6 +2,18 @@
 
 Mega-eval’s “self-learning” is **human-in-the-loop**: run logs and promotion candidates feed **reviewed** updates to `references/learnings.md`. Nothing here auto-edits `SKILL.md` or prompts.
 
+## Planning a change
+
+Use the repo’s [Change Planning Guide](docs/guides/change-planning.md) before starting work on a non-trivial change.
+
+Short version:
+
+- **Lightweight** changes (docs wording, broken links, narrow one-file fixes) usually go straight to work.
+- **Standard** changes (bounded packaging, docs parity, CI adjustments) usually get a short direct plan, then work.
+- **Deep** changes (new pipeline capabilities, cross-cutting behavior changes, deliverable reshaping) should usually go through brainstorm → plan → work.
+
+When in doubt, choose the smallest amount of process that still makes scope, research needs, and PR boundaries obvious.
+
 ## Review triggers (pick what you’ll actually do)
 
 1. **Monthly (calendar):** At least once a month, open recent `run-log.md` files (or your workspace log), find **Promotion candidates**, and decide: promote to `references/learnings.md`, drop, or defer. Update **`last_reviewed`** in `references/learnings.md` even if you promote nothing—honest staleness beats fake freshness.

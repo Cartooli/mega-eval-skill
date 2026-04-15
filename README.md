@@ -192,7 +192,7 @@ mega-eval/
     └── suggest_learnings.py       # Optional: print promotion candidates from run-log (stdout only)
 ```
 
-At the **repository root** (when you clone this repo), see [`MAINTAINERS.md`](MAINTAINERS.md) for how to review and promote learnings over time.
+At the **repository root** (when you clone this repo), see [`MAINTAINERS.md`](MAINTAINERS.md) for how to review and promote learnings over time, and [`docs/guides/change-planning.md`](docs/guides/change-planning.md) for a maintainer-facing rubric on when to brainstorm, plan, or implement directly.
 
 Copy that folder into wherever your Claude instance reads skills from.
 
