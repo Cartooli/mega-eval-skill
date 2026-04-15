@@ -127,6 +127,11 @@ class TestGenerateBriefTemplate:
         assert "## Pricing/Model" in result
         assert "## Source Material" in result
         assert "## Open Questions" in result
+        assert "## Live site / design audit (Phase 1D)" in result
+        assert "**Primary URL for Phase 1D:**" in result
+        assert "## Security audit (Phase 1E)" in result
+        assert "## AI durability audit (Phase 1F)" in result
+        assert "**AI-surface applicability note:**" in result
 
     def test_empty_content(self):
         sources = [{"name": "empty.txt", "type": ".txt", "content": ""}]

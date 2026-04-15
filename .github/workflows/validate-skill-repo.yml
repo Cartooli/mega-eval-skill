@@ -1,0 +1,40 @@
+name: Validate skill repo
+
+on:
+  push:
+    paths:
+      - "SKILL.md"
+      - "README.md"
+      - "references/**"
+      - "scripts/**"
+      - "skills/**"
+      - "tests/**"
+      - "docs/brainstorms/**"
+      - ".github/workflows/validate-skill-repo.yml"
+  pull_request:
+    paths:
+      - "SKILL.md"
+      - "README.md"
+      - "references/**"
+      - "scripts/**"
+      - "skills/**"
+      - "tests/**"
+      - "docs/brainstorms/**"
+      - ".github/workflows/validate-skill-repo.yml"
+
+jobs:
+  pytest:
+    name: Run repo validation tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: python3 -m pip install --upgrade pip pytest
+
+      - name: Run tests
+        run: python3 -m pytest -q

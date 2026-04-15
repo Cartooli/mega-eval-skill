@@ -104,6 +104,17 @@ def generate_brief_template(sources: list[dict]) -> str:
 ## Open Questions
 [TO BE FILLED: Anything unclear or missing]
 
+## Live site / design audit (Phase 1D)
+- **Primary URL for Phase 1D:** [TO BE FILLED: Single `https://` marketing/product URL, or `n/a`]
+- **Audit decision:** [TO BE FILLED: run | skipped — one-line reason]
+
+## Security audit (Phase 1E)
+- **Audit decision:** [TO BE FILLED: run | skipped — one-line reason]
+
+## AI durability audit (Phase 1F)
+- **Audit decision:** [TO BE FILLED: run | skipped — one-line reason]
+- **AI-surface applicability note:** [TO BE FILLED: quick guess, or `defer to 1F subagent`]
+
 ---
 
 # Raw Extracted Content

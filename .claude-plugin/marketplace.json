@@ -11,8 +11,8 @@
     {
       "name": "mega-eval",
       "source": "./plugins/mega-eval",
-      "description": "Comprehensive multi-phase evaluation pipeline — critical feedback, competitive landscape, strengths analysis, synthesis, and content strategy. Accepts text, docs, or URLs.",
-      "version": "1.0.0",
+      "description": "Comprehensive multi-phase evaluation pipeline — critical feedback, competitive landscape, strengths analysis, design, security, AI durability, synthesis, and content strategy. Accepts text, docs, or URLs.",
+      "version": "1.1.0",
       "author": {
         "name": "Cartooli"
       },
