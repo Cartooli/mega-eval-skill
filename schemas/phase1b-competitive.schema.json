@@ -1,0 +1,31 @@
+{
+  "artifact_type": "phase1b-competitive",
+  "required_headings": [
+    "Direct Competitors",
+    "Adjacent Solutions",
+    "Market Trends & Size",
+    "Positioning Analysis",
+    "Risks & Considerations"
+  ],
+  "required_nonempty_sections": [
+    "Direct Competitors",
+    "Adjacent Solutions",
+    "Market Trends & Size",
+    "Positioning Analysis",
+    "Risks & Considerations"
+  ],
+  "required_bullet_sections": [
+    "Direct Competitors",
+    "Adjacent Solutions",
+    "Risks & Considerations"
+  ],
+  "section_min_words": {
+    "Market Trends & Size": 12,
+    "Positioning Analysis": 12
+  },
+  "forbidden_patterns": [
+    "\\[TO BE FILLED[^\\]]*\\]",
+    "<paste[^>]*>",
+    "TODO"
+  ]
+}

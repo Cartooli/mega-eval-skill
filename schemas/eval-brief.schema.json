@@ -1,0 +1,49 @@
+{
+  "artifact_type": "eval-brief",
+  "required_title": "Evaluation Brief",
+  "required_headings": [
+    "Subject",
+    "Core Proposition",
+    "Key Claims & Features",
+    "Target Audience (stated or inferred)",
+    "Pricing/Model (if known)",
+    "Source Material",
+    "Open Questions",
+    "Live site / design audit (Phase 1D)"
+  ],
+  "required_nonempty_sections": [
+    "Subject",
+    "Core Proposition",
+    "Key Claims & Features",
+    "Target Audience (stated or inferred)",
+    "Pricing/Model (if known)",
+    "Source Material",
+    "Open Questions",
+    "Live site / design audit (Phase 1D)"
+  ],
+  "required_bullet_sections": [
+    "Key Claims & Features",
+    "Source Material",
+    "Open Questions",
+    "Live site / design audit (Phase 1D)"
+  ],
+  "section_required_substrings": {
+    "Live site / design audit (Phase 1D)": [
+      "Primary URL for Phase 1D:",
+      "Audit decision:"
+    ]
+  },
+  "section_min_words": {
+    "Subject": 1,
+    "Core Proposition": 5,
+    "Target Audience (stated or inferred)": 2,
+    "Pricing/Model (if known)": 1
+  },
+  "forbidden_patterns": [
+    "\\[TO BE FILLED[^\\]]*\\]",
+    "<paste[^>]*>",
+    "\\[Feature/claim \\d+\\]",
+    "\\[Source \\d+:[^\\]]*\\]",
+    "\\[Anything unclear or missing[^\\]]*\\]"
+  ]
+}

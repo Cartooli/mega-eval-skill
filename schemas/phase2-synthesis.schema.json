@@ -1,0 +1,40 @@
+{
+  "artifact_type": "phase2-synthesis",
+  "required_title": "Synthesis: Critical Fixes, Design Issues & Next Steps",
+  "required_headings": [
+    "Critical Fixes Needed",
+    "Design Inconsistencies to Resolve",
+    "Proposed Next Steps (Non-Breaking Changes)",
+    "Quick Wins (days)",
+    "Medium-Term (weeks)",
+    "Strategic (months)",
+    "Unresolved Tensions"
+  ],
+  "required_nonempty_sections": [
+    "Critical Fixes Needed",
+    "Design Inconsistencies to Resolve",
+    "Proposed Next Steps (Non-Breaking Changes)",
+    "Quick Wins (days)",
+    "Medium-Term (weeks)",
+    "Strategic (months)",
+    "Unresolved Tensions"
+  ],
+  "section_min_words": {
+    "Critical Fixes Needed": 20,
+    "Design Inconsistencies to Resolve": 10,
+    "Unresolved Tensions": 10
+  },
+  "section_required_substrings": {
+    "Critical Fixes Needed": [
+      "- **What:**",
+      "- **Why it matters:**",
+      "- **Flagged by:**",
+      "- **Suggested approach:**"
+    ]
+  },
+  "forbidden_patterns": [
+    "\\[TO BE FILLED[^\\]]*\\]",
+    "<paste[^>]*>",
+    "TODO"
+  ]
+}
