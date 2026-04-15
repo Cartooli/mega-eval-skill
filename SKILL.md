@@ -232,117 +232,81 @@ The key efficiency principle: each subagent does ONE job thoroughly. Don't dupli
 
 ### Phase 1A: Hater Mode Critical Feedback
 
-Spawn a subagent with these instructions:
+Use **Prompt ID** `phase1a.hater.v1` from `references/subagent-prompts.md`.
 
-```
-You are running a critical feedback analysis. Read the hater-mode skill at:
-<hater-mode-skill-path>/SKILL.md
-and its references/audiences.md file.
+When you spawn the subagent, fill in:
 
-Run correlation (include in your output header comment or first line):
-- run_id: <run_id>
-- log path for this pipeline: <workspace>/<run-log.md path>
+- `run_id`
+- `run_log`
+- `eval_brief`
+- `hater_mode_skill_path`
 
-Then analyze this Evaluation Brief:
-<paste eval-brief content>
+Non-negotiable output requirements:
 
-Produce the full 12-audience-lens teardown as specified in the hater-mode skill.
-Save the output as markdown to: <workspace>/phase1a-hater-raw.md
-
-Focus on being SPECIFIC to this particular product/idea — no generic criticism.
-```
+- Save the output as `phase1a-hater-raw.md`
+- Keep the analysis specific to the subject rather than generic critique
+- Follow the external hater-mode output format exactly, including its synthesis sections
 
 ### Phase 1B: Competitive & Market Context
 
-Spawn a subagent with these instructions:
+Use **Prompt ID** `phase1b.competitive.v1` from `references/subagent-prompts.md`.
 
-```
-You are running a competitive and market landscape analysis.
+When you spawn the subagent, fill in:
 
-Run correlation:
-- run_id: <run_id>
-- log path: <workspace>/<run-log.md path>
+- `run_id`
+- `run_log`
+- `eval_brief`
 
-Evaluation Brief:
-<paste eval-brief content>
+Non-negotiable output requirements:
 
-Your job:
-1. Use WebSearch to find 3-5 direct competitors or closest alternatives
-2. For each competitor, note: what they do, pricing, strengths, weaknesses relative to the subject
-3. Search for market trends, market size estimates, and recent news in this space
-4. Identify positioning gaps — where does the subject fit (or not fit) in the market?
-5. Note any regulatory, legal, or compliance considerations
-
-Save the output as structured markdown to: <workspace>/phase1b-competitive-raw.md
-
-Structure:
-## Direct Competitors
-## Adjacent Solutions
-## Market Trends & Size
-## Positioning Analysis
-## Risks & Considerations
-```
+- Save the output as `phase1b-competitive-raw.md`
+- Use web research where available
+- Include these headings exactly:
+  - `## Direct Competitors`
+  - `## Adjacent Solutions`
+  - `## Market Trends & Size`
+  - `## Positioning Analysis`
+  - `## Risks & Considerations`
 
 ### Phase 1C: Strengths & Opportunities
 
-Spawn a subagent with these instructions:
+Use **Prompt ID** `phase1c.strengths.v1` from `references/subagent-prompts.md`.
 
-```
-You are running a strengths and opportunities analysis. This is deliberately the POSITIVE counterweight to the critical feedback track.
+When you spawn the subagent, fill in:
 
-Run correlation:
-- run_id: <run_id>
-- log path: <workspace>/<run-log.md path>
+- `run_id`
+- `run_log`
+- `eval_brief`
 
-Evaluation Brief:
-<paste eval-brief content>
+Non-negotiable output requirements:
 
-Your job:
-1. Identify what's genuinely strong about this idea/product — be specific and honest, not cheerleading
-2. Map out growth opportunities: adjacent markets, feature extensions, partnership angles
-3. Identify the "unfair advantages" (if any): unique data, network effects, timing, team expertise
-4. Note what would need to be true for this to succeed at scale
-5. Identify the strongest use cases and ideal customer profiles
-
-Save the output as structured markdown to: <workspace>/phase1c-strengths-raw.md
-
-Structure:
-## Core Strengths
-## Growth Opportunities
-## Unfair Advantages
-## Success Conditions
-## Ideal Use Cases & Customer Profiles
-```
+- Save the output as `phase1c-strengths-raw.md`
+- Keep the tone honest rather than cheerleading
+- Include these headings exactly:
+  - `## Core Strengths`
+  - `## Growth Opportunities`
+  - `## Unfair Advantages`
+  - `## Success Conditions`
+  - `## Ideal Use Cases & Customer Profiles`
 
 ### Phase 1D: Live site design audit (optional)
 
-**Only if** Phase 0 **Audit decision** was **run**. Use the template in `references/design-audit-template.md` and the ready-made prompt in `references/subagent-prompts.md` (**Phase 1D**).
+**Only if** Phase 0 **Audit decision** was **run**. Use **Prompt ID** `phase1d.design.v1` from `references/subagent-prompts.md`.
 
-Spawn a subagent with instructions equivalent to:
+When you spawn the subagent, fill in:
 
-```
-You are running a LIVE SITE DESIGN AUDIT (Phase 1D) — report only; no code changes.
+- `run_id`
+- `run_log`
+- `eval_brief`
+- `primary_url`
+- `references_path`
 
-Run correlation:
-- run_id: <run_id>
-- log path: <workspace>/<run-log.md path>
+Non-negotiable output requirements:
 
-Read: <references-path>/design-audit-template.md
-
-Evaluation Brief:
-<paste eval-brief content>
-
-Primary URL to audit (HTTPS):
-<paste Primary URL for Phase 1D from brief>
-
-Tier A: use headless browse / screenshot tools if available; save screenshots under the workspace and reference paths.
-Tier B: if no browser, use WebFetch/HTML and state limits in the output Meta.
-Tier C: if the URL is unusable, write a short markdown explaining why.
-
-Save the output to: <workspace>/phase1d-design-raw.md
-
-Follow design-audit-template.md sections. This is not a WCAG compliance certificate.
-```
+- Save the output as `phase1d-design-raw.md`
+- Use `references/design-audit-template.md` as the output contract
+- Keep the track report-only; no repo edits or `/design-review` loop
+- Be explicit about evidence tier limits when browser access is unavailable
 
 ### Phase 1E: Security audit (optional)
 
@@ -451,30 +415,24 @@ If logging: append `phase_start phase2` and `phase_complete phase2` around synth
 
 Spawn a subagent that uses the long-form-outline skill to create a content strategy outline. This helps the user think about how to publicly position and communicate the idea.
 
-```
-You are creating a content strategy outline. Read the long-form-outline skill at:
-<long-form-outline-skill-path>/SKILL.md
+Use **Prompt ID** `phase3.content-outline.v1` from `references/subagent-prompts.md`.
 
-Run correlation:
-- run_id: <run_id>
-- log path: <workspace>/<run-log.md path>
+When you spawn the subagent, fill in:
 
-The topic is: How to position and communicate [subject name] to its target audience.
+- `run_id`
+- `run_log`
+- `subject_name`
+- `eval_brief`
+- `top_strengths`
+- `top_criticisms`
+- `competitive_positioning`
+- `long_form_outline_skill_path`
 
-Use these inputs to inform the outline:
-- Evaluation Brief: <paste>
-- Key strengths: <paste top 3-5 from phase1c>
-- Key criticisms to preempt: <paste top 3-5 from phase1a synthesis>
-- Competitive positioning: <paste positioning analysis from phase1b>
+Non-negotiable output requirements:
 
-The outline should help the user write a compelling public piece (blog post, launch announcement, pitch narrative) that:
-1. Leads with the strongest value proposition
-2. Preemptively addresses the top criticisms
-3. Differentiates from competitors
-4. Tells a narrative that makes people care
-
-Save the full outline to: <workspace>/phase3-content-outline-raw.md
-```
+- Save the output as `phase3-content-outline-raw.md`
+- Ground the outline in Phase 1 and Phase 2 analysis rather than speculation
+- Keep the output in raw markdown; `.docx` assembly still happens in Phase 4
 
 If logging: append `phase_start phase3` / `phase_complete phase3` around the subagent.
 

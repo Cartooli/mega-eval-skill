@@ -27,6 +27,7 @@ When in doubt, choose the smallest amount of process that still makes scope, res
      - `python3 scripts/validate_artifact.py examples/sample-run/phase2-synthesis.md schemas/phase2-synthesis.schema.json`
 
 **Thin phase skills** (`skills/*/SKILL.md`) should stay **short** — they point at `references/` and the root `SKILL.md`; do not duplicate long prompt text there. If you change phase behavior, update `references/` and root `SKILL.md` first, then adjust thin skills only for I/O or path-resolution wording.
+   - For subagent wording, treat `references/subagent-prompts.md` as the canonical prompt registry. Update `SKILL.md` only when orchestration, inputs, or output requirements change.
 3. **Optional priority bump:** If **≥3** unchecked promotion candidates pile up in the active log, do a review before the next merge.
 
 ## Signal types (what belongs in run logs when logging is on)

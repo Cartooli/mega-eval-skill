@@ -1,12 +1,27 @@
-# Subagent Prompt Templates
+# Subagent Prompt Registry
 
-These are ready-to-use prompt templates for each parallel subagent. Replace placeholders (`<...>`) with actual values before spawning.
+This file is the **canonical prompt registry** for mega-eval subagents.
+
+Use these templates as the source of truth when spawning subagents. `SKILL.md` should describe orchestration, required inputs, and output contracts, but should not duplicate full prompt bodies.
+
+Replace placeholders (`<...>`) with actual values before spawning.
+
+## Registry rules
+
+- Each prompt has a stable **Prompt ID**.
+- Bump the version suffix when a prompt changes materially enough to affect behavior or expected output shape.
+- Keep the prompt body here; reference the ID from `SKILL.md`, docs, and tests.
+- If you change a prompt's required output shape, update the artifact contracts, fixtures, and sample outputs in the same change.
 
 **Models:** Before spawning, complete the **Model fit check** in the root `SKILL.md` and align subagent routing with `references/model-selection.md` (Phase 1 should use at least the **strong general** tier when the host allows separate models).
 
 ---
 
-## Phase 1A: Hater Mode Subagent
+## Prompt ID: `phase1a.hater.v1`
+
+**Purpose:** Hater-mode critical teardown using the external hater-mode skill.
+**Inputs:** `run_id`, `run_log`, `eval_brief`, `hater_mode_skill_path`
+**Output artifact:** `phase1a-hater-raw.md`
 
 ```
 You are running a critical feedback analysis for a product/idea evaluation pipeline.
@@ -34,7 +49,17 @@ Important:
 
 ---
 
-## Phase 1B: Competitive & Market Context Subagent
+## Prompt ID: `phase1b.competitive.v1`
+
+**Purpose:** Competitive and market landscape analysis grounded in web research.
+**Inputs:** `run_id`, `run_log`, `eval_brief`
+**Output artifact:** `phase1b-competitive-raw.md`
+**Required headings:**
+- `## Direct Competitors`
+- `## Adjacent Solutions`
+- `## Market Trends & Size`
+- `## Positioning Analysis`
+- `## Risks & Considerations`
 
 ```
 You are running a competitive and market landscape analysis for a product/idea evaluation pipeline.
@@ -80,7 +105,17 @@ Be honest about confidence levels. If web search returns limited data, say so ra
 
 ---
 
-## Phase 1C: Strengths & Opportunities Subagent
+## Prompt ID: `phase1c.strengths.v1`
+
+**Purpose:** Positive counterweight analysis focused on strengths, upside, and success conditions.
+**Inputs:** `run_id`, `run_log`, `eval_brief`
+**Output artifact:** `phase1c-strengths-raw.md`
+**Required headings:**
+- `## Core Strengths`
+- `## Growth Opportunities`
+- `## Unfair Advantages`
+- `## Success Conditions`
+- `## Ideal Use Cases & Customer Profiles`
 
 ```
 You are running a strengths and opportunities analysis for a product/idea evaluation pipeline. This is deliberately the POSITIVE counterweight to the critical feedback track — but honest, not cheerleading.
@@ -127,7 +162,12 @@ Save the complete output as structured markdown to: <workspace>/phase1c-strength
 
 ---
 
-## Phase 1D: Live Site Design Audit Subagent (optional)
+## Prompt ID: `phase1d.design.v1`
+
+**Purpose:** Report-only live-site design audit for a public marketing or product surface.
+**Inputs:** `run_id`, `run_log`, `eval_brief`, `primary_url`, `references_path`
+**Output artifact:** `phase1d-design-raw.md`
+**Required template source:** `references/design-audit-template.md`
 
 **When to use:** Parent run selected a **primary HTTPS URL** for a public marketing/product surface and did **not** opt out (`MEGA_EVAL_DESIGN_AUDIT` off). This track is **report-only** — no repo edits, no `/design-review` fix loop.
 
@@ -258,6 +298,12 @@ Save the complete markdown to: <workspace>/phase1f-durability-raw.md
 ---
 
 ## Phase 3: Content Strategy Outline Subagent
+
+### Prompt ID: `phase3.content-outline.v1`
+
+**Purpose:** Produce the raw content strategy outline using the external long-form-outline skill.
+**Inputs:** `run_id`, `run_log`, `subject_name`, `eval_brief`, `top_strengths`, `top_criticisms`, `competitive_positioning`, `long_form_outline_skill_path`
+**Output artifact:** `phase3-content-outline-raw.md`
 
 ```
 You are creating a content strategy outline using the long-form-outline methodology.

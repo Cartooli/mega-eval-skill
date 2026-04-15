@@ -334,7 +334,9 @@ When you file from a run, include **`run_id`** when you have it (see Phase 4 **M
 
 ## Customization
 
-The `references/subagent-prompts.md` file contains the exact prompts sent to each parallel analysis track; `references/design-audit-template.md`, `references/security-audit-template.md`, and `references/durability-audit-template.md` define the Phase 1D/1E/1F output shapes. Edit these to adjust the evaluation dimensions, add new tracks, or change the focus areas.
+The `references/subagent-prompts.md` file is the **canonical prompt registry** for Phase 1 and Phase 3 subagents (including optional tracks). Edit prompt bodies there when you want to adjust evaluation dimensions, add new tracks, or change subagent behavior. `SKILL.md` should keep orchestration logic and output requirements, not duplicate full prompt text.
+
+`references/design-audit-template.md`, `references/security-audit-template.md`, and `references/durability-audit-template.md` define the Phase 1D / 1E / 1F output shapes.
 
 The `references/learnings.md` file is for **curated** methodological lessons promoted from run logs.
 
