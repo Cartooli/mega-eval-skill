@@ -1,0 +1,10 @@
+{"event_type":"phase_start","phase":"phase0","run_id":"a1b2c3d4","status":"ok","timestamp":"2026-03-24T10:00:01Z"}
+{"event_type":"phase_complete","phase":"phase0","run_id":"a1b2c3d4","status":"ok","timestamp":"2026-03-24T10:00:45Z"}
+{"event_type":"phase_start","phase":"phase1","run_id":"a1b2c3d4","status":"ok","timestamp":"2026-03-24T10:00:46Z"}
+{"details":"timeout after 30s","event_type":"tool_error","phase":"phase1","run_id":"a1b2c3d4","status":"fail","timestamp":"2026-03-24T10:02:10Z"}
+{"details":"proceeded with pasted landing copy only","event_type":"fallback_used","fallback_used":"pasted_copy_only","phase":"phase1","run_id":"a1b2c3d4","status":"warn","timestamp":"2026-03-24T10:02:11Z"}
+{"event_type":"phase_complete","phase":"phase1","run_id":"a1b2c3d4","status":"ok","timestamp":"2026-03-24T10:08:00Z"}
+{"event_type":"phase_start","phase":"phase2","run_id":"a1b2c3d4","status":"ok","timestamp":"2026-03-24T10:08:01Z"}
+{"artifact_path":"phase2-synthesis.md","details":"contract=phase2-synthesis","event_type":"artifact_validated","phase":"phase2","run_id":"a1b2c3d4","status":"pass","timestamp":"2026-03-24T10:11:59Z"}
+{"event_type":"phase_complete","phase":"phase2","run_id":"a1b2c3d4","status":"ok","timestamp":"2026-03-24T10:12:00Z"}
+{"details":"remove Competitor X — not direct peer","event_type":"user_correction","phase":"phase1b","run_id":"a1b2c3d4","status":"warn","timestamp":"2026-03-24T10:12:30Z"}

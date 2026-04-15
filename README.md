@@ -311,16 +311,18 @@ See [`docs/architecture/regression-evals.md`](docs/architecture/regression-evals
 
 Mega-eval can write an **append-only** `run-log.md` during a run so you can capture tool errors, retries, and user corrections—not for model training, but to **promote** stable methodology fixes into `references/learnings.md` after human review.
 
+When the runtime supports structured file appends, pair it with a **`run-log.jsonl`** sidecar for machine-readable execution telemetry. The markdown log stays human-facing; the JSONL sidecar records structured events like `phase_start`, `prompt_selected`, `artifact_validated`, and `fallback_used`. See [`docs/architecture/observability.md`](docs/architecture/observability.md) for the event model and [`scripts/log_event.py`](scripts/log_event.py) for the helper CLI.
+
 - **Disable logging:** set `MEGA_EVAL_LOG=off` or `MEGA_EVAL_LOG=0` in the environment before running.
 - **Disable optional design audit:** set `MEGA_EVAL_DESIGN_AUDIT=off` or `MEGA_EVAL_DESIGN_AUDIT=0` to skip Phase 1D even when an HTTPS URL is present (see `SKILL.md` Phase 0).
 - **Disable optional security audit:** set `MEGA_EVAL_SECURITY_AUDIT=off` or `MEGA_EVAL_SECURITY_AUDIT=0` to skip Phase 1E.
 - **Disable optional durability audit:** set `MEGA_EVAL_DURABILITY_AUDIT=off` or `MEGA_EVAL_DURABILITY_AUDIT=0` to skip Phase 1F.
 - **Privacy:** Logs are **workspace-local** by default. Redact secrets before sharing or promoting bullets.
-- **Examples:** See [`examples/run-feedback/`](examples/run-feedback/) for fictional `run-log` and promotion samples.
+- **Examples:** See [`examples/run-feedback/`](examples/run-feedback/) for fictional `run-log.md`, `run-log.jsonl`, and promotion samples.
 
 This is **not** automatic self-modification of prompts; see promotion gates in `references/learnings.md`.
 
-**Sustaining the loop:** If you clone or maintain this repo, use **[`MAINTAINERS.md`](MAINTAINERS.md)** for the review ritual (at least **monthly** plus a quick pass on **merge to default branch** when `SKILL.md`, `references/`, or `examples/` change), redaction rules, and the optional `scripts/suggest_learnings.py` helper (stdout only).
+**Sustaining the loop:** If you clone or maintain this repo, use **[`MAINTAINERS.md`](MAINTAINERS.md)** for the review ritual (at least **monthly** plus a quick pass on **merge to default branch** when `SKILL.md`, `references/`, or `examples/` change), redaction rules, and the optional helpers `scripts/suggest_learnings.py` and `scripts/log_event.py`.
 
 ## Reporting issues and ideas
 
@@ -343,6 +345,8 @@ The `references/learnings.md` file is for **curated** methodological lessons pro
 The root `SKILL.md` file controls the overall pipeline flow. You can reorder phases, skip phases, or add new ones.
 
 Host assumptions and degradation behavior live in [`docs/architecture/runtime-contract.md`](docs/architecture/runtime-contract.md). Update that file whenever you change required capabilities or fallback rules.
+
+Structured run telemetry lives in [`docs/architecture/observability.md`](docs/architecture/observability.md). Update it whenever you change event semantics or log formats.
 
 Phase-only skills under `skills/` intentionally stay thin; after changing prompts or phase behavior in `references/` or root `SKILL.md`, update a thin skill only if **inputs, outputs, or path resolution** wording needs to change.
 

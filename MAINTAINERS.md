@@ -30,6 +30,7 @@ When in doubt, choose the smallest amount of process that still makes scope, res
 **Thin phase skills** (`skills/*/SKILL.md`) should stay **short** — they point at `references/` and the root `SKILL.md`; do not duplicate long prompt text there. If you change phase behavior, update `references/` and root `SKILL.md` first, then adjust thin skills only for I/O or path-resolution wording.
    - For subagent wording, treat `references/subagent-prompts.md` as the canonical prompt registry. Update `SKILL.md` only when orchestration, inputs, or output requirements change.
 3. **Optional priority bump:** If **≥3** unchecked promotion candidates pile up in the active log, do a review before the next merge.
+4. **Observability changes:** If you change event names, log formats, or what gets recorded during a run, update `docs/architecture/observability.md` and any checked-in log examples in the same change.
 
 ## Signal types (what belongs in run logs when logging is on)
 
@@ -50,6 +51,8 @@ Use the taxonomy in `SKILL.md` (`tool_error`, `user_correction`, `retry`, `failu
 - Usage: `python3 scripts/suggest_learnings.py path/to/run-log.md`
 - **`scripts/validate_artifact.py`** checks markdown artifacts against lightweight contracts in `schemas/`. Use it whenever you change artifact structure, sample runs, or prompt wording that affects required sections.
 - Usage: `python3 scripts/validate_artifact.py <artifact-path> <schema-path>`
+- **`scripts/log_event.py`** appends structured events to `run-log.jsonl`. Use it when the runtime can emit machine-readable telemetry beside `run-log.md`.
+- Usage: `python3 scripts/log_event.py <log-path> <event-type> --run-id <id> [--phase ...] [--status ...]`
 
 ## 90-day success check (from project requirements)
 
@@ -103,5 +106,6 @@ Use [semver](https://semver.org/): `MAJOR.MINOR.PATCH`.
 
 - [`references/learnings.md`](references/learnings.md) — promotion gates  
 - [`docs/architecture/runtime-contract.md`](docs/architecture/runtime-contract.md) — capability contract and fallback rules  
+- [`docs/architecture/observability.md`](docs/architecture/observability.md) — structured logging model and event types  
 - [`docs/brainstorms/2026-03-24-self-learning-sustainability-requirements.md`](docs/brainstorms/2026-03-24-self-learning-sustainability-requirements.md) — original requirements  
 - [`docs/plans/2026-03-24-005-feat-claude-plugin-marketplace-packaging-plan.md`](docs/plans/2026-03-24-005-feat-claude-plugin-marketplace-packaging-plan.md) — plugin packaging plan  

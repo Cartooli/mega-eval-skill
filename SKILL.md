@@ -92,6 +92,8 @@ See `docs/architecture/runtime-contract.md` for the authoritative capability mat
 
 This is **run feedback**, not model training: an **append-only Markdown log** so you can improve prompts and checklists over time. **Do not** silently rewrite `SKILL.md` or subagent prompts from logs—promotion goes through human review into `references/learnings.md` (see that file for promotion gates).
 
+When the runtime can append structured files, prefer a matching **`run-log.jsonl`** sidecar beside `run-log.md`. Use the markdown file for human review and the JSONL sidecar for structured telemetry like phase timing, prompt selection, artifact validation, and fallback paths. See `docs/architecture/observability.md` for the event model.
+
 ### Opt out and privacy
 
 - **Disable logging:** If `MEGA_EVAL_LOG` is `0`, `off`, or `false`, skip creating or updating `run-log.md`. The pipeline runs unchanged.
@@ -105,6 +107,8 @@ Use one path consistently for the run (in order of preference):
 1. `<workspace>/sessions/<session>/run-log.md` (alongside `eval-brief.md`)
 2. `<workspace>/run-log.md` if session folders are not available
 3. `<workspace>/.mega-eval/runs/<ISO-timestamp>/run-log.md` if you need multiple runs in one repo
+
+If you create structured telemetry too, write **`run-log.jsonl`** alongside `run-log.md` at the same location.
 
 ### Run ID
 
@@ -126,6 +130,19 @@ Append a timestamped line when any of these occur (not only at the end):
 | `implicit_signal` | Large rewrite of a raw file (if you observe it) |
 | `failure_mode` | Short tag for search: `grounding`, `tool_timeout`, `scope_creep`, `format_mismatch`, etc. |
 | `outcome_note` | Optional forensics only: e.g. `outcome_complete` or `outcome_abandoned` after Phase 4 (or if the user stops early)—**not** a measure of methodology quality |
+
+If `run-log.jsonl` is enabled, prefer these structured event types:
+
+- `phase_start`
+- `phase_complete`
+- `prompt_selected`
+- `artifact_written`
+- `artifact_validated`
+- `tool_error`
+- `retry`
+- `fallback_used`
+- `quality_gate_fail`
+- `user_correction`
 
 ### Learned patterns (human-curated)
 
