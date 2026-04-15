@@ -1,6 +1,6 @@
 ---
 name: mega-eval
-description: "Run a comprehensive, multi-phase evaluation of any idea, product, or feature set — producing multiple deliverable files covering critical feedback, competitive context, strengths & opportunities, design issues, proposed fixes, and a content strategy outline. Accepts any combination of raw text, uploaded documents, or crawlable URLs as input. Orchestrates parallel subagents for efficiency. Use this skill whenever someone says 'evaluate this idea', 'tear down this product', 'full analysis of', 'mega eval', 'comprehensive review', 'deep evaluation', 'assess this feature set', 'product review pipeline', or any request for a thorough multi-dimensional analysis of a concept, product, or feature. Also trigger when the user provides a URL, doc, or text block and asks for a complete picture — strengths, weaknesses, market context, and next steps."
+description: "Run a comprehensive, multi-phase evaluation of any idea, product, or feature set — producing multiple deliverable files covering critical feedback, competitive context, strengths & opportunities, design issues (including optional live-site visual/UX audit when an HTTPS product URL is in scope), optional security posture audit (Phase 1E), optional AI/agent durability audit (Phase 1F), proposed fixes, and a content strategy outline. Accepts any combination of raw text, uploaded documents, or crawlable URLs as input. Orchestrates parallel subagents for efficiency. Use this skill whenever someone says 'evaluate this idea', 'tear down this product', 'full analysis of', 'mega eval', 'comprehensive review', 'deep evaluation', 'assess this feature set', 'product review pipeline', or any request for a thorough multi-dimensional analysis of a concept, product, or feature. Also trigger when the user provides a URL, doc, or text block and asks for a complete picture — strengths, weaknesses, market context, and next steps."
 ---
 
 # Mega Eval — Multi-Phase Product & Idea Evaluation Pipeline
@@ -15,17 +15,16 @@ INPUT (text / doc / URL / combo)
         ▼
 ┌─ Phase 0: Ingestion ──────────────────────────────┐
 │  Parse all inputs into a unified brief             │
+│  (+ optional: primary URL for live-site tracks)   │
 └────────────────────────┬───────────────────────────┘
                          │
-        ┌────────────────┼────────────────┐
-        ▼                ▼                ▼
-┌─ Phase 1A ──┐  ┌─ Phase 1B ──┐  ┌─ Phase 1C ──┐
-│ Hater Mode  │  │ Competitive │  │ Strengths & │
-│ (12 lenses) │  │ & Market    │  │ Opportunities│
-└──────┬──────┘  └──────┬──────┘  └──────┬───────┘
-       │                │               │
-       └────────────────┼───────────────┘
-                        ▼
+   ┌─────────┬─────────┬─────────┬─────────┬─────────┬─────────┐
+   ▼         ▼         ▼         ▼         ▼         ▼         │
+ Phase 1A  Phase 1B  Phase 1C  Phase 1D  Phase 1E  Phase 1F    │
+ Hater     Comp.     Strengths Design    Security  AI dur.    │
+ (always)  (always)  (always)  (opt.)    (opt.)    (opt.)     │
+   └─────────┴─────────┴─────────┴─────────┴─────────┴─────────┘
+                         ▼
 ┌─ Phase 2: Synthesis ──────────────────────────────┐
 │  Critical fixes, design issues, next steps         │
 └────────────────────────┬───────────────────────────┘
@@ -39,6 +38,21 @@ INPUT (text / doc / URL / combo)
 └─────────────────────────────────────────────────────┘
 ```
 
+## Model fit check (required before Phase 1)
+
+Mega Eval is **reasoning- and synthesis-heavy**; model tier directly affects depth, grounding, and whether Phase 2 surfaces real tradeoffs versus generic advice. **Do not skip this check.**
+
+1. **Read** `references/model-selection.md` in this skill’s package (phase mapping, minimum tiers, deprecation notes).
+2. **Consult vendor docs** when verifying IDs or aliases: [OpenAI Models](https://developers.openai.com/api/docs/models), [Anthropic models overview](https://platform.claude.com/docs/en/about-claude/models/overview).
+3. **Discover** what the host allows: one global model, per-subagent routing, or fixed defaults you cannot change.
+4. **Verify selections:**
+   - **Phase 2 (synthesis)** must use the **frontier / flagship** text model for the active provider when available (e.g. `gpt-5.4`, `claude-opus-4-6`). Never run synthesis on **mini / nano / haiku–class** models unless the user **explicitly** asked for a cost-saving run.
+   - **Phase 1 (1A–1C, optional 1D)** should use at least the **strong general** tier when the host can split models (e.g. `gpt-5.4-mini`, `claude-sonnet-4-6`). If the host exposes **only one** model for all steps, use the **frontier** tier for the entire pipeline.
+   - **Phase 3** should not use a weaker tier than Phase 1 unless the same constraint as Phase 2 applies.
+5. **If models are constrained** (locked mini tier, deprecated snapshot, or unknown routing): add a short **Model limitation** bullet under **Open Questions** in `eval-brief.md`, and if run logging is on append a `model_check` line to `run-log.md` (see [Run feedback & run log](#run-feedback--run-log-optional)).
+
+---
+
 ## Deliverables (Multiple Files)
 
 The pipeline produces these files in the workspace folder:
@@ -48,7 +62,7 @@ The pipeline produces these files in the workspace folder:
 3. **`03-strengths-opportunities.docx`** — What's working, where the upside is
 4. **`04-critical-fixes-and-design.docx`** — Critical fixes needed, design inconsistencies, non-breaking next steps
 5. **`05-content-strategy-outline.docx`** — Long-form outline for publicly writing about or pitching the idea
-6. **`00-executive-summary.docx`** — Master rollup: key findings, priority-ranked action items, go/no-go signals
+6. **`00-executive-summary.docx`** — Master rollup: key findings, priority-ranked action items, go/no-go signals (optional **Security Posture** and **AI Durability Posture** mini-sections when Phase 1E / 1F ran and apply)
 
 ---
 
@@ -72,7 +86,7 @@ Use one path consistently for the run (in order of preference):
 
 ### Run ID
 
-At **Phase 0**, generate a short `run_id` (e.g. 8 alphanumeric characters) or reuse the host session id when exposed. Pass the **same** `run_id` into every Phase 1 subagent prompt (1A/1B/1C) and Phase 3 so parallel work correlates to one evaluation.
+At **Phase 0**, generate a short `run_id` (e.g. 8 alphanumeric characters) or reuse the host session id when exposed. Pass the **same** `run_id` into every Phase 1 subagent prompt (1A/1B/1C, and **1D** / **1E** / **1F** when run) and Phase 3 so parallel work correlates to one evaluation.
 
 ### What to append (taxonomy)
 
@@ -86,6 +100,7 @@ Append a timestamped line when any of these occur (not only at the end):
 | `user_correction` | User asked to rewrite a section or fix factual content |
 | `assumption_flag` | Proceeded on explicit inference |
 | `quality_gate_fail` | Output too thin/generic before rework |
+| `model_check` | Model fit verified vs `references/model-selection.md` — include `pass`, `compromise`, or `host_locked` and observed model names (redact tenant-specific secrets) |
 | `implicit_signal` | Large rewrite of a raw file (if you observe it) |
 | `failure_mode` | Short tag for search: `grounding`, `tool_timeout`, `scope_creep`, `format_mismatch`, etc. |
 | `outcome_note` | Optional forensics only: e.g. `outcome_complete` or `outcome_abandoned` after Phase 4 (or if the user stops early)—**not** a measure of methodology quality |
@@ -146,9 +161,54 @@ Produce a structured brief saved as a working file (`/sessions/<session>/eval-br
 
 ## Open Questions
 - [Anything unclear or missing from the inputs]
+
+## Live site / design audit (Phase 1D)
+- **Primary URL for Phase 1D:** [Single `https://` marketing/product URL, or `n/a`]
+- **Audit decision:** [run | skipped] — [one-line reason: no URL, user opt-out, PDF-only inputs, etc.]
+
+## Security audit (Phase 1E)
+- **Audit decision:** [run | skipped] — [one-line reason: env opt-out, no usable evidence, no Primary URL, etc.]
+
+## AI durability audit (Phase 1F)
+- **Audit decision:** [run | skipped] — [one-line reason: env opt-out, no Primary URL, etc.]
+- **AI-surface applicability note:** [orchestrator's quick guess if easy; else `defer to 1F subagent`]
 ```
 
 If critical information is missing (e.g., the user gave a vague one-liner), ask ONE clarifying question before proceeding. Otherwise, infer what you can and note assumptions in the brief.
+
+### Optional live-site tracks (Phase 1D, 1E, 1F) — Phase 0 decisions
+
+Use the **same** primary **`https://`** URL for 1D, 1E, and 1F when more than one track runs (the brief’s **Primary URL for Phase 1D** field is the shared **Primary URL** for all live-site tracks). If there is no usable URL, record **skipped** for each affected track with an explicit reason.
+
+**Env opt-out parity** — treat each variable as disabled when its value is `0`, `off`, or `false` (case-insensitive). When unset, defaults below apply.
+
+| Env var | Track | When skipped in Phase 0 |
+|--------|--------|-------------------------|
+| `MEGA_EVAL_DESIGN_AUDIT` | Phase 1D (design) | Set **Audit decision: skipped** (reason: env opt-out). Do **not** launch 1D. |
+| `MEGA_EVAL_SECURITY_AUDIT` | Phase 1E (security) | Set **Audit decision: skipped** under **Security audit** (reason: env opt-out). Do **not** launch 1E. |
+| `MEGA_EVAL_DURABILITY_AUDIT` | Phase 1F (AI durability) | Set **Audit decision: skipped** under **AI durability audit** (reason: env opt-out). Do **not** launch 1F. |
+
+#### Phase 1D — live-site design audit
+
+**Purpose:** When the subject has a **public web surface**, add a **report-only** visual/UX audit (`phase1d-design-raw.md`) in parallel with Phase 1A–1C. This is **not** the gstack `/design-review` fix-and-commit loop (which targets **your** codebase). Phase 1D only produces **markdown + optional screenshots** for synthesis.
+
+**Default when env is unset:** **Run** Phase 1D when you can name **one** primary **`https://`** URL that reasonably represents the **marketing or product** experience. Prefer the URL the user highlighted; otherwise infer from **Source Material** (exclude obvious non-surfaces: direct `.pdf` links, raw file hosts, or pages that are clearly not the product).
+
+#### Phase 1E — security audit (CSO-style)
+
+**Purpose:** Structured, **observation-only** security findings with a scored risk band (`phase1e-security-raw.md`). **Never** credential testing, rate-limit probing, or intrusive action — report-only, Primary URL (+ optional single privacy-policy page for cross-check).
+
+**Default when env is unset:** **Run** Phase 1E whenever inputs allow (same Primary URL rule as 1D). If there is no Primary URL, set **Audit decision: skipped** or **run** with Tier C / limits documented in the subagent output (brief should state the decision in one line).
+
+#### Phase 1F — AI / agent durability audit
+
+**Purpose:** Resilience of the subject’s **AI/agent surface** to model/API/provider change (`phase1f-durability-raw.md`), with risk band `Low | Medium | High | Critical | N/A`.
+
+**Applicability** is judged **inside the 1F subagent** (not in Phase 0). Phase 0 only records **AI-surface applicability note** as a quick guess or `defer to 1F subagent`.
+
+**Default when env is unset:** **Launch** 1F when allowed; the subagent writes a short **N/A** stub (no padded content) if there is no meaningful AI/LLM/agent surface.
+
+**Ambiguity:** If multiple URLs qualify for the primary site, pick **one** and note the others under Open Questions — do not spawn multiple primary-url tracks.
 
 When Phase 0 finishes, append `phase_complete phase0` to the run log (if logging).
 
@@ -156,9 +216,17 @@ When Phase 0 finishes, append `phase_complete phase0` to the run log (if logging
 
 ## Phase 1: Parallel Analysis (use subagents)
 
-Launch three analysis tracks simultaneously using subagents. Each subagent receives the Evaluation Brief as input.
+Launch **three** analysis tracks **always** (1A–1C). In the **same wave**, also launch:
+
+- **Phase 1D** only when Phase 0 recorded **Audit decision: run** under **Live site / design audit**.
+- **Phase 1E** only when Phase 0 recorded **Audit decision: run** under **Security audit (Phase 1E)**.
+- **Phase 1F** only when Phase 0 recorded **Audit decision: run** under **AI durability audit (Phase 1F)**.
+
+Each subagent receives the Evaluation Brief as input; Phase 1D/1E/1F also receive the **Primary URL** explicitly when the brief has one.
 
 The key efficiency principle: each subagent does ONE job thoroughly. Don't duplicate work across tracks.
+
+**Phase 1D / 1E / 1F failure isolation:** If any of 1D, 1E, or 1F fails, times out, or produces Tier C “thin” output, log `tool_error` or `failure_mode` when logging is on (scope the line to the track, e.g. 1E or 1F) — **do not** block Phase 2. Proceed once **1A–1C are complete**. **Do not** block Phase 2 on 1D, 1E, or 1F alone.
 
 ### Phase 1A: Hater Mode Critical Feedback
 
@@ -244,21 +312,90 @@ Structure:
 ## Ideal Use Cases & Customer Profiles
 ```
 
+### Phase 1D: Live site design audit (optional)
+
+**Only if** Phase 0 **Audit decision** was **run**. Use the template in `references/design-audit-template.md` and the ready-made prompt in `references/subagent-prompts.md` (**Phase 1D**).
+
+Spawn a subagent with instructions equivalent to:
+
+```
+You are running a LIVE SITE DESIGN AUDIT (Phase 1D) — report only; no code changes.
+
+Run correlation:
+- run_id: <run_id>
+- log path: <workspace>/<run-log.md path>
+
+Read: <references-path>/design-audit-template.md
+
+Evaluation Brief:
+<paste eval-brief content>
+
+Primary URL to audit (HTTPS):
+<paste Primary URL for Phase 1D from brief>
+
+Tier A: use headless browse / screenshot tools if available; save screenshots under the workspace and reference paths.
+Tier B: if no browser, use WebFetch/HTML and state limits in the output Meta.
+Tier C: if the URL is unusable, write a short markdown explaining why.
+
+Save the output to: <workspace>/phase1d-design-raw.md
+
+Follow design-audit-template.md sections. This is not a WCAG compliance certificate.
+```
+
+### Phase 1E: Security audit (optional)
+
+**Only if** Phase 0 **Audit decision** was **run** under **Security audit (Phase 1E)**. Use `references/security-audit-template.md` and the prompt in `references/subagent-prompts.md` (**Phase 1E**). The orchestrator resolves `<cso-skill-path>` to the host’s `/cso` skill (same placeholder pattern as `<hater-mode-skill-path>`). If unavailable, the subagent follows the embedded fallback checklist in `security-audit-template.md` and sets `methodology: fallback` in Meta.
+
+Spawn a subagent with instructions equivalent to the **Phase 1E** block in `references/subagent-prompts.md` (correlation header, Primary URL only — no broad WebSearch, no repo inspection, no credentialed probes; redact secrets before saving).
+
+**Output:** `<workspace>/phase1e-security-raw.md`
+
+### Phase 1F: AI / agent durability audit (optional)
+
+**Only if** Phase 0 **Audit decision** was **run** under **AI durability audit (Phase 1F)**. Use `references/durability-audit-template.md` and the prompt in `references/subagent-prompts.md` (**Phase 1F**). Resolve `<durability-review-skill-path>` like other skill placeholders. If the external skill is missing, use the template as fallback and set `methodology: fallback` in Meta.
+
+**Applicability** (whether the subject has a meaningful AI/agent surface) is decided **inside this subagent**. If none, write the **N/A** stub per template and stop — not a pipeline failure.
+
+**Output:** `<workspace>/phase1f-durability-raw.md`
+
 ### Waiting for Phase 1
 
-After launching all three subagents, wait for them to complete. While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
+After launching subagents, wait until:
 
-If logging: append `phase_start phase1` before launch and `phase_complete phase1` when all three raw files exist (or note `tool_error` / `retry` / partial output as needed).
+- **`phase1a-hater-raw.md`**, **`phase1b-competitive-raw.md`**, and **`phase1c-strengths-raw.md`** exist (required), and
+- **If Phase 1D was launched:** `phase1d-design-raw.md` exists **or** you have logged abandonment / thin output for 1D and chosen to proceed.
+- **If Phase 1E was launched:** `phase1e-security-raw.md` exists **or** you have logged abandonment / thin output for 1E and chosen to proceed.
+- **If Phase 1F was launched:** `phase1f-durability-raw.md` exists **or** you have logged abandonment / thin output for 1F and chosen to proceed.
+
+While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
+
+If logging: append `phase_start phase1` before launch and `phase_complete phase1` when the conditions above are met (note `tool_error` / `retry` / `failure_mode` / partial output for any track, including 1D, 1E, and 1F, as needed).
 
 ---
 
 ## Phase 2: Synthesis — Critical Fixes, Design Issues, Next Steps
 
-Once all Phase 1 tracks complete, read all three raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent.
+Once Phase 1 **required** tracks (1A–1C) complete, read the Phase 1 raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent. **Optional** tracks (1D–1F) may be missing, thin, or failed — proceed with synthesis regardless; note limits where relevant.
 
 ### Read All Phase 1 Outputs
 
 Read `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, and `phase1c-strengths-raw.md`.
+
+**If `phase1d-design-raw.md` exists** (Phase 1D ran or produced a thin-failure stub), read it. Treat it as the **authoritative source for rendered-site visual/UX** observations. **Deduplicate** against Phase 1A where personas commented on “looks” — prefer Phase 1D for layout, typography, template tells, and interaction affordances; keep 1A for **reception / credibility narratives** that are not purely visual.
+
+**If `phase1e-security-raw.md` exists**, read it. Treat it as the **authoritative source for structured security findings** (risk band, findings table). **Deduplicate** against Phase 1A: if 1A personas touched trust/security, keep narrative in 1A but **do not** duplicate 1E’s Critical/High items as separate critical fixes — prefer **1E** for security specifics.
+
+**If `phase1f-durability-raw.md` exists** and the risk band is **not** `N/A`, read it. Treat it as the **authoritative source for AI/agent durability** (model abstraction, prompt architecture, provider concentration, evals). **Deduplicate** against Phase 1B: general vendor/platform lock-in stays in 1B; 1F is strictly AI/agent durability. If a finding is genuinely cross-cutting, cite both.
+
+### Cross-reference tags (compact citations)
+
+Use this format so readers can jump back to raw findings tables:
+
+- **`[1E-S<n>]`** — Security finding row `<n>` from `phase1e-security-raw.md` (e.g. `[1E-S3]`).
+- **`[1F-D<n>]`** — Durability finding row `<n>` from `phase1f-durability-raw.md` (e.g. `[1F-D2]`).
+- **Phase 1A** may still use persona labels, e.g. `[1A(Skeptical Engineer)]`.
+
+**Example:** “Harden OAuth callback handling `[1E-S3]` before expanding enterprise pilots; 1A’s skepticism on enterprise readiness `[1A(Skeptical Engineer)]` aligns but defers implementation detail to 1E.”
 
 ### Produce the Synthesis
 
@@ -270,10 +407,12 @@ Create `phase2-synthesis.md` with these sections:
 ## Critical Fixes Needed
 [Issues that must be addressed before shipping or pitching. Cross-reference which Phase 1 tracks flagged each issue. Prioritize by severity and frequency of mention across tracks.]
 
+**Merge order when 1E/1F exist:** Add **Phase 1E** `Critical` and `High` findings first (with `[1E-S<n>]` tags); then **Phase 1F** `Critical` and `High` (with `[1F-D<n>]` tags); then other tracks. Dedupe against 1A as above.
+
 ### Fix 1: [Name]
 - **What:** [Specific issue]
 - **Why it matters:** [Impact if not fixed]
-- **Flagged by:** [Which Phase 1 tracks and specific audiences]
+- **Flagged by:** [Which Phase 1 tracks — use tags above when citing 1E/1F rows]
 - **Suggested approach:** [How to fix it]
 
 ### Fix 2: ...
@@ -281,8 +420,14 @@ Create `phase2-synthesis.md` with these sections:
 ## Design Inconsistencies to Resolve
 [UI/UX issues, branding mismatches, messaging contradictions, experience gaps. Be specific — "the onboarding flow contradicts the pricing page's promise of simplicity."]
 
+**When Phase 1D exists:** Incorporate **live-site audit** findings here (and in Critical Fixes if severity warrants). Cite **Headline for synthesis** / **Design risk band** from `phase1d-design-raw.md`. Merge **Quick wins** from 1D into **Proposed Next Steps** where they do not duplicate.
+
+**1E/1F:** Security and durability findings **do not** belong in this section unless they are purely presentational (rare). Default: 1E/1F → Critical Fixes / Next Steps / Unresolved Tensions only.
+
 ## Proposed Next Steps (Non-Breaking Changes)
 [Changes that improve the product/idea without disrupting what's working. Ordered by effort-to-impact ratio — quick wins first, then medium-term, then strategic.]
+
+**When 1E/1F exist:** Add 1E and 1F **Medium** (and low-effort) items here under the appropriate effort buckets, tagged `[1E-S<n>]` / `[1F-D<n>]` where helpful.
 
 ### Quick Wins (days)
 ### Medium-Term (weeks)
@@ -290,6 +435,8 @@ Create `phase2-synthesis.md` with these sections:
 
 ## Unresolved Tensions
 [Legitimate disagreements between the analysis tracks. Where the hater feedback conflicts with the strengths analysis, name the tension and present both sides.]
+
+**When relevant:** Name tensions such as security vs. speed-to-market, or durability vs. model-chasing, using 1E/1F evidence.
 ```
 
 If logging: append `phase_start phase2` and `phase_complete phase2` around synthesis. Log `user_correction` if the user steers synthesis before Phase 3.
@@ -346,7 +493,7 @@ Process deliverables in this order — the executive summary comes LAST because 
 3. **`03-strengths-opportunities.docx`** — Format phase1c-strengths-raw.md
 4. **`04-critical-fixes-and-design.docx`** — Format phase2-synthesis.md
 5. **`05-content-strategy-outline.docx`** — Format phase3-content-outline-raw.md
-6. **`00-executive-summary.docx`** — Write fresh, drawing from all 5 documents above
+6. **`00-executive-summary.docx`** — Write fresh, drawing from all 5 documents above (include **Live Site / Product Surface** when `phase1d-design-raw.md` informed `phase2-synthesis.md`; include **Security Posture** / **AI Durability Posture** when Phase 1E / Phase 1F ran with non-stub output — see structure below)
 
 ### Executive Summary Structure
 
@@ -374,6 +521,23 @@ The executive summary is a standalone document that a decision-maker can read wi
 
 ### Content Strategy Hook
 [The single strongest angle for publicly talking about this]
+
+### Live Site / Product Surface (only if Phase 1D ran)
+[2–4 bullets: design risk band, first-impression verdict, top UX credibility issue, top quick win — or state that Phase 1D was skipped/thin]
+
+### Security Posture (only if Phase 1E ran)
+**Risk band:** Low | Medium | High | Critical
+[One-line headline from `phase1e-security-raw.md` **Headline for synthesis**]
+[Top finding, one line with `[1E-S<n>]` citation]
+[Top quick-win next step, one line — or omit if none]
+
+### AI Durability Posture (only if Phase 1F ran and risk band is not N/A)
+**Risk band:** Low | Medium | High | Critical
+[One-line headline from `phase1f-durability-raw.md` **Headline for synthesis**]
+[Top finding, one line with `[1F-D<n>]` citation]
+[Top quick-win next step, one line — or omit if none]
+
+When Phase 1F exited with **N/A**, **omit** the AI Durability Posture section entirely — do not include a “not applicable” stub in the executive summary.
 ```
 
 ### File Output
@@ -408,12 +572,12 @@ After presenting the final deliverables, you may offer this block so runners can
 
 This pipeline is designed to be efficient with tokens and time:
 
-- **Phase 1 parallelism** is the main time saver — three analysis tracks run simultaneously
+- **Phase 1 parallelism** is the main time saver — three analysis tracks always; **optional** live-site tracks (1D design, 1E security, 1F AI durability) when Phase 0 decisions and env allow
 - **Phase 2 synthesis** is done inline (no subagent) because it requires reading across all three tracks and exercising judgment
 - **Phase 3** can run as a subagent while you start Phase 4 assembly
 - **Phase 4 docs** can be produced sequentially — no need for parallel doc generation since each is independent and relatively quick
 - If the input is simple (just a text block, no URLs to crawl), Phase 0 takes seconds
-- If subagents are unavailable, run phases sequentially: 1A → 1B → 1C → 2 → 3 → 4. Slower but still works.
+- If subagents are unavailable, run phases sequentially: 1A → 1B → 1C → (optional 1D, 1E, 1F) → 2 → 3 → 4. Slower but still works.
 
 ---
 
@@ -424,5 +588,8 @@ This pipeline is designed to be efficient with tokens and time:
 - **Subagent timeout:** Read whatever partial output exists, note incompleteness, continue
 - **Input is extremely vague:** Ask the user ONE question, then proceed with assumptions noted
 - **Too many inputs:** Summarize each, then merge. Don't try to hold 10 documents in full context.
+- **Phase 1D unavailable or thin:** Record in `phase1d-design-raw.md` and proceed; synthesis should note **design audit limits** rather than inventing visual claims.
+- **Phase 1E unavailable or thin:** Record in `phase1e-security-raw.md` (or log and proceed without blocking Phase 2); synthesis should note **security audit limits** rather than inventing findings. Do not block Phase 2 on 1E alone.
+- **Phase 1F unavailable, thin, or N/A stub:** Record in `phase1f-durability-raw.md`; if **N/A**, omit **AI Durability Posture** from the executive summary. Do not block Phase 2 on 1F alone.
 
 When logging is enabled, record the corresponding `tool_error`, `retry`, or `failure_mode` lines in `run-log.md` for each of the above (redact URLs and secrets).

@@ -2,6 +2,8 @@
 
 These are ready-to-use prompt templates for each parallel subagent. Replace placeholders (`<...>`) with actual values before spawning.
 
+**Models:** Before spawning, complete the **Model fit check** in the root `SKILL.md` and align subagent routing with `references/model-selection.md` (Phase 1 should use at least the **strong general** tier when the host allows separate models).
+
 ---
 
 ## Phase 1A: Hater Mode Subagent
@@ -121,6 +123,127 @@ Your job:
    - Profile of the ideal scale customer (might be different from early adopter)
 
 Save the complete output as structured markdown to: <workspace>/phase1c-strengths-raw.md
+```
+
+---
+
+## Phase 1D: Live Site Design Audit Subagent (optional)
+
+**When to use:** Parent run selected a **primary HTTPS URL** for a public marketing/product surface and did **not** opt out (`MEGA_EVAL_DESIGN_AUDIT` off). This track is **report-only** — no repo edits, no `/design-review` fix loop.
+
+```
+You are running a LIVE SITE DESIGN AUDIT for a product/idea evaluation pipeline (Phase 1D).
+
+Run correlation (repeat in a one-line HTML comment at the top of the saved file):
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
+
+Read the output template and rules:
+- Read: <references-path>/design-audit-template.md
+
+=== EVALUATION BRIEF ===
+<paste eval-brief content here>
+=== END BRIEF ===
+
+=== PRIMARY URL TO AUDIT ===
+<single https URL — marketing or product home>
+=== END URL ===
+
+Your job:
+
+1. **Evidence tier (pick honestly)**
+   - **Tier A:** Use headless browse / screenshot tools if the host provides them (e.g. gstack browse). Capture 1–3 screenshots to the workspace and reference paths in the doc. Visit homepage + up to 2 key paths (e.g. /pricing, /product) if reachable without login.
+   - **Tier B:** If no browser is available, use WebFetch/HTML-visible content only. State limits prominently in Meta (layout, motion, and many interaction states may be unknown).
+   - **Tier C:** If the URL fails, requires auth, or returns no meaningful HTML, write a short `phase1d-design-raw.md` explaining why and stop — do not block other pipeline tracks.
+
+2. **Content**
+   - Follow `design-audit-template.md` sections exactly (Meta, First impression, Inferred design system, Checklist highlights, AI slop, Litmus, Quick wins, Evidence, Headline for synthesis).
+   - Classify **MARKETING/LANDING** vs **APP UI** vs **HYBRID** from what you see.
+   - Be specific to this site — no generic design platitudes.
+
+3. **Scope discipline**
+   - This is NOT WCAG compliance certification. Say so in the disclaimer.
+   - Do NOT read or assume access to the product’s source repository unless the parent explicitly provided it.
+   - Do NOT claim you tested authenticated flows unless you actually did.
+
+Save the complete markdown to: <workspace>/phase1d-design-raw.md
+```
+
+---
+
+## Phase 1E: Security Audit Subagent (optional)
+
+**When to use:** Parent run recorded **Audit decision: run** under **Security audit (Phase 1E)** and did **not** opt out (`MEGA_EVAL_SECURITY_AUDIT` off). **Observation-only** — not a penetration test, not compliance certification. **No** credential testing, rate-limit probing, or intrusive actions.
+
+```
+You are running a SECURITY AUDIT for a product/idea evaluation pipeline (Phase 1E) — report only; no intrusive testing.
+
+Run correlation (repeat in a one-line HTML comment at the top of the saved file):
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
+
+Methodology (read in order):
+1. If the file exists, read the host’s CSO-style security skill: <cso-skill-path>/SKILL.md (and any references it requires for *observation-only* posture). Use it to structure analysis and severity language.
+2. Regardless, read the output template: <references-path>/security-audit-template.md — this file is the **canonical output shape** and the **fallback checklist** when the external skill is unavailable. If you could not use the external skill, set Meta **methodology** to `fallback: embedded` (and state `methodology: fallback` in Meta); otherwise `external: /cso` or equivalent.
+
+=== EVALUATION BRIEF ===
+<paste eval-brief content here>
+=== END BRIEF ===
+
+=== PRIMARY URL (ONLY LIVE SURFACE FOR INSPECTION) ===
+<single https URL — same Primary URL as other live-site tracks, or note if n/a>
+=== END URL ===
+
+Evidence tier (pick honestly; mirror Phase 1D):
+- **Tier A:** Headless browse / screenshot tools if available — Primary URL only; optionally **one** linked privacy-policy page if clearly reachable from the primary site (no crawling).
+- **Tier B:** WebFetch / HTML-visible content only — state limits in Meta.
+- **Tier C:** URL missing or unusable — short stub per template; do not block other tracks.
+
+**Strict scope:**
+- Use **only** the Primary URL for live inspection (WebFetch or browse). Do **not** run broad WebSearch, do **not** inspect private repos, do **not** attempt logins or authenticated flows unless the parent explicitly provided credentials (default: no).
+- **Redact** anything resembling secrets, tokens, API keys, or sensitive query params before saving — replace with `[REDACTED]` in evidence snippets.
+
+Output sections must follow `security-audit-template.md` (Meta, Transport & headers, Auth & session surface, Privacy & data handling, LLM/AI exposure, Red flags, Findings table with severities, Disclaimer, Headline for synthesis with **Security risk band**).
+
+Save the complete markdown to: <workspace>/phase1e-security-raw.md
+```
+
+---
+
+## Phase 1F: AI / Agent Durability Audit Subagent (optional)
+
+**When to use:** Parent run recorded **Audit decision: run** under **AI durability audit (Phase 1F)** and did **not** opt out (`MEGA_EVAL_DURABILITY_AUDIT` off). Focus: resilience to model/API/provider **change** for AI/agent surfaces — not general business vendor risk (that stays in Phase 1B).
+
+```
+You are running an AI / AGENT DURABILITY AUDIT for a product/idea evaluation pipeline (Phase 1F) — report only.
+
+Run correlation (repeat in a one-line HTML comment at the top of the saved file):
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
+
+Methodology (read in order):
+1. If the file exists, read: <durability-review-skill-path>/SKILL.md — use it to frame dimensions (model abstraction, prompts/tools, state, evals) as they apply to the **subject’s public surface** (marketing/docs), not the subject’s private codebase unless publicly linked.
+2. Always read: <references-path>/durability-audit-template.md — **output shape** and **fallback checklist**. If the external skill was unavailable, follow the embedded checklist and set Meta **methodology** to `fallback: embedded`; else `external: /durability-review` or equivalent.
+
+=== EVALUATION BRIEF ===
+<paste eval-brief content here>
+=== END BRIEF ===
+
+=== PRIMARY URL (ONLY LIVE SURFACE FOR INSPECTION) ===
+<single https URL — same Primary URL as other live-site tracks, or note if n/a>
+=== END URL ===
+
+**Applicability (you own this judgment):** If the subject has **no** meaningful AI, LLM, or agent surface on the public evidence available, write the **N/A stub** per `durability-audit-template.md` (risk band `N/A`, short rationale, no padded content) and **stop**. This is success, not failure.
+
+Evidence tier: same Tier A / B / C pattern as Phase 1D (Primary URL only; no broad WebSearch; no repo cloning).
+
+**Strict scope:**
+- Do **not** run broad WebSearch; do **not** inspect private repos. Public marketing, docs, and fetched HTML only.
+- **Redact** secrets in evidence snippets.
+
+Output sections follow `durability-audit-template.md` including Findings table, Disclaimer, and **Headline for synthesis** with **AI durability risk band** (or N/A stub).
+
+Save the complete markdown to: <workspace>/phase1f-durability-raw.md
 ```
 
 ---
