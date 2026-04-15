@@ -23,6 +23,7 @@ The pipeline also produces intermediate markdown files that the .docx documents 
 - `phase1c-strengths-raw.md` — Phase 1C raw output
 - `phase2-synthesis.md` — Phase 2 synthesis
 - `phase3-content-outline-raw.md` — Phase 3 content strategy
+- `eval-bundle.json` — Machine-readable workspace bundle with artifact inventory, phase status, and resume guidance
 
 ## What the self-evaluation found
 

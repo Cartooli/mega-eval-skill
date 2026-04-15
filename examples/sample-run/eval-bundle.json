@@ -1,0 +1,1121 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-04-15T20:05:40.949077+00:00",
+  "workspace": "/Users/robn/mega-eval-skill/examples/sample-run",
+  "run_id": null,
+  "present_file_count": 12,
+  "present_files": [
+    "00-executive-summary.docx",
+    "01-hater-mode-feedback.docx",
+    "02-competitive-landscape.docx",
+    "03-strengths-opportunities.docx",
+    "04-critical-fixes-and-design.docx",
+    "05-content-strategy-outline.docx",
+    "eval-brief.md",
+    "phase1a-hater-raw.md",
+    "phase1b-competitive-raw.md",
+    "phase1c-strengths-raw.md",
+    "phase2-synthesis.md",
+    "phase3-content-outline-raw.md"
+  ],
+  "artifacts": {
+    "eval_brief": {
+      "file_name": "eval-brief.md",
+      "path": "eval-brief.md",
+      "required": true,
+      "phase": "phase0",
+      "exists": true,
+      "bytes": 2252,
+      "line_count": 38,
+      "word_count": 306,
+      "headings": [
+        "Evaluation Brief",
+        "Subject",
+        "Core Proposition",
+        "Key Claims & Features",
+        "Target Audience (stated or inferred)",
+        "Pricing/Model (if known)",
+        "Source Material",
+        "Open Questions"
+      ],
+      "sections": [
+        {
+          "level": 1,
+          "title": "Evaluation Brief",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 2,
+          "title": "Subject",
+          "body": "mega-eval \u2014 a Claude skill that runs multi-phase product/idea evaluations",
+          "word_count": 10,
+          "line_count": 1
+        },
+        {
+          "level": 2,
+          "title": "Core Proposition",
+          "body": "An open-source Claude Code skill that orchestrates a 6-phase evaluation pipeline, producing 6 structured Word documents covering critical feedback, competitive landscape, strengths, design issues, action items, and content strategy. Designed to replace the \"just ask Claude to review my idea\" single-prompt approach with a structured, multi-perspective methodology.",
+          "word_count": 47,
+          "line_count": 1
+        },
+        {
+          "level": 2,
+          "title": "Key Claims & Features",
+          "body": "- Accepts any combination of raw text, uploaded documents (.pdf, .docx, .pptx, .txt, .md), and crawlable URLs\n- Runs 3 analysis tracks in parallel via subagents (hater-mode critical feedback, competitive/market research, strengths/opportunities)\n- Synthesizes findings across tracks to surface cross-cutting issues\n- Produces 6 deliverable .docx files including a standalone executive summary\n- 10-15 minute autonomous run time\n- Customizable prompt templates and pipeline phases\n- Falls back to built-in templates if dependent skills aren't installed",
+          "word_count": 76,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "Target Audience (stated or inferred)",
+          "body": "- Founders and product managers evaluating ideas before building\n- Solo builders who lack a team to pressure-test decisions\n- Anyone preparing a pitch, launch, or product strategy who wants structured critical feedback\n- Claude Code power users who want reusable evaluation workflows",
+          "word_count": 43,
+          "line_count": 4
+        },
+        {
+          "level": 2,
+          "title": "Pricing/Model (if known)",
+          "body": "Free, open-source (MIT license). No hosted version or paid tier.",
+          "word_count": 10,
+          "line_count": 1
+        },
+        {
+          "level": 2,
+          "title": "Source Material",
+          "body": "- **README.md** (markdown): Project overview, install instructions, usage, dependencies\n- **SKILL.md** (markdown): Full pipeline specification \u2014 6 phases, prompt templates, error handling\n- **references/pipeline-checklist.md** (markdown): Phase-by-phase QA checklist\n- **references/subagent-prompts.md** (markdown): Copy-paste prompt templates for each subagent\n- **scripts/ingest.py** (python): Input file extraction helper for local files",
+          "word_count": 47,
+          "line_count": 5
+        },
+        {
+          "level": 2,
+          "title": "Open Questions",
+          "body": "- No sample output exists yet \u2014 quality of deliverables is unverified by users\n- Dependent skill paths (hater-mode, long-form-outline, docx) link to anthropics/claude-code which may not have these exact paths\n- No automated tests or CI\n- Single commit, no community usage data",
+          "word_count": 44,
+          "line_count": 4
+        }
+      ]
+    },
+    "phase1a_hater": {
+      "file_name": "phase1a-hater-raw.md",
+      "path": "phase1a-hater-raw.md",
+      "required": true,
+      "phase": "phase1",
+      "exists": true,
+      "bytes": 12237,
+      "line_count": 137,
+      "word_count": 1925,
+      "headings": [
+        "Phase 1A: Hater Mode Critical Feedback \u2014 mega-eval",
+        "1. Product Hunt Critic",
+        "2. Hacker News Commenter",
+        "3. Reddit User (r/ClaudeAI)",
+        "4. X/Twitter User",
+        "5. Facebook User",
+        "6. LinkedIn User",
+        "7. Indie Hackers Member",
+        "8. Software Tester",
+        "9. Layperson",
+        "10. Designer",
+        "11. Late Adopter",
+        "12. General Hater",
+        "Executive Roast Summary"
+      ],
+      "sections": [
+        {
+          "level": 1,
+          "title": "Phase 1A: Hater Mode Critical Feedback \u2014 mega-eval",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 2,
+          "title": "1. Product Hunt Critic",
+          "body": "**Perspective:** Seen 500 \"AI-powered analysis\" tools launch this year alone. Filters hard for differentiation.\n\n**Main criticism:** This is a prompt chain packaged as a product. There's no proprietary model, no unique data, no moat \u2014 anyone who reads your SKILL.md can rebuild this in an afternoon. The output is 6 Word docs, which feels like a 2005 deliverable format for a 2026 AI tool.\n\n**Specific concern:** What happens when Claude's built-in reasoning gets good enough that \"run hater-mode + competitive analysis + synthesis\" is just... a single prompt? You're packaging a workflow that the underlying model will absorb.\n\n**What would change their mind:** A hosted version with persistent history, so I can track how my product evaluation changes over time. Or a unique evaluation framework that can't be trivially replicated \u2014 proprietary scoring, benchmark data, something defensible.",
+          "word_count": 137,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "2. Hacker News Commenter",
+          "body": "**Perspective:** Immediately skeptical of anything that wraps an LLM in more LLM calls and calls it a pipeline.\n\n**Main criticism:** This is a SKILL.md file that tells Claude to call itself three times in parallel and then merge the results into Word docs. The \"pipeline\" is just prompt engineering with extra steps. The ingest.py script is a thin wrapper around pdftotext and pandoc \u2014 tools that already exist. What engineering actually happened here?\n\n**Specific concern:** The subagent prompts contain `<hater-mode-skill-path>` and `<workspace>` placeholders. Who resolves these? Is there any actual runtime that does this, or does Claude just... guess the paths? This feels undertested.\n\n**What would change their mind:** Show me the evaluation output on a real product next to a human analyst's review. If the output quality is genuinely comparable, the simplicity of the implementation is actually a strength.",
+          "word_count": 140,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "3. Reddit User (r/ClaudeAI)",
+          "body": "**Perspective:** Practical, has tried dozens of Claude workflows, low tolerance for things that don't actually work.\n\n**Main criticism:** 10-15 minutes for 6 Word docs that I could get by just asking Claude \"evaluate this product from every angle\"? The README promises a lot but there's zero sample output. Show me what these docs actually look like. For all I know this produces 6 files of generic fluff.\n\n**Specific concern:** The Dependencies section and Prerequisites section say the same thing. Also, if the dependent skills aren't installed, it \"uses built-in prompt templates\" \u2014 so are the dependencies required or not? Pick one.\n\n**What would change their mind:** A before/after comparison. Show me what Claude produces with a naked prompt vs. this pipeline on the same input. If there's a meaningful quality gap, I'll install it today.",
+          "word_count": 135,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "4. X/Twitter User",
+          "body": "**Perspective:** Snappy, meme-literate, punches up at overengineered AI tools.\n\n**Main criticism:** \"We built a 6-phase pipeline to tell Claude to think harder\" is peak AI slop tooling. You literally wrote a prompt that says \"be a hater\" and another that says \"search the web\" and called it a product. The output is .docx files. In 2026.\n\n**Specific concern:** The README has a beautiful ASCII flowchart for a process that boils down to \"ask Claude three questions, combine the answers, format as Word docs.\"\n\n**What would change their mind:** If the output was actually fire \u2014 like, if someone posted a mega-eval of a real YC startup and it surfaced genuinely non-obvious insights \u2014 this would go viral. The packaging is the problem, not the concept.",
+          "word_count": 125,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "5. Facebook User",
+          "body": "**Perspective:** Non-technical, just wants to know if this helps them.\n\n**Main criticism:** I don't understand what this is or who it's for. The README jumps straight into \"phases\" and \"subagents\" and \"SKILL.md\" without ever telling me in plain language: what do I get, and why is it better than just asking ChatGPT to review my business idea?\n\n**Specific concern:** I need to install Claude Code, clone a git repo, copy files to a hidden .claude directory, and also install three other \"skills\"? That's not a product, that's homework. I'll just ask Claude directly.\n\n**What would change their mind:** A one-click install or a web interface. Or at minimum, a \"here's what the output looks like\" section with screenshots of the actual Word docs.",
+          "word_count": 123,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "6. LinkedIn User",
+          "body": "**Perspective:** Enterprise-minded, cares about reliability, repeatability, and whether this can scale to a team.\n\n**Main criticism:** There's no versioning on the evaluation framework itself. If I run this on a product today and again in 3 months, will the methodology be consistent? There's no scoring rubric, no quantitative metrics \u2014 just qualitative text. That makes it impossible to track improvement or compare across products. No executive I work with will read 6 Word docs without a dashboard or a score.\n\n**Specific concern:** The \"executive summary\" is generated last and synthesizes everything, but there's no validation step. What if the hater-mode output contradicts the strengths output and the synthesis just picks a side? Where's the quality gate?\n\n**What would change their mind:** A structured scoring framework (even simple 1-10 ratings per dimension), version-stamped outputs, and a comparison mode so I can run it quarterly and see trends.",
+          "word_count": 146,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "7. Indie Hackers Member",
+          "body": "**Perspective:** Fellow builder, respects the hustle, but questions the business model.\n\n**Main criticism:** This is a cool side project but it's not a business. You're giving away the entire methodology as an MIT-licensed SKILL.md file. Anyone can fork it, tweak it, and call it their own. There's no recurring revenue angle, no premium tier, no data flywheel. What's the plan beyond \"put it on GitHub and hope people star it\"?\n\n**Specific concern:** The skill depends on three other skills (hater-mode, long-form-outline, docx). If any of those change their interface or stop being maintained, your pipeline breaks and you have no control over it. You're building on someone else's foundation with no fallback.\n\n**What would change their mind:** If this is intentionally open-source community tooling, great \u2014 but say that. If you're trying to build something commercial, you need a hosted version, saved evaluations, a team sharing layer, and a reason to pay.",
+          "word_count": 152,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "8. Software Tester",
+          "body": "**Perspective:** Thinks in edge cases, failure modes, and regression scenarios.\n\n**Main criticism:** There are zero tests. No test inputs, no expected outputs, no way to validate that a run was successful. The pipeline-checklist.md is a manual checklist \u2014 there's nothing automated. If Phase 1B's web search returns garbage, how does Phase 2 know to discount it? The error handling section says \"be honest about thin results\" but that's a hope, not a mechanism.\n\n**Specific concern:** The ingest.py script calls subprocess.run with user-provided file paths and no input sanitization. If someone passes a filename with shell metacharacters, pdftotext or pandoc could behave unexpectedly. Also, the 3000-character truncation in generate_brief_template is arbitrary \u2014 what if the critical information is at character 3001?\n\n**What would change their mind:** A test suite with at least 3 reference inputs (a simple text block, a URL, a multi-source combo) and their expected outputs. Even golden-file tests would be a start. And sanitize those subprocess inputs.",
+          "word_count": 159,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "9. Layperson",
+          "body": "**Perspective:** Heard about AI tools, wants something simple that works.\n\n**Main criticism:** I read the entire README and I still don't know what \"mega eval\" actually gives me in plain English. \"6 structured Word documents covering critical feedback, competitive landscape...\" \u2014 is this for my small bakery business? My app idea? A school project? The README talks about \"subagents\" and \"Phase 1A\" like I'm supposed to know what that means.\n\n**Specific concern:** Why Word documents? I don't even have Microsoft Word. Can I get a PDF? A web page? Anything I can just open?\n\n**What would change their mind:** A \"Who is this for?\" section with 2-3 concrete examples: \"If you have a startup idea and want to stress-test it before building, mega-eval gives you X. If you're launching a product and want to find blind spots, it gives you Y.\"",
+          "word_count": 141,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "10. Designer",
+          "body": "**Perspective:** Obsessed with the experience, not just the output.\n\n**Main criticism:** The deliverable is 6 separate Word documents with no visual design, no information hierarchy beyond markdown headings, and no consideration for how someone actually uses an evaluation. Nobody reads 6 docs linearly. The executive summary should link to or embed the key findings from each doc, not just reference them. And there's no thought given to the reading experience \u2014 no charts, no visual scoring, no comparison tables.\n\n**Specific concern:** The pipeline produces text-heavy output with no visual artifacts. A competitive landscape without a positioning map? A strengths analysis without a radar chart? These are table-stakes deliverables in any real product evaluation.\n\n**What would change their mind:** Even basic visual outputs \u2014 a 2x2 positioning matrix, a priority/impact chart for fixes, a simple score card. The content might be solid but the delivery format undermines it.",
+          "word_count": 147,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "11. Late Adopter",
+          "body": "**Perspective:** Conservative, doesn't trust AI-generated analysis, needs to see proof before adopting.\n\n**Main criticism:** You're asking me to trust an AI to evaluate my business idea through 6 phases of... more AI? The competitive analysis is web searches run by Claude. The \"hater mode\" is Claude pretending to be 12 different people. The synthesis is Claude reading its own output. At what point does a human with domain expertise enter the picture? This is a hall of mirrors.\n\n**Specific concern:** The README says \"expect 10-15 minutes for a full run.\" I can get a human consultant's first impressions in 15 minutes, and they have actual market experience. What's the quality benchmark here?\n\n**What would change their mind:** Validation data. Run this on 10 products where the outcome is known (succeeded, failed, pivoted) and show that the evaluation would have flagged the right issues. Without that, this is AI theater.",
+          "word_count": 149,
+          "line_count": 7
+        },
+        {
+          "level": 2,
+          "title": "12. General Hater",
+          "body": "**Perspective:** Contrarian who pokes holes in everything.\n\n**Main criticism:** This is a README for a prompt. That's it. You wrote a detailed prompt, split it into files, added a Python script that calls pdftotext, and put it on GitHub with an MIT license and an ASCII flowchart. The repo has one commit. The \"Cowork\" install path references a .skill file that's just a zip of the same markdown. The Dependencies section is duplicated in Prerequisites. And you're linking to github.com/anthropics/claude-code/tree/main/skills/ for the dependent skills \u2014 do those paths even exist?\n\n**Specific concern:** The whole thing is Claude-dependent with no portability. If someone uses a different LLM, this is useless. If Anthropic changes how skills work, this breaks. You've built a sandcastle on someone else's beach.\n\n**What would change their mind:** Nothing about the packaging. But if someone posts \"I ran mega-eval on my startup idea and it caught 3 things my advisors missed,\" that changes everything. Results beat packaging every time.\n\n---",
+          "word_count": 162,
+          "line_count": 9
+        },
+        {
+          "level": 2,
+          "title": "Executive Roast Summary",
+          "body": "| Dimension | Severity | Core Issue |\n|-----------|----------|------------|\n| **Differentiation** | High | It's a prompt chain with no moat \u2014 easily replicated |\n| **Sample Output** | High | No examples of what the deliverables actually look like |\n| **Target Audience** | Medium | README doesn't say who this is for in plain terms |\n| **Output Format** | Medium | 6 Word docs feels dated; no visual artifacts |\n| **Testing** | Medium | Zero tests, no validation, no golden-file references |\n| **Duplicate Content** | Low | Prerequisites and Dependencies sections overlap |\n| **Input Sanitization** | Low | ingest.py subprocess calls lack path sanitization |\n\n**Recurring theme:** Show the output. Every critic's objection weakens dramatically if you can demonstrate that this pipeline produces meaningfully better analysis than a single Claude prompt. The README sells the process but not the result.",
+          "word_count": 146,
+          "line_count": 11
+        }
+      ]
+    },
+    "phase1b_competitive": {
+      "file_name": "phase1b-competitive-raw.md",
+      "path": "phase1b-competitive-raw.md",
+      "required": true,
+      "phase": "phase1",
+      "exists": true,
+      "bytes": 17664,
+      "line_count": 257,
+      "word_count": 2484,
+      "headings": [
+        "Phase 1B: Competitive & Market Landscape Analysis",
+        "Direct Competitors",
+        "1. IdeaProof (ideaproof.io)",
+        "2. ValidatorAI (validatorai.com)",
+        "3. ChatPRD (chatprd.ai)",
+        "4. Competely (competely.ai)",
+        "5. Crayon (crayon.co)",
+        "Adjacent Solutions",
+        "AI-Powered PM Tools (BuildBetter, Productboard Pulse, ClickUp AI)",
+        "Prompt Architect Skills (claude-skill-prompt-architect, etc.)",
+        "Claude Skills Marketplaces (alirezarezvani/claude-skills, claude-market/marketplace, SkillsMP)",
+        "General-Purpose LLM Prompting (ChatGPT, Claude chat, Gemini)",
+        "WorthBuild, ValidateMySaaS, ProductGapHunt",
+        "Market Trends & Size",
+        "Overall AI Market Context",
+        "AI in Product Management",
+        "The Claude Skills Economy",
+        "Idea Validation Tool Segment",
+        "Positioning Analysis",
+        "Where Mega-Eval Fits",
+        "Differentiation Matrix",
+        "Positioning Gaps",
+        "Risks & Considerations",
+        "Ecosystem Risks",
+        "Competitive Risks",
+        "Execution Risks",
+        "Market Timing"
+      ],
+      "sections": [
+        {
+          "level": 1,
+          "title": "Phase 1B: Competitive & Market Landscape Analysis",
+          "body": "**Subject:** mega-eval \u2014 an open-source Claude Code skill that orchestrates a 6-phase evaluation pipeline, producing 6 structured Word documents covering critical feedback, competitive landscape, strengths, design issues, action items, and content strategy for any idea/product/feature set.\n\n**Analysis date:** 2026-03-23\n**Confidence note:** Competitor data is sourced from web searches conducted during this analysis. Pricing and features may have changed since publication. The \"AI product evaluation\" category is fragmented and fast-moving; no single directory tracks all players. Confidence is moderate for direct competitors and lower for market sizing, since no analyst firm tracks this exact niche.\n\n---",
+          "word_count": 95,
+          "line_count": 6
+        },
+        {
+          "level": 2,
+          "title": "Direct Competitors",
+          "body": "These tools most closely overlap with mega-eval's core function: taking an idea or product description as input and producing structured evaluative output.",
+          "word_count": 22,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "1. IdeaProof (ideaproof.io)",
+          "body": "**What it does:** AI-powered business idea validator that analyzes startup concepts using real-time market intelligence from 50+ sources. Delivers TAM/SAM/SOM calculations, competitor SWOT analysis, financial projections, and investor-ready business plans. Also generates brand strategy assets (logos, ad creatives).\n\n**Pricing:** Freemium. 90 free credits (~4 validations at 20 credits each). Paid plans: Starter at EUR 19 (150 credits), Builder at EUR 49 (700 credits), Founder at EUR 99 (1,500 credits).\n\n**Strengths relative to mega-eval:**\n- Polished web UI with no CLI knowledge required\n- Financial modeling (revenue projections, break-even analysis) that mega-eval does not attempt\n- Brand asset generation (logos, ad creatives) as a bundled deliverable\n- Hosted service with no setup; results in ~120 seconds\n- Built-in startup calculators (LTV, CAC, runway)\n\n**Weaknesses relative to mega-eval:**\n- Credit-gated: heavy users pay ongoing fees; mega-eval is free and unlimited\n- Opaque methodology: users cannot inspect or modify the evaluation prompts\n- Output is a web dashboard, not portable .docx deliverables\n- No \"hater mode\" adversarial lens; feedback skews constructive/investor-oriented\n- No content strategy component\n- No ability to process uploaded documents or crawl arbitrary URLs as input",
+          "word_count": 186,
+          "line_count": 18
+        },
+        {
+          "level": 3,
+          "title": "2. ValidatorAI (validatorai.com)",
+          "body": "**What it does:** Conversational AI startup advisor (\"Val\") that scores and critiques business ideas through real-time chat, including voice. Provides a startup viability score, market analysis, competitor landscape, and a personalized roadmap. Follows up via email.\n\n**Pricing:** Free tier with unlimited access to basic validation. Pro at $25/month adds 5 business analysis reports per month, AI-generated deliverables, customized roadmaps, and an educational course.\n\n**Strengths relative to mega-eval:**\n- Conversational interface lowers the barrier; users talk rather than configure\n- Voice chat option for idea exploration\n- Structured follow-up via email (ongoing engagement)\n- Lower friction entry point for non-technical users\n- Includes an educational component (AI course for entrepreneurs)\n\n**Weaknesses relative to mega-eval:**\n- Shallow depth: single-pass analysis vs. mega-eval's 6-phase pipeline with cross-referenced synthesis\n- No document output beyond the chat transcript (Pro adds some reports, limited to 5/month)\n- Cannot process uploaded files or URLs\n- No adversarial/hater-mode feedback lens\n- No competitive deep-dive with web search\n- No content strategy deliverable\n- Closed-source; users cannot customize the evaluation framework",
+          "word_count": 172,
+          "line_count": 19
+        },
+        {
+          "level": 3,
+          "title": "3. ChatPRD (chatprd.ai)",
+          "body": "**What it does:** AI copilot for product managers that generates PRDs, user stories, technical specs, and go-to-market briefs from rough ideas or meeting notes. Includes document coaching (reviews docs like a CPO), templates, and integrations with Jira, Linear, Figma, Slack.\n\n**Pricing:** Pro at $15/month ($179/year). Teams at $29/month per seat ($349/seat/year). Enterprise with custom pricing.\n\n**Strengths relative to mega-eval:**\n- Deep PM workflow integration (Jira, Linear, Figma, Slack)\n- Real-time collaboration features (shared projects, comments, team workspace)\n- Polished document templates from experienced PMs\n- 100,000+ user base proving product-market fit\n- Document coaching feature provides iterative improvement, not just one-shot analysis\n\n**Weaknesses relative to mega-eval:**\n- Focused on document generation, not multi-perspective evaluation\n- No adversarial feedback or hater-mode analysis\n- No competitive landscape research (does not use web search)\n- No strengths/opportunities counterweight analysis\n- Paid SaaS with per-seat pricing; mega-eval is free\n- Closed source; users cannot modify the underlying prompts or pipeline\n- Outputs PRDs and specs, not evaluation reports; different deliverable category",
+          "word_count": 167,
+          "line_count": 19
+        },
+        {
+          "level": 3,
+          "title": "4. Competely (competely.ai)",
+          "body": "**What it does:** AI-powered competitive analysis tool that compares products across 100+ data points including marketing strategies, product features, pricing models, target audience, customer sentiment, and SWOT analysis. Provides continuous monitoring of competitor changes.\n\n**Pricing:** Not publicly listed; no free trial. Described as incurring significant AI costs. Likely in the hundreds-per-month range based on comparable tools.\n\n**Strengths relative to mega-eval:**\n- Purpose-built for competitive analysis with continuous monitoring (not one-shot)\n- Analyzes 100+ structured data points per competitor\n- Tracks changes over time (pricing shifts, feature launches, messaging pivots)\n- Saves 30-60 work hours per month per their claims\n- More comprehensive competitive data than a single web search pass\n\n**Weaknesses relative to mega-eval:**\n- Only does competitive analysis; no critical feedback, strengths analysis, synthesis, or content strategy\n- Paid (and likely expensive) vs. free\n- No document deliverable generation\n- Cannot evaluate an idea or product holistically; requires known competitors as input\n- No open-source customization\n- Overkill for a one-time evaluation; designed for ongoing monitoring",
+          "word_count": 167,
+          "line_count": 18
+        },
+        {
+          "level": 3,
+          "title": "5. Crayon (crayon.co)",
+          "body": "**What it does:** Enterprise competitive intelligence platform that captures competitors' entire digital footprints, monitors 100+ data types, automates battlecards, and integrates with CRM and sales enablement tools.\n\n**Pricing:** Enterprise pricing, not publicly listed. Reported range: $25,000-$100,000+/year depending on tier (Essentials, Professional, Enterprise), number of competitors tracked, and user seats.\n\n**Strengths relative to mega-eval:**\n- Industrial-grade competitive intelligence with the broadest data coverage\n- Automated battlecard generation for sales teams\n- CRM integrations (Salesforce, HubSpot)\n- Continuous monitoring with alerting\n- Established market leader with enterprise credibility\n\n**Weaknesses relative to mega-eval:**\n- Radically different price point and target user (enterprise sales/marketing teams vs. individual builders)\n- Only does competitive intelligence; no product evaluation, no critical feedback, no content strategy\n- Months-long procurement and setup vs. a 10-minute CLI run\n- Massive overkill for solo founders or small teams evaluating an idea\n- Closed, proprietary platform\n\n---",
+          "word_count": 145,
+          "line_count": 19
+        },
+        {
+          "level": 2,
+          "title": "Adjacent Solutions",
+          "body": "These tools overlap partially with mega-eval but serve a different primary use case.",
+          "word_count": 13,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "AI-Powered PM Tools (BuildBetter, Productboard Pulse, ClickUp AI)",
+          "body": "**Overlap:** Document generation, feedback analysis, product strategy workflows.\n**Key difference:** These are workflow platforms for ongoing product management, not one-shot evaluation tools. They integrate with existing product data (user interviews, support tickets, analytics) rather than evaluating an idea from scratch. Pricing ranges from $20-100+/month per seat.",
+          "word_count": 46,
+          "line_count": 2
+        },
+        {
+          "level": 3,
+          "title": "Prompt Architect Skills (claude-skill-prompt-architect, etc.)",
+          "body": "**Overlap:** Claude Code skill ecosystem, structured prompt workflows.\n**Key difference:** These skills optimize individual prompts rather than orchestrating multi-phase evaluation pipelines. They are composable building blocks, not end-to-end analysis tools. Free/open-source.",
+          "word_count": 31,
+          "line_count": 2
+        },
+        {
+          "level": 3,
+          "title": "Claude Skills Marketplaces (alirezarezvani/claude-skills, claude-market/marketplace, SkillsMP)",
+          "body": "**Overlap:** Distribution channel and ecosystem for Claude Code skills.\n**Key difference:** These are directories and package managers, not competing products. They represent potential distribution channels for mega-eval. The largest collections include 192-1,367+ skills across engineering, marketing, product, and other domains. None currently list a comparable multi-phase evaluation pipeline skill.",
+          "word_count": 49,
+          "line_count": 2
+        },
+        {
+          "level": 3,
+          "title": "General-Purpose LLM Prompting (ChatGPT, Claude chat, Gemini)",
+          "body": "**Overlap:** Any user can prompt an LLM to \"evaluate my idea\" in a single conversation.\n**Key difference:** Mega-eval's value proposition is precisely that it replaces this ad-hoc approach with a structured, repeatable, multi-perspective methodology. The single-prompt approach lacks: parallel adversarial/supportive analysis tracks, web-sourced competitive data, cross-track synthesis, and formatted deliverable output. This is mega-eval's most common \"competitor\" in practice \u2014 not a product, but the default behavior it aims to replace.",
+          "word_count": 71,
+          "line_count": 2
+        },
+        {
+          "level": 3,
+          "title": "WorthBuild, ValidateMySaaS, ProductGapHunt",
+          "body": "**Overlap:** Startup idea validation with structured output.\n**Key difference:** These are web-based SaaS tools focused on market validation and customer discovery rather than multi-perspective product evaluation. ValidateMySaaS charges $19-29/month. They tend to focus on market data and customer signals rather than adversarial critique or content strategy.\n\n---",
+          "word_count": 47,
+          "line_count": 4
+        },
+        {
+          "level": 2,
+          "title": "Market Trends & Size",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "Overall AI Market Context",
+          "body": "The global AI market was valued at approximately $391 billion in 2025 and is projected to reach $539 billion in 2026 (CAGR ~30%). AI application software is growing from 8% of total AI spending in 2024 to an estimated 13% in 2026. Global AI venture funding totaled $202.3 billion in 2025, up from $114 billion the prior year.\n\n**Confidence:** High for these top-level numbers; they come from multiple analyst firms (Grand View Research, Fortune Business Insights, Gartner).",
+          "word_count": 77,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "AI in Product Management",
+          "body": "As of early 2026, over 73% of product managers report using at least one AI tool daily, nearly double the 45% rate from 2024. Organizations implementing structured evaluation frameworks report 5x faster iteration cycles. The industry is transitioning from \"copilot AI\" (responds to prompts) to \"agentic AI\" (executes multi-step workflows autonomously), a trend mega-eval directly embodies.\n\n**Confidence:** Moderate. These statistics come from industry blogs and vendor-published reports, which may have sampling bias.",
+          "word_count": 72,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "The Claude Skills Economy",
+          "body": "The Claude Code skill ecosystem has grown rapidly. The MCP ecosystem expanded from ~1,000 servers in early 2025 to over 10,000 active servers by early 2026. Multiple skill marketplaces have emerged (SkillsMP, claude-market, awesome-claude-skills) with collections ranging from dozens to over 1,300 skills. Skills are now cross-compatible across Claude Code, Cursor, Gemini CLI, Codex CLI, and other agents via the universal SKILL.md format. By early 2026, 79% of organizations have adopted some level of agentic AI.\n\n**Confidence:** Moderate. The ecosystem is real and growing, but \"number of skills\" counts may include low-quality or placeholder entries. The cross-compatibility claim needs verification per-tool.",
+          "word_count": 101,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "Idea Validation Tool Segment",
+          "body": "There is no formal market size estimate for \"AI idea validation tools\" as a standalone category. The segment is small, fragmented, and mostly bootstrapped. Key players (IdeaProof, ValidatorAI, WorthBuild, ValidateMySaaS) are small teams, likely under $1M ARR each based on pricing and apparent scale. The category is adjacent to the larger \"product management software\" market ($8-15B+ depending on definition) but serves a much narrower use case.\n\n**Confidence:** Low. No analyst firm tracks this niche. Sizing is inferred from pricing tiers and visible user counts.\n\n---",
+          "word_count": 85,
+          "line_count": 5
+        },
+        {
+          "level": 2,
+          "title": "Positioning Analysis",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "Where Mega-Eval Fits",
+          "body": "Mega-eval occupies a unique position at the intersection of three categories:\n\n1. **Idea validation tools** (IdeaProof, ValidatorAI) \u2014 but with deeper, multi-perspective analysis and no credit limits\n2. **Competitive intelligence tools** (Competely, Crayon) \u2014 but as one component of a broader evaluation, not a standalone CI product\n3. **Claude Code skill ecosystem** \u2014 the primary distribution and execution channel\n\n**Positioning statement (inferred):** \"The most thorough way to evaluate an idea before building it, for people who already use Claude Code.\"",
+          "word_count": 80,
+          "line_count": 7
+        },
+        {
+          "level": 3,
+          "title": "Differentiation Matrix",
+          "body": "| Capability | mega-eval | IdeaProof | ValidatorAI | ChatPRD | Competely |\n|---|---|---|---|---|---|\n| Multi-perspective evaluation | Yes (6 phases) | Partial | No | No | No |\n| Adversarial feedback (\"hater mode\") | Yes (12 lenses) | No | No | No | No |\n| Competitive research (live web) | Yes | Yes | Partial | No | Yes |\n| Content strategy output | Yes | No | No | Partial | No |\n| Document deliverables (.docx) | Yes (6 files) | No | Limited | Yes | No |\n| Cross-track synthesis | Yes | No | No | No | No |\n| Free / open-source | Yes (MIT) | Freemium | Freemium | Paid | Paid |\n| Custom input (files, URLs) | Yes | No | No | Partial | No |\n| No-code web UI | No | Yes | Yes | Yes | Yes |\n| Continuous monitoring | No | No | No | No | Yes |\n| Financial projections | No | Yes | No | No | No |",
+          "word_count": 185,
+          "line_count": 13
+        },
+        {
+          "level": 3,
+          "title": "Positioning Gaps",
+          "body": "**Gap mega-eval fills:**\n- No existing tool combines adversarial critique + competitive research + strengths analysis + synthesis + content strategy in a single automated pipeline\n- No competing tool produces 6 structured deliverable documents from a single input\n- No open-source alternative exists for structured, multi-phase product evaluation\n- The Claude Code skill ecosystem has engineering-heavy skills but few product strategy/evaluation skills\n\n**Gaps in mega-eval's positioning:**\n- Requires Claude Code CLI fluency; excludes the much larger population of non-technical founders and PMs who prefer web UIs\n- No hosted version means no organic discovery via web search, Product Hunt, etc.\n- \"Free\" positioning depends on the user already paying for Claude Code access (Anthropic API or Max subscription)\n- Single-run evaluation vs. continuous monitoring; some users need ongoing tracking\n- No financial modeling component (TAM/SAM, projections, unit economics) that IdeaProof offers\n- Quality of output is heavily dependent on the underlying Claude model's capabilities, which the skill cannot control\n\n---",
+          "word_count": 161,
+          "line_count": 15
+        },
+        {
+          "level": 2,
+          "title": "Risks & Considerations",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "Ecosystem Risks",
+          "body": "1. **Platform dependency:** Mega-eval runs exclusively on Claude Code. If Anthropic changes the skill format, deprecates subagents, or restricts web search in skills, the pipeline breaks. The SKILL.md format is currently universal, but Anthropic controls the runtime.\n\n2. **Skill discovery problem:** There is no centralized, authoritative Claude skill marketplace (Anthropic has not launched an official one as of March 2026). Distribution relies on GitHub, community-curated lists, and word of mouth. Being findable is a real challenge.\n\n3. **Quality floor:** The Claude skills ecosystem includes many low-effort entries. Mega-eval needs to clearly differentiate itself as production-quality to avoid being lost in the noise of 1,300+ skills of varying quality.",
+          "word_count": 108,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "Competitive Risks",
+          "body": "4. **Commoditization of prompts:** The core value of mega-eval is its structured pipeline and prompt engineering. As LLMs improve, users may achieve comparable results with simpler prompts, eroding the skill's value. Counter-argument: the 6-phase structure with cross-track synthesis is genuinely difficult to replicate in a single prompt.\n\n5. **Incumbent expansion:** IdeaProof or ChatPRD could add adversarial feedback or multi-phase evaluation features. They have existing user bases and distribution. However, as SaaS tools, they are unlikely to open-source their methodologies.\n\n6. **OpenAI/Google skills ecosystems:** If competing AI agents launch skill marketplaces (OpenAI's GPT Store already exists, Gemini Gems are expanding), cross-platform compatibility becomes important. The SKILL.md format currently works across agents, which is a defensive advantage.",
+          "word_count": 115,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "Execution Risks",
+          "body": "7. **No sample output:** As of this analysis, there are no publicly available sample deliverables showing what the pipeline actually produces. For a tool whose entire value is the quality of its output, this is a significant gap for adoption.\n\n8. **Single maintainer:** One commit, one contributor. Open-source projects with bus-factor-of-one face sustainability questions. Community contributions are needed for long-term viability.\n\n9. **Dependency chain:** The pipeline references three other skills (hater-mode, long-form-outline, docx). If these skills are not installed or their paths change, the pipeline must fall back to built-in templates, which may produce lower-quality output.",
+          "word_count": 96,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "Market Timing",
+          "body": "10. **Favorable timing:** The Claude skills ecosystem is growing, agentic AI adoption is accelerating, and PM tool fatigue is real (73% daily AI use but fragmented across many tools). A free, open-source, structured evaluation pipeline addresses a genuine workflow gap.\n\n11. **Window may narrow:** As the ecosystem matures, commercial skill bundles or Anthropic-published evaluation tools could emerge. First-mover advantage in a growing ecosystem is meaningful but not durable without community adoption.",
+          "word_count": 71,
+          "line_count": 3
+        }
+      ]
+    },
+    "phase1c_strengths": {
+      "file_name": "phase1c-strengths-raw.md",
+      "path": "phase1c-strengths-raw.md",
+      "required": true,
+      "phase": "phase1",
+      "exists": true,
+      "bytes": 19025,
+      "line_count": 189,
+      "word_count": 2745,
+      "headings": [
+        "Phase 1C: Strengths & Opportunities \u2014 mega-eval",
+        "Core Strengths",
+        "1. Structured methodology where none exists today",
+        "2. The synthesis phase is the actual product",
+        "3. Deliverables are work-ready, not chat-ready",
+        "4. Graceful degradation is well-designed",
+        "5. The prompt engineering is genuinely good",
+        "6. The pipeline is transparent and editable",
+        "Growth Opportunities",
+        "1. Adjacent use cases beyond product evaluation",
+        "2. Comparison mode",
+        "3. Longitudinal tracking",
+        "4. Custom evaluation tracks",
+        "5. Integration with existing founder workflows",
+        "6. Community-contributed persona packs",
+        "7. Hosted/managed version",
+        "Unfair Advantages",
+        "1. First-mover in the Claude Code skill ecosystem",
+        "2. The methodology is the moat, not the code",
+        "3. Ecosystem lock-in through workflow integration",
+        "4. The meta-evaluation bootstraps credibility",
+        "Success Conditions",
+        "1. Output quality must be demonstrably better than a single prompt",
+        "2. The Claude Code user base must grow",
+        "3. Sample output must exist and be compelling",
+        "4. The skill dependency chain must remain stable",
+        "5. Run time must stay under 15 minutes",
+        "6. Word document format must not become a liability",
+        "Ideal Use Cases & Customer Profiles",
+        "Use Case 1: Pre-build idea validation for solo founders",
+        "Use Case 2: Pre-pitch preparation for fundraising founders",
+        "Use Case 3: Product review at a decision point",
+        "Use Case 4: Claude Code skill development reference",
+        "Use Case 5: Recurring product health checks"
+      ],
+      "sections": [
+        {
+          "level": 1,
+          "title": "Phase 1C: Strengths & Opportunities \u2014 mega-eval",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 2,
+          "title": "Core Strengths",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "1. Structured methodology where none exists today",
+          "body": "The single most valuable thing mega-eval does is impose repeatable structure on a process that currently has none. When someone asks Claude to \"evaluate my idea,\" they get one monolithic response shaped by whatever the model fixates on first. Mega-eval forces the analysis through distinct lenses \u2014 critical feedback, competitive context, strengths \u2014 that cannot crowd each other out. This is a genuine methodological improvement, not a cosmetic one.\n\nThe parallel-track design is the key mechanism here. Because hater-mode, competitive research, and strengths analysis run independently, each track gets full attention without anchoring bias from the others. A single-prompt evaluation almost always lets the first strong opinion color everything that follows. Separating the tracks architecturally prevents that.",
+          "word_count": 117,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "2. The synthesis phase is the actual product",
+          "body": "Phase 2 \u2014 where findings from all three tracks are cross-referenced and synthesized \u2014 is where mega-eval creates value that a naive approach cannot. It surfaces contradictions (the hater track says X is a fatal flaw, the strengths track says X is the core advantage), forces prioritization, and produces actionable next steps rather than a wall of observations. This cross-cutting synthesis is genuinely difficult to replicate with a single prompt, because it requires holding three distinct analytical frames simultaneously and reasoning across them.\n\nThe instruction to identify \"unresolved tensions\" between tracks is particularly strong. Real product decisions involve genuine tradeoffs, and a tool that surfaces those tensions honestly \u2014 rather than resolving them prematurely \u2014 respects the decision-maker's judgment.",
+          "word_count": 119,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "3. Deliverables are work-ready, not chat-ready",
+          "body": "Producing .docx files is a deliberate choice that positions mega-eval as a workflow tool rather than a conversation feature. The output can be forwarded to a co-founder, dropped into a board deck, shared with an advisor, or filed for reference. This is a meaningful difference from chat-based analysis that lives and dies in a conversation thread.\n\nThe standalone executive summary \u2014 written last, drawing from all other documents \u2014 is a particularly smart design choice. It means a time-pressed stakeholder can read one document and get the full picture, while someone who wants depth can drill into specific reports. This mirrors how professional consulting deliverables are structured.",
+          "word_count": 107,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "4. Graceful degradation is well-designed",
+          "body": "The fallback architecture \u2014 where mega-eval uses built-in prompt templates if the dependent skills (hater-mode, long-form-outline, docx) are not installed \u2014 is a pragmatic design decision that dramatically lowers the barrier to first use. A new user can clone the repo, run it immediately, and get output. If they like what they see, they can install the full dependency chain for higher-quality results. This is a good on-ramp pattern.\n\nSimilarly, the ingestion layer handles missing system tools (pdftotext, pandoc) gracefully \u2014 it tells you what failed and suggests alternatives rather than crashing. This suggests the author has thought about the real-world install experience, not just the happy path.",
+          "word_count": 108,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "5. The prompt engineering is genuinely good",
+          "body": "The subagent prompts in `references/subagent-prompts.md` are specific, well-structured, and grounded in real analytical frameworks. The competitive analysis prompt, for example, doesn't just say \"find competitors\" \u2014 it asks for adjacent solutions, positioning gaps, market timing, and regulatory considerations. The hater-mode prompt specifies 12 distinct audience personas, each with a different critical lens. These aren't throwaway prompts; they encode a thoughtful evaluation methodology.\n\nThe instruction to \"be honest about confidence levels\" and to \"note where information was thin or assumptions were made\" appears in multiple places. This self-awareness directive is important because it keeps the output calibrated rather than confidently wrong.",
+          "word_count": 100,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "6. The pipeline is transparent and editable",
+          "body": "Every prompt, every phase definition, and every output template is visible in plain markdown files. There is no black box. A user who disagrees with the evaluation methodology can edit `subagent-prompts.md` to add industry-specific lenses, remove phases that don't apply, or change the output structure. This transparency is both a feature and a trust signal \u2014 the tool works exactly as documented because the documentation is the tool.\n\n---",
+          "word_count": 69,
+          "line_count": 3
+        },
+        {
+          "level": 2,
+          "title": "Growth Opportunities",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "1. Adjacent use cases beyond product evaluation",
+          "body": "The pipeline architecture generalizes well beyond product/idea evaluation. The same pattern \u2014 ingest, parallel multi-perspective analysis, cross-cutting synthesis, formatted deliverables \u2014 applies to:\n\n- **Due diligence for investors:** Evaluate a pitch deck or startup before committing capital. The hater-mode track becomes risk analysis, competitive becomes market validation, strengths becomes thesis confirmation.\n- **RFP/proposal evaluation:** Government and enterprise buyers could run incoming vendor proposals through the pipeline to get structured comparison documents.\n- **Academic paper review:** The critical feedback track maps to peer review, competitive maps to literature context, and strengths maps to contribution assessment.\n- **Job candidate assessment:** Given a resume and role description, produce structured evaluation documents covering strengths, concerns, and culture fit.\n- **Content/marketing review:** Evaluate a draft blog post, landing page, or pitch from multiple audience perspectives before publishing.\n\nEach of these would require only changes to the prompt templates, not the pipeline architecture. This makes mega-eval a platform pattern, not a single-use tool.",
+          "word_count": 157,
+          "line_count": 9
+        },
+        {
+          "level": 3,
+          "title": "2. Comparison mode",
+          "body": "The most requested feature will be \"run this on two competing ideas and compare them.\" A comparison mode that runs the pipeline on two subjects simultaneously and adds a Phase 2.5 comparative synthesis would be extremely valuable for decision-makers choosing between options. The structured output format already supports this \u2014 you'd get side-by-side documents with a comparative executive summary.",
+          "word_count": 59,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "3. Longitudinal tracking",
+          "body": "Running mega-eval on the same product at different stages (pre-launch, post-launch, post-pivot) and producing a \"delta report\" showing what improved, what regressed, and what new issues emerged would make the tool far stickier. This requires a lightweight storage layer for previous runs, which is trivial to implement as timestamped folders.",
+          "word_count": 50,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "4. Custom evaluation tracks",
+          "body": "The three-track parallel structure (critical, competitive, strengths) is a good default, but advanced users will want to add tracks. Obvious candidates:\n\n- **Technical feasibility track:** For engineering-heavy products, assess architecture, scalability, and technical risk.\n- **Regulatory/compliance track:** For fintech, healthtech, edtech \u2014 a dedicated legal/regulatory lens.\n- **Go-to-market track:** Channel analysis, pricing strategy evaluation, launch sequencing.\n- **User research synthesis track:** If the user provides interview transcripts or survey data, synthesize that as a distinct input.\n\nMaking the track system pluggable (drop a new prompt template into `references/`, reference it in `SKILL.md`) would create a small ecosystem of community-contributed evaluation lenses.",
+          "word_count": 101,
+          "line_count": 8
+        },
+        {
+          "level": 3,
+          "title": "5. Integration with existing founder workflows",
+          "body": "Mega-eval outputs could feed directly into:\n\n- **Notion databases:** Convert the executive summary into structured Notion entries for portfolio tracking.\n- **Linear/GitHub Issues:** Convert critical fixes into actual tickets with priority labels.\n- **Pitch deck generators:** Feed the strengths and positioning analysis into tools that help build investor decks.\n- **OKR frameworks:** Convert the \"success conditions\" into measurable key results.\n\nThese integrations don't need to be built into mega-eval itself \u2014 they can be downstream Claude Code skills that consume mega-eval's structured markdown output. But documenting these workflows would expand the perceived value significantly.",
+          "word_count": 94,
+          "line_count": 8
+        },
+        {
+          "level": 3,
+          "title": "6. Community-contributed persona packs",
+          "body": "The hater-mode track uses 12 audience personas. Different industries need different critics. A healthcare startup needs an FDA reviewer persona. A B2B SaaS product needs a procurement officer persona. A consumer app needs a TikTok influencer persona. Publishing curated persona packs for different verticals would create a reason for the community to contribute and for users to return.",
+          "word_count": 58,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "7. Hosted/managed version",
+          "body": "While the open-source CLI version serves power users well, a hosted version with a web interface would reach the much larger audience of founders and PMs who will never install Claude Code. This could be a lightweight web app that accepts text/URL input, runs the pipeline via API, and delivers the .docx files via download link or email. The open-source version serves as proof of concept and lead generation for the hosted product.\n\n---",
+          "word_count": 74,
+          "line_count": 3
+        },
+        {
+          "level": 2,
+          "title": "Unfair Advantages",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "1. First-mover in the Claude Code skill ecosystem",
+          "body": "Claude Code skills are a new capability with a growing but still small ecosystem. Mega-eval is one of the first multi-skill orchestration patterns \u2014 a skill that composes other skills into a pipeline. This positions it as a reference implementation for how complex Claude Code workflows should be built. If Anthropic promotes a skills marketplace or gallery, mega-eval has a strong case for inclusion as a featured example of what skills can do.\n\nThe timing matters: early entrants in developer tool ecosystems disproportionately capture mindshare. The first well-documented, genuinely useful skill pipeline will be the one people fork, reference, and build on.",
+          "word_count": 102,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "2. The methodology is the moat, not the code",
+          "body": "While any individual component of mega-eval is simple to replicate, the complete evaluation methodology \u2014 the specific personas, the cross-track synthesis logic, the deliverable structure, the error handling patterns \u2014 represents accumulated design thinking that would take significant effort to recreate from scratch. The competitive advantage is in the prompt engineering and pipeline design, not the implementation.\n\nThis is actually strengthened by being open-source. An MIT-licensed reference methodology that anyone can inspect, verify, and build on is more trustworthy than a proprietary black box for evaluation purposes. Trust matters enormously when the output is \"should I pursue this business idea.\"",
+          "word_count": 100,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "3. Ecosystem lock-in through workflow integration",
+          "body": "Once someone runs mega-eval on a product and shares the deliverables with their team, the output format becomes a shared reference point. \"Check the Phase 1A feedback\" and \"the competitive landscape doc flagged this\" become part of the team's vocabulary. This creates soft lock-in \u2014 not through technical switching costs, but through workflow integration and shared context.",
+          "word_count": 57,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "4. The meta-evaluation bootstraps credibility",
+          "body": "Running mega-eval on mega-eval itself (which is what these sample outputs demonstrate) is a powerful credibility move. It shows the tool's output quality, demonstrates the methodology, and creates a self-referential case study that is inherently interesting. Few evaluation tools can convincingly evaluate themselves without looking ridiculous; the fact that the hater-mode output surfaces genuine, specific criticisms of mega-eval proves the methodology has teeth.\n\n---",
+          "word_count": 64,
+          "line_count": 3
+        },
+        {
+          "level": 2,
+          "title": "Success Conditions",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "1. Output quality must be demonstrably better than a single prompt",
+          "body": "This is the make-or-break condition. If someone can get 80% of mega-eval's output quality by typing \"evaluate this product idea thoroughly, cover strengths, weaknesses, competitors, and next steps\" into Claude, the pipeline overhead is not justified. The synthesis phase and cross-track contradiction surfacing are where the quality gap should be largest \u2014 these need to be prominently demonstrated in sample output.\n\n**Minimum bar:** A side-by-side comparison showing that mega-eval catches issues, surfaces tensions, and produces more specific recommendations than a single-prompt evaluation of the same input.",
+          "word_count": 86,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "2. The Claude Code user base must grow",
+          "body": "Mega-eval's addressable market is currently limited to Claude Code users. As of early 2026, this is a technical audience \u2014 developers, power users, and early adopters. The tool's reach scales directly with Claude Code adoption. If Anthropic invests heavily in making Claude Code accessible to non-developers (better GUI, one-click installs, skill marketplace), mega-eval's addressable market expands dramatically.",
+          "word_count": 57,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "3. Sample output must exist and be compelling",
+          "body": "The hater-mode feedback correctly identifies that the single biggest credibility gap is the absence of sample output. Users need to see what 6 well-structured evaluation documents look like before they'll invest 15 minutes running the pipeline. The sample-run directory (being populated now) directly addresses this. The quality of these sample documents is arguably the most important marketing asset for the project.",
+          "word_count": 61,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "4. The skill dependency chain must remain stable",
+          "body": "Mega-eval depends on three external skills (hater-mode, long-form-outline, docx). If any of these change their interface, move locations, or are deprecated, the pipeline degrades. The built-in fallback templates mitigate this risk, but the fallback quality needs to be close enough to the full-dependency version that users don't notice a sharp quality drop. Keeping the fallback templates updated as the methodology evolves is an ongoing maintenance requirement.",
+          "word_count": 66,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "5. Run time must stay under 15 minutes",
+          "body": "A 10-15 minute autonomous run is acceptable for the current use case (periodic, high-stakes evaluations). If run times creep toward 30+ minutes due to model latency, web search delays, or context window limits, the tool becomes impractical. The parallel Phase 1 design helps here \u2014 three sequential tracks would push the run time to 25-30 minutes.",
+          "word_count": 56,
+          "line_count": 1
+        },
+        {
+          "level": 3,
+          "title": "6. Word document format must not become a liability",
+          "body": "The .docx output format is currently a strength (shareable, professional, offline-readable). But if the dominant user expectation shifts toward interactive dashboards, Notion databases, or collaborative web documents, the static Word file format could become a friction point. The pipeline should be architected so the output format is a swappable final step, not baked into every phase.\n\n---",
+          "word_count": 57,
+          "line_count": 3
+        },
+        {
+          "level": 2,
+          "title": "Ideal Use Cases & Customer Profiles",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "Use Case 1: Pre-build idea validation for solo founders",
+          "body": "**Scenario:** A solo founder has an idea for a SaaS product. They've written a 2-page description and want to stress-test it before committing months of development time. They don't have a co-founder, advisory board, or budget for a consultant.\n\n**Why mega-eval fits:** The multi-perspective analysis gives them something close to what a well-connected founder gets from their network \u2014 critical feedback from multiple angles, competitive context they might have missed, and an honest assessment of strengths. The deliverables are concrete enough to share with potential co-founders or advisors as a starting point for conversation.\n\n**Ideal customer profile:** Technical solo founder, already uses Claude Code, building in stealth or pre-launch. Age 25-40, has built products before but wants structured pressure-testing. Values thoroughness over speed.",
+          "word_count": 123,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "Use Case 2: Pre-pitch preparation for fundraising founders",
+          "body": "**Scenario:** A founder is preparing to pitch investors. They want to anticipate tough questions, understand their competitive positioning, and identify the strongest narrative angles.\n\n**Why mega-eval fits:** The hater-mode output maps directly to investor objections. The competitive landscape document provides the market context investors will ask about. The content strategy outline helps frame the pitch narrative. The executive summary provides a concise self-assessment they can reference while preparing.\n\n**Ideal customer profile:** Seed or Series A founder, 2-10 person team, has a product in market or near-launch. Uses the output to prepare, not as a substitute for their own judgment. Likely shares the competitive landscape doc and executive summary with their team.",
+          "word_count": 111,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "Use Case 3: Product review at a decision point",
+          "body": "**Scenario:** A PM at a startup has been heads-down building a feature set for 3 months. Before launch, they want a structured external perspective on whether the feature set is coherent, competitive, and positioned well.\n\n**Why mega-eval fits:** After months of internal discussion, teams develop blind spots. Mega-eval provides an outside perspective that surfaces issues the team has rationalized away. The synthesis document's \"unresolved tensions\" section is particularly useful for surfacing internal disagreements that have been papered over.\n\n**Ideal customer profile:** PM or product lead at a 5-50 person startup. Has authority to make product decisions but wants structured input. Values the executive summary for sharing up to leadership and the critical-fixes doc for sharing down to the engineering team.",
+          "word_count": 120,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "Use Case 4: Claude Code skill development reference",
+          "body": "**Scenario:** A developer wants to build a complex Claude Code skill that orchestrates multiple subagents, handles diverse inputs, and produces structured output. They need a reference implementation.\n\n**Why mega-eval fits:** The pipeline architecture \u2014 ingestion, parallel subagents, synthesis, formatted output \u2014 is a reusable pattern. The error handling, graceful degradation, and skill composition patterns are well-documented and directly applicable to other multi-phase Claude Code workflows.\n\n**Ideal customer profile:** Developer building Claude Code skills, looking for patterns and best practices. May never run mega-eval on an actual product but uses it as a template for their own multi-agent workflows.",
+          "word_count": 98,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "Use Case 5: Recurring product health checks",
+          "body": "**Scenario:** A founder runs mega-eval quarterly on their own product \u2014 feeding it the current landing page, recent changelog, and competitive URLs. They use the output to track whether their positioning is keeping up with market changes and whether critical issues from previous runs have been addressed.\n\n**Why mega-eval fits:** The structured, repeatable output format makes longitudinal comparison possible. Running the same methodology at regular intervals creates a record of how the product and market have evolved. This is the use case that would benefit most from a comparison/delta mode.\n\n**Ideal customer profile:** Disciplined founder or PM who treats product strategy as an ongoing process, not a one-time exercise. Likely maintains a decision log or product journal. Would become a power user and potential contributor to the project.",
+          "word_count": 128,
+          "line_count": 5
+        }
+      ]
+    },
+    "phase1d_design": {
+      "file_name": "phase1d-design-raw.md",
+      "path": "phase1d-design-raw.md",
+      "required": false,
+      "phase": "phase1_optional",
+      "exists": false
+    },
+    "phase1e_security": {
+      "file_name": "phase1e-security-raw.md",
+      "path": "phase1e-security-raw.md",
+      "required": false,
+      "phase": "phase1_optional",
+      "exists": false
+    },
+    "phase1f_durability": {
+      "file_name": "phase1f-durability-raw.md",
+      "path": "phase1f-durability-raw.md",
+      "required": false,
+      "phase": "phase1_optional",
+      "exists": false
+    },
+    "phase2_synthesis": {
+      "file_name": "phase2-synthesis.md",
+      "path": "phase2-synthesis.md",
+      "required": true,
+      "phase": "phase2",
+      "exists": true,
+      "bytes": 10191,
+      "line_count": 97,
+      "word_count": 1518,
+      "headings": [
+        "Synthesis: Critical Fixes, Design Issues & Next Steps",
+        "Critical Fixes Needed",
+        "Fix 1: Ship sample output (this is the fix)",
+        "Fix 2: Remove the duplicate Dependencies section",
+        "Fix 3: Validate dependent skill links",
+        "Fix 4: Add a \"Who is this for?\" section to the README",
+        "Design Inconsistencies to Resolve",
+        "The fallback experience is undocumented from the user's perspective",
+        ".docx output format is simultaneously a strength and a liability",
+        "The pipeline checklist is manual but presented as a QA tool",
+        "Proposed Next Steps (Non-Breaking Changes)",
+        "Quick Wins (days)",
+        "Medium-Term (weeks)",
+        "Strategic (months)",
+        "Unresolved Tensions",
+        "\"It's just a prompt\" vs. \"The methodology is the moat\"",
+        "Open-source community tool vs. commercial product",
+        "Claude dependency vs. cross-platform portability"
+      ],
+      "sections": [
+        {
+          "level": 1,
+          "title": "Synthesis: Critical Fixes, Design Issues & Next Steps",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 2,
+          "title": "Critical Fixes Needed",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "Fix 1: Ship sample output (this is the fix)",
+          "body": "- **What:** No sample output existed to demonstrate what the pipeline actually produces. Every Phase 1 track flagged this \u2014 the hater-mode feedback called it the #1 recurring theme, the competitive analysis listed it as Execution Risk #7, and the strengths track made \"sample output must exist and be compelling\" a top success condition.\n- **Why it matters:** Prospective users cannot evaluate the tool without seeing its output. The README sells the process, not the result. This is the single highest-leverage change for adoption.\n- **Flagged by:** All three Phase 1 tracks \u2014 12/12 hater personas, competitive risk assessment, strengths success conditions\n- **Suggested approach:** Run the pipeline on itself and include the output in an `examples/` directory. This is currently being done. The meta-evaluation also serves as a credibility demonstration (Phase 1C identified this as an \"unfair advantage\").\n- **Status:** In progress \u2014 this document is part of the fix.",
+          "word_count": 151,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "Fix 2: Remove the duplicate Dependencies section",
+          "body": "- **What:** The README has both a \"Prerequisites\" section (lines 74-93) and a \"Dependencies\" section (lines 111-119) that list the same three skills. The Reddit and General Hater personas flagged this. It's confusing \u2014 users don't know which is the authoritative list.\n- **Why it matters:** Erodes the impression of polish. If the README can't keep its own sections straight, users question whether the pipeline is well-maintained.\n- **Flagged by:** Phase 1A (Reddit user, General Hater)\n- **Suggested approach:** Remove the \"Dependencies\" section entirely. The \"Prerequisites\" section already covers this with better detail (links, descriptions, fallback explanation).",
+          "word_count": 97,
+          "line_count": 4
+        },
+        {
+          "level": 3,
+          "title": "Fix 3: Validate dependent skill links",
+          "body": "- **What:** The Prerequisites section links to `github.com/anthropics/claude-code/tree/main/skills/hater-mode` etc. The General Hater persona asked: \"do those paths even exist?\" If they're broken links, the README loses credibility at the exact moment it's asking users to install dependencies.\n- **Why it matters:** Broken links in install instructions are a trust-killer for developer tools.\n- **Flagged by:** Phase 1A (General Hater, Hacker News), Phase 1B (Execution Risk #9 \u2014 dependency chain)\n- **Suggested approach:** Verify the links work. If the skills live elsewhere, update the URLs. If they're bundled in the user's Claude Code installation, say that instead of linking to GitHub.",
+          "word_count": 100,
+          "line_count": 4
+        },
+        {
+          "level": 3,
+          "title": "Fix 4: Add a \"Who is this for?\" section to the README",
+          "body": "- **What:** The README lacks a plain-language explanation of who should use this tool and what they get. It jumps straight into technical details (phases, subagents, SKILL.md). Non-technical users and even technical users who aren't Claude Code power users have no on-ramp.\n- **Why it matters:** The competitive analysis found that the addressable market is already narrow (Claude Code users). Within that audience, the README further narrows itself by assuming familiarity with skills, subagents, and pipeline terminology.\n- **Flagged by:** Phase 1A (Facebook user, Layperson), Phase 1B (positioning gap \u2014 \"requires Claude Code CLI fluency\"), Phase 1C (use case profiles suggest founders and PMs as ideal users, but README doesn't address them)\n- **Suggested approach:** Add a 3-4 line \"Who is this for?\" section after the opening description, before the pipeline diagram. List 2-3 concrete scenarios: \"You have a startup idea and want to stress-test it before building.\" \"You're preparing a pitch and want to anticipate tough questions.\" \"You shipped a product and want a structured outside perspective.\"",
+          "word_count": 168,
+          "line_count": 4
+        },
+        {
+          "level": 2,
+          "title": "Design Inconsistencies to Resolve",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "The fallback experience is undocumented from the user's perspective",
+          "body": "Phase 1C praises the graceful degradation design (built-in templates if skills aren't installed). But the README doesn't explain what the user experience looks like in degraded mode. Does output quality drop noticeably? Are some phases skipped? The user can't make an informed decision about whether to install dependencies without knowing what they lose by not doing so.\n\n**Tension between tracks:** Phase 1A (Reddit user) says \"are the dependencies required or not? Pick one.\" Phase 1C says the fallback is well-designed. Both are right \u2014 the design is sound, but the communication about it is unclear. Resolution: the README should explicitly say \"Works without dependencies at [X] quality; install them for [Y] improvement.\"",
+          "word_count": 112,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": ".docx output format is simultaneously a strength and a liability",
+          "body": "Phase 1C identifies .docx as a strength (shareable, professional, offline-readable). Phase 1A (X/Twitter, Designer) calls it dated and limiting. Phase 1B notes that competitors use web dashboards.\n\n**Unresolved tension:** This is a genuine tradeoff. Word docs are more shareable in professional contexts but less modern as a deliverable format. The skill currently has no alternative output format.\n\n**Recommended resolution:** Keep .docx as default but note in the Customization section that the SKILL.md's Phase 4 can be modified to produce markdown, PDF, or other formats. The pipeline's actual value is in Phases 0-3; Phase 4 is a formatting layer that can be swapped.",
+          "word_count": 102,
+          "line_count": 5
+        },
+        {
+          "level": 3,
+          "title": "The pipeline checklist is manual but presented as a QA tool",
+          "body": "`references/pipeline-checklist.md` is a good internal reference, but it's a markdown file with `- [ ]` checkboxes \u2014 there's no automated validation. Phase 1A (Software Tester) flagged the absence of automated testing. The checklist is useful for a developer running the pipeline manually, but it's not a substitute for validation logic.\n\n**Recommended resolution:** Don't oversell the checklist. It's a development aid, not a testing framework. Long-term, consider adding a lightweight validation step at the end of Phase 4 that checks whether all expected output files exist and have non-trivial content.",
+          "word_count": 89,
+          "line_count": 3
+        },
+        {
+          "level": 2,
+          "title": "Proposed Next Steps (Non-Breaking Changes)",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "Quick Wins (days)",
+          "body": "1. **Remove the duplicate Dependencies section** from README \u2014 5 minutes, immediate polish improvement\n2. **Add \"Who is this for?\" section** to README \u2014 15 minutes, directly addresses the audience clarity issue from 4 of 12 hater personas\n3. **Verify and fix prerequisite skill links** \u2014 10 minutes, prevents broken-link embarrassment\n4. **Add the `examples/sample-run/` directory** to the repo with this pipeline's output \u2014 in progress",
+          "word_count": 66,
+          "line_count": 4
+        },
+        {
+          "level": 3,
+          "title": "Medium-Term (weeks)",
+          "body": "5. **Add a single-prompt vs. mega-eval comparison** to the README or examples \u2014 run the same input through both approaches and show the quality gap side by side. This was the Reddit user's #1 request and directly addresses the \"is this better than just asking Claude?\" question.\n6. **Document the degraded-mode experience** \u2014 explain what output looks like without the dependent skills installed, so users can make an informed choice.\n7. **Add basic input sanitization to ingest.py** \u2014 the Software Tester flagged subprocess calls with unsanitized file paths. Use `shlex.quote()` or pass arguments as lists (which `subprocess.run` already supports, but the file paths should be validated).\n8. **Create a simple test case** \u2014 one text input with expected output structure (not exact content, but expected files and minimum section headings). This is the minimum viable testing story.",
+          "word_count": 137,
+          "line_count": 4
+        },
+        {
+          "level": 3,
+          "title": "Strategic (months)",
+          "body": "9. **Comparison mode** \u2014 run the pipeline on two subjects and produce a comparative synthesis. Phase 1C identified this as the most requested future feature.\n10. **Pluggable evaluation tracks** \u2014 let users drop custom prompt templates into `references/` and have them automatically included in Phase 1. This opens the door to community-contributed industry-specific lenses.\n11. **Longitudinal tracking** \u2014 timestamped run outputs with delta reports showing what changed between evaluations.\n12. **Hosted version** \u2014 web interface for non-CLI users. The open-source version serves as proof of methodology; the hosted version expands addressable market dramatically.",
+          "word_count": 93,
+          "line_count": 4
+        },
+        {
+          "level": 2,
+          "title": "Unresolved Tensions",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "\"It's just a prompt\" vs. \"The methodology is the moat\"",
+          "body": "Phase 1A (Hacker News, General Hater) says mega-eval is trivially replicable \u2014 it's just a SKILL.md file. Phase 1C argues the methodology (specific personas, cross-track synthesis logic, deliverable structure) represents accumulated design thinking that's harder to replicate than it looks. Phase 1B found no competing open-source tool with comparable structure, suggesting the methodology hasn't been trivially replicated yet.\n\n**Assessment:** Both are partially right. The implementation is simple; the methodology took real thought. The resolution is to demonstrate quality \u2014 if the output is good, the simplicity of implementation is a virtue, not a weakness. If the output is mediocre, the methodology claim collapses.",
+          "word_count": 103,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "Open-source community tool vs. commercial product",
+          "body": "Phase 1A (Indie Hackers) asks whether this is a community tool or a business. Phase 1C suggests a hosted version as a growth opportunity. Phase 1B positions mega-eval in a market where competitors charge $15-100/month.\n\n**Assessment:** This doesn't need to be resolved immediately. The open-source version builds credibility and adoption; a hosted version can follow if there's demand. The README should be honest that this is currently an open-source tool with no commercial ambitions \u2014 that's actually a positioning advantage against paid competitors.",
+          "word_count": 83,
+          "line_count": 3
+        },
+        {
+          "level": 3,
+          "title": "Claude dependency vs. cross-platform portability",
+          "body": "Phase 1A (General Hater) flags Claude lock-in. Phase 1B notes that SKILL.md format is becoming cross-platform (works across Claude Code, Cursor, Gemini CLI, Codex CLI). Phase 1C notes the Claude Code ecosystem as a first-mover advantage.\n\n**Assessment:** The SKILL.md format portability largely resolves this concern. The pipeline doesn't use Claude-specific APIs \u2014 it's markdown instructions that any capable LLM agent can execute. The real risk is if the subagent parallelism pattern isn't supported by other runtimes, but that's a future concern, not a current blocker.",
+          "word_count": 85,
+          "line_count": 3
+        }
+      ]
+    },
+    "phase3_content_outline": {
+      "file_name": "phase3-content-outline-raw.md",
+      "path": "phase3-content-outline-raw.md",
+      "required": true,
+      "phase": "phase3",
+      "exists": true,
+      "bytes": 6648,
+      "line_count": 92,
+      "word_count": 1063,
+      "headings": [
+        "Phase 3: Content Strategy Outline \u2014 mega-eval",
+        "The Angle",
+        "Outline",
+        "I. Opening Hook \u2014 The Problem with \"Evaluate My Idea\"",
+        "II. What Mega-Eval Actually Produces (The Demo)",
+        "III. What the Self-Evaluation Caught (Honest Reckoning)",
+        "IV. Why Structured Evaluation Beats Single-Prompt Feedback",
+        "V. The Honest Limitations",
+        "VI. How to Use It (The Call to Action)",
+        "VII. Closing \u2014 What This Means for How We Build",
+        "Distribution Notes"
+      ],
+      "sections": [
+        {
+          "level": 1,
+          "title": "Phase 3: Content Strategy Outline \u2014 mega-eval",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 2,
+          "title": "The Angle",
+          "body": "**Lead with the meta-evaluation.** The strongest content hook for mega-eval is the self-referential case study: a product evaluation tool that evaluates itself, surfaces real criticisms, and ships the fixes. This is inherently interesting because it demonstrates the tool's output quality while telling an honest story about building in public.\n\n**Working title:** \"I Built a Tool to Tear Apart Product Ideas \u2014 Then Pointed It at Itself\"\n\n---",
+          "word_count": 67,
+          "line_count": 5
+        },
+        {
+          "level": 2,
+          "title": "Outline",
+          "body": "",
+          "word_count": 0,
+          "line_count": 0
+        },
+        {
+          "level": 3,
+          "title": "I. Opening Hook \u2014 The Problem with \"Evaluate My Idea\"",
+          "body": "**Purpose:** Establish the pain point that mega-eval solves \u2014 the gap between asking an LLM for feedback and getting structured, multi-perspective analysis.\n\n- Start with a familiar scenario: you paste your idea into Claude and get one monolithic response that sounds helpful but misses angles\n- The response anchors on whatever the model fixates on first \u2014 if it leads with a strength, the criticism is soft; if it leads with a flaw, the praise is performative\n- What you actually need is what a good advisory board gives you: multiple independent perspectives that don't contaminate each other, then a synthesis that surfaces contradictions\n- That's what mega-eval does \u2014 but the interesting part is what happened when we turned it on itself",
+          "word_count": 123,
+          "line_count": 6
+        },
+        {
+          "level": 3,
+          "title": "II. What Mega-Eval Actually Produces (The Demo)",
+          "body": "**Purpose:** Show, don't tell. Walk through the actual output from the self-evaluation run.\n\n- Briefly explain the pipeline: ingest, 3 parallel analysis tracks, synthesis, content strategy, 6 deliverable docs\n- Show the hater-mode highlights: which of the 12 personas had the sharpest criticism? (The Software Tester: \"zero tests, no validation, no way to know if a run was successful.\" The General Hater: \"This is a README for a prompt.\")\n- Show the competitive landscape finding: no existing tool combines adversarial critique + competitive research + strengths analysis in a single pipeline\n- Show the synthesis tension: \"It's just a prompt\" vs. \"The methodology is the moat\" \u2014 the haters and the strengths track disagree, and the synthesis surfaces that disagreement instead of resolving it\n- The executive summary's verdict: honest, specific, not a score \u2014 a judgment",
+          "word_count": 137,
+          "line_count": 7
+        },
+        {
+          "level": 3,
+          "title": "III. What the Self-Evaluation Caught (Honest Reckoning)",
+          "body": "**Purpose:** Build credibility by showing what the tool found that the builder missed or hadn't addressed.\n\n- The recurring theme across all 12 hater personas: \"Show the output.\" Every criticism weakens if you just demonstrate what the pipeline produces. The builder hadn't shipped sample output \u2014 the tool caught that.\n- The duplicate Dependencies/Prerequisites sections \u2014 a polish issue the builder's eyes had skipped\n- The unvalidated skill links \u2014 pointing to GitHub paths that might not exist\n- The missing \"Who is this for?\" section \u2014 the README assumed the reader already knew what Claude Code skills are\n- Key insight: the tool found issues that a single-prompt review would not have surfaced, because the cross-track synthesis forced contradictions into the open",
+          "word_count": 123,
+          "line_count": 7
+        },
+        {
+          "level": 3,
+          "title": "IV. Why Structured Evaluation Beats Single-Prompt Feedback",
+          "body": "**Purpose:** Make the case for the methodology, not just the tool.\n\n- The parallel-track design prevents anchoring bias \u2014 each analytical lens gets full attention without being colored by the others\n- The synthesis phase surfaces contradictions that a single-pass review resolves prematurely (or ignores entirely)\n- Deliverable output (.docx files) can be shared, forwarded, and referenced \u2014 unlike chat responses that live and die in a conversation thread\n- The pipeline is transparent and editable \u2014 every prompt is in plain markdown, so you know exactly why the tool says what it says\n- This isn't about mega-eval specifically; it's about treating product evaluation as a repeatable methodology rather than an ad-hoc conversation",
+          "word_count": 114,
+          "line_count": 7
+        },
+        {
+          "level": 3,
+          "title": "V. The Honest Limitations",
+          "body": "**Purpose:** Preempt the top hater-mode criticisms so the reader knows you've heard them.\n\n- It runs only in Claude Code (for now) \u2014 you need to be in that ecosystem\n- It takes 10-15 minutes, not 30 seconds \u2014 this is a feature (thoroughness) but also a real cost\n- The output is text-heavy with no visual artifacts (no positioning maps, no radar charts) \u2014 the Designer persona is right about this\n- It's AI evaluating with AI \u2014 at no point does a human with domain expertise enter the picture (the Late Adopter's concern). This is a tool for structured thinking, not a replacement for advisors\n- The methodology is open-source and MIT-licensed \u2014 anyone can fork it. The \"moat\" is in the methodology's quality, not in technical barriers to replication",
+          "word_count": 132,
+          "line_count": 7
+        },
+        {
+          "level": 3,
+          "title": "VI. How to Use It (The Call to Action)",
+          "body": "**Purpose:** Convert interested readers into users.\n\n- Install: 3 commands \u2014 clone, copy, run\n- First run: paste a product description or URL, wait 10-15 minutes, get 6 docs\n- What to do with the output: share the executive summary with your co-founder, use the critical-fixes doc as a sprint backlog, use the content strategy outline to plan your launch post\n- Link to the sample output in the repo so they can preview before installing\n- Customization: edit the prompts to add industry-specific lenses, change the output format, add evaluation tracks",
+          "word_count": 92,
+          "line_count": 7
+        },
+        {
+          "level": 3,
+          "title": "VII. Closing \u2014 What This Means for How We Build",
+          "body": "**Purpose:** Zoom out to the larger point.\n\n- The best critique comes from structured disagreement, not from asking one voice to be balanced\n- Open-source evaluation methodologies are more trustworthy than proprietary black boxes \u2014 you can verify exactly why the tool says what it says\n- Building in public includes being willing to turn your own tools on yourself and ship what they find\n- The sample output in the repo is the tool's resume \u2014 judge it by its work, not its README\n\n---",
+          "word_count": 86,
+          "line_count": 8
+        },
+        {
+          "level": 2,
+          "title": "Distribution Notes",
+          "body": "**Primary channel:** GitHub README + repo \u2014 the sample output directory is the main content marketing asset\n**Secondary channels:**\n- Hacker News: \"Show HN: I built a 6-phase product evaluation pipeline for Claude Code, then evaluated it with itself\" \u2014 the self-referential angle plays well on HN\n- Indie Hackers: focus on the builder journey and the honest-reckoning section\n- X/Twitter: thread format \u2014 pull the sharpest hater-mode quotes and the synthesis tensions\n- Claude Code community (Discord, forums): position as a reference implementation for multi-skill orchestration\n\n**Content format:** Long-form blog post (2,500-3,500 words) with embedded examples from the actual pipeline output. Avoid screenshots of Word docs; use formatted markdown quotes instead.",
+          "word_count": 112,
+          "line_count": 8
+        }
+      ]
+    },
+    "run_log": {
+      "file_name": "run-log.md",
+      "path": "run-log.md",
+      "required": false,
+      "phase": "meta",
+      "exists": false
+    },
+    "executive_summary": {
+      "file_name": "00-executive-summary.docx",
+      "path": "00-executive-summary.docx",
+      "required": true,
+      "phase": "phase4",
+      "exists": true,
+      "bytes": 13215
+    },
+    "hater_mode_feedback": {
+      "file_name": "01-hater-mode-feedback.docx",
+      "path": "01-hater-mode-feedback.docx",
+      "required": true,
+      "phase": "phase4",
+      "exists": true,
+      "bytes": 14680
+    },
+    "competitive_landscape": {
+      "file_name": "02-competitive-landscape.docx",
+      "path": "02-competitive-landscape.docx",
+      "required": true,
+      "phase": "phase4",
+      "exists": true,
+      "bytes": 13563
+    },
+    "strengths_opportunities": {
+      "file_name": "03-strengths-opportunities.docx",
+      "path": "03-strengths-opportunities.docx",
+      "required": true,
+      "phase": "phase4",
+      "exists": true,
+      "bytes": 12835
+    },
+    "critical_fixes_and_design": {
+      "file_name": "04-critical-fixes-and-design.docx",
+      "path": "04-critical-fixes-and-design.docx",
+      "required": true,
+      "phase": "phase4",
+      "exists": true,
+      "bytes": 12836
+    },
+    "content_strategy_outline": {
+      "file_name": "05-content-strategy-outline.docx",
+      "path": "05-content-strategy-outline.docx",
+      "required": true,
+      "phase": "phase4",
+      "exists": true,
+      "bytes": 12722
+    }
+  },
+  "phases": {
+    "phase0": {
+      "complete": true,
+      "required_files": [
+        "eval-brief.md"
+      ]
+    },
+    "phase1": {
+      "complete": true,
+      "required_present": 3,
+      "required_total": 3,
+      "optional_present": []
+    },
+    "phase2": {
+      "complete": true,
+      "required_files": [
+        "phase2-synthesis.md"
+      ]
+    },
+    "phase3": {
+      "complete": true,
+      "required_files": [
+        "phase3-content-outline-raw.md"
+      ]
+    },
+    "phase4": {
+      "complete": true,
+      "present_count": 6,
+      "required_total": 6,
+      "present_files": [
+        "00-executive-summary.docx",
+        "01-hater-mode-feedback.docx",
+        "02-competitive-landscape.docx",
+        "03-strengths-opportunities.docx",
+        "04-critical-fixes-and-design.docx",
+        "05-content-strategy-outline.docx"
+      ]
+    },
+    "resume_ready": false,
+    "next_recommended_phase": "complete",
+    "next_recommended_action": "All standard markdown and .docx deliverables are present."
+  }
+}

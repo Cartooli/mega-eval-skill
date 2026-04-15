@@ -29,6 +29,14 @@ def test_security_durability_origin_doc_exists():
     assert origin_doc.exists(), "Expected security/durability origin requirements doc to exist"
 
 
+def test_phase_c_origin_doc_and_sample_bundle_exist():
+    origin_doc = REPO_ROOT / "docs/brainstorms/2026-04-15-mega-eval-phase-c-platform-upgrades-requirements.md"
+    sample_bundle = REPO_ROOT / "examples/sample-run/eval-bundle.json"
+
+    assert origin_doc.exists(), "Expected Phase C origin requirements doc to exist"
+    assert sample_bundle.exists(), "Expected sample eval bundle to exist"
+
+
 def test_phase_skill_files_exist():
     required_skill_files = [
         "skills/mega-eval-brief/SKILL.md",
@@ -66,3 +74,15 @@ def test_plugin_packaged_skill_entries_exist():
     missing = [path for path in required_plugin_entries if not (REPO_ROOT / path).exists()]
 
     assert not missing, f"Missing expected plugin-packaged skill entries: {missing}"
+
+
+def test_expected_scripts_exist():
+    required_scripts = [
+        "scripts/ingest.py",
+        "scripts/suggest_learnings.py",
+        "scripts/build_eval_bundle.py",
+    ]
+
+    missing = [path for path in required_scripts if not (REPO_ROOT / path).exists()]
+
+    assert not missing, f"Missing expected helper scripts: {missing}"

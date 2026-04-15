@@ -121,6 +121,8 @@ Before anything else, normalize all inputs into a single **Evaluation Brief** â€
 
 If run logging is enabled (`MEGA_EVAL_LOG` not opted out): generate a `run_id`, create `run-log.md` at the chosen path with a **Meta** section (`run_id`, `started` ISO time, `workspace`, `status: in_progress`), and append `phase_start phase0`.
 
+If the target workspace already contains canonical mega-eval artifacts from an earlier or partial run, inspect them before rerunning phases. Reuse valid outputs and continue from the **first incomplete phase** when appropriate instead of regenerating everything by default. The helper script `scripts/build_eval_bundle.py` can export `eval-bundle.json` with artifact presence, phase status, and a recommended next phase.
+
 ### Handling Input Types
 
 **Raw text block:** Use directly. Extract the core idea, feature list, value proposition, and any claims made.
