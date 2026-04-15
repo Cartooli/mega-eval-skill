@@ -17,15 +17,15 @@ INPUT (text / doc / URL / combo)
 │  Parse all inputs into a unified brief             │
 └────────────────────────┬───────────────────────────┘
                          │
-        ┌────────────────┼────────────────┐
-        ▼                ▼                ▼
-┌─ Phase 1A ──┐  ┌─ Phase 1B ──┐  ┌─ Phase 1C ──┐
-│ Hater Mode  │  │ Competitive │  │ Strengths & │
-│ (12 lenses) │  │ & Market    │  │ Opportunities│
-└──────┬──────┘  └──────┬──────┘  └──────┬───────┘
-       │                │               │
-       └────────────────┼───────────────┘
-                        ▼
+        ┌────────────────┼────────────────┬────────────────┐
+        ▼                ▼                ▼                ▼
+┌─ Phase 1A ──┐  ┌─ Phase 1B ──┐  ┌─ Phase 1C ──┐  ┌─ Phase 1D ─────┐
+│ Hater Mode  │  │ Competitive │  │ Strengths & │  │ AI Architecture│
+│ (12 lenses) │  │ & Market    │  │ Opportunities│  │ Audit (opt'l)  │
+└──────┬──────┘  └──────┬──────┘  └──────┬───────┘  └──────┬────────┘
+       │                │               │                  │
+       └────────────────┴───────┬───────┴──────────────────┘
+                                ▼
 ┌─ Phase 2: Synthesis ──────────────────────────────┐
 │  Critical fixes, design issues, next steps         │
 └────────────────────────┬───────────────────────────┘
@@ -48,7 +48,8 @@ The pipeline produces these files in the workspace folder:
 3. **`03-strengths-opportunities.docx`** — What's working, where the upside is
 4. **`04-critical-fixes-and-design.docx`** — Critical fixes needed, design inconsistencies, non-breaking next steps
 5. **`05-content-strategy-outline.docx`** — Long-form outline for publicly writing about or pitching the idea
-6. **`00-executive-summary.docx`** — Master rollup: key findings, priority-ranked action items, go/no-go signals
+6. **`06-architecture-audit.docx`** — *(AI subjects only)* Six-axis architecture scorecard, anti-pattern scan, remediation list
+7. **`00-executive-summary.docx`** — Master rollup: key findings, priority-ranked action items, go/no-go signals
 
 ---
 
@@ -244,21 +245,52 @@ Structure:
 ## Ideal Use Cases & Customer Profiles
 ```
 
+### Phase 1D: AI Architecture Audit (optional — AI subjects only)
+
+**Gate:** Run this track **only when** the Evaluation Brief's subject is an AI product, agent framework, LLM application, skill system, or any tool whose core is a language model. For non-AI subjects, skip Phase 1D entirely and proceed to Phase 2 with tracks 1A/1B/1C only.
+
+Spawn a subagent with these instructions (full template in `references/subagent-prompts.md`):
+
+```
+You are running an AI architecture audit. Read the audit skill at:
+<ai-architecture-audit-skill-path>/SKILL.md
+
+Run correlation:
+- run_id: <run_id>
+- log path: <workspace>/<run-log.md path>
+
+Evaluation Brief:
+<paste eval-brief content>
+
+Artifacts available (repo, prompts, tool definitions, run logs):
+<list or "none — scoring from brief only, confidence=low">
+
+Produce the six-axis scorecard + anti-pattern scan + prioritized remediation
+as specified in the audit skill. Mental model:
+    Skills think. Tools execute. Harness orchestrates. Resolver decides.
+
+Save the output as markdown to: <workspace>/phase1d-architecture-audit-raw.md
+```
+
+Output: `phase1d-architecture-audit-raw.md`.
+
+This track feeds into Phase 2 synthesis alongside 1A/1B/1C. Its findings surface under **Critical Fixes** (architecture anti-patterns) and **Proposed Next Steps** (remediation items). In Phase 4, the audit gets its own deliverable: `06-architecture-audit.docx`.
+
 ### Waiting for Phase 1
 
-After launching all three subagents, wait for them to complete. While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
+After launching all three (or four, when 1D applies) subagents, wait for them to complete. While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
 
-If logging: append `phase_start phase1` before launch and `phase_complete phase1` when all three raw files exist (or note `tool_error` / `retry` / partial output as needed).
+If logging: append `phase_start phase1` before launch and `phase_complete phase1` when all raw files exist (or note `tool_error` / `retry` / partial output as needed).
 
 ---
 
 ## Phase 2: Synthesis — Critical Fixes, Design Issues, Next Steps
 
-Once all Phase 1 tracks complete, read all three raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent.
+Once all Phase 1 tracks complete, read every raw output (three tracks, or four when Phase 1D ran) and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent.
 
 ### Read All Phase 1 Outputs
 
-Read `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, and `phase1c-strengths-raw.md`.
+Read `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, and `phase1c-strengths-raw.md`. If Phase 1D ran, also read `phase1d-architecture-audit-raw.md` — its axes scores and anti-pattern flags should feed Critical Fixes and Proposed Next Steps, not get buried.
 
 ### Produce the Synthesis
 
@@ -346,7 +378,8 @@ Process deliverables in this order — the executive summary comes LAST because 
 3. **`03-strengths-opportunities.docx`** — Format phase1c-strengths-raw.md
 4. **`04-critical-fixes-and-design.docx`** — Format phase2-synthesis.md
 5. **`05-content-strategy-outline.docx`** — Format phase3-content-outline-raw.md
-6. **`00-executive-summary.docx`** — Write fresh, drawing from all 5 documents above
+6. **`06-architecture-audit.docx`** — *(skip if Phase 1D didn't run)* Format phase1d-architecture-audit-raw.md, keeping the scorecard table intact
+7. **`00-executive-summary.docx`** — Write fresh, drawing from all documents above (include architecture verdict if Phase 1D ran)
 
 ### Executive Summary Structure
 
@@ -365,6 +398,9 @@ The executive summary is a standalone document that a decision-maker can read wi
 ### Top 3 Strengths
 ### Top 3 Critical Issues
 ### Top 3 Opportunities
+
+### Architecture Verdict (AI subjects only — omit otherwise)
+[One paragraph: overall audit score (x/30), top anti-pattern, single highest-leverage architectural fix. Points at `06-architecture-audit.docx` for detail.]
 
 ### Priority Action Items
 [Numbered list, ordered by urgency. Each item references which detailed document has more info.]

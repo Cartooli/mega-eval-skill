@@ -125,6 +125,69 @@ Save the complete output as structured markdown to: <workspace>/phase1c-strength
 
 ---
 
+## Phase 1D: AI Architecture Audit Subagent (optional — AI subjects only)
+
+Spawn this subagent **only when** the Evaluation Brief's subject is an AI product, agent framework, LLM app, skill system, or any tool whose core is a language model. Skip for non-AI subjects.
+
+```
+You are running an AI architecture audit for a product/idea evaluation pipeline.
+Mental model: Skills think. Tools execute. Harness orchestrates. Resolver decides.
+
+Run correlation:
+- run_id: <run_id>
+- run_log: <workspace>/<path-to-run-log.md>
+
+First, read the audit skill instructions:
+- Read: <ai-architecture-audit-skill-path>/SKILL.md
+
+=== EVALUATION BRIEF ===
+<paste eval-brief content here>
+=== END BRIEF ===
+
+=== ARTIFACTS (if available) ===
+<list: repo path, key files, prompt excerpts, tool definitions, run logs>
+=== END ARTIFACTS ===
+
+Your job:
+
+1. APPLICABILITY CHECK
+   - If the subject is not an AI/LLM/agent/skill system, write a single line:
+     "N/A — subject is not an AI system" to the output file and exit.
+
+2. SCORE THE SIX AXES (0-5 each)
+   - Axis 1: Fat Skills
+   - Axis 2: Thin Harness
+   - Axis 3: Resolver Discipline
+   - Axis 4: Latent vs Deterministic Separation
+   - Axis 5: Compounding Loop
+   - Axis 6: Diarization (or N/A)
+   Cite concrete evidence (file:line, LOC, prompt excerpt) for every axis.
+   Use "unknown" for axes with no evidence — do NOT score 0 for missing info.
+
+3. ANTI-PATTERN SCAN
+   - Check each of the 10 anti-patterns in the skill's Anti-Pattern Scan section.
+   - For each detected, cite one-line evidence.
+
+4. PRIORITIZED REMEDIATION
+   - Quick wins (days), Medium (weeks), Strategic (months).
+   - Each item must reference which axis / anti-pattern it addresses.
+
+5. CONFIDENCE
+   - Set confidence = low if repo access absent (brief/docs only)
+   - Set confidence = medium if partial artifact access
+   - Set confidence = high if full repo + prompts + run logs available
+
+Follow the exact output format from the audit skill. Save the complete output as
+markdown to: <workspace>/phase1d-architecture-audit-raw.md
+
+Important:
+- Be SPECIFIC — "harness has 1,847 LOC across 3 files" beats "harness is bloated"
+- Score honestly — neither cheerleading nor trashing
+- Do NOT drift into product/UX critique — that belongs in phases 1A/1B/1C
+```
+
+---
+
 ## Phase 3: Content Strategy Outline Subagent
 
 ```

@@ -12,7 +12,8 @@ Phase 0: Ingest & normalize all inputs into an Evaluation Brief
      │
      ├── Phase 1A: Hater Mode (12-persona critical feedback)
      ├── Phase 1B: Competitive & Market Landscape (web research)
-     └── Phase 1C: Strengths & Opportunities
+     ├── Phase 1C: Strengths & Opportunities
+     └── Phase 1D: AI Architecture Audit  (optional — AI subjects only)
             │
             ▼
 Phase 2: Synthesis — critical fixes, design issues, next steps
@@ -21,7 +22,7 @@ Phase 2: Synthesis — critical fixes, design issues, next steps
 Phase 3: Content Strategy Outline
      │
      ▼
-Phase 4: Assemble 6 deliverable .docx files
+Phase 4: Assemble up to 7 deliverable .docx files
 ```
 
 ### Deliverables
@@ -34,6 +35,7 @@ Phase 4: Assemble 6 deliverable .docx files
 | `03-strengths-opportunities.docx` | What's working, growth angles, unfair advantages, ideal customer profiles |
 | `04-critical-fixes-and-design.docx` | Prioritized fixes, design inconsistencies, non-breaking next steps |
 | `05-content-strategy-outline.docx` | Long-form outline for publicly positioning/pitching the idea |
+| `06-architecture-audit.docx` | *(AI subjects only)* Six-axis architecture scorecard, anti-pattern scan, remediation list |
 
 ## Where it runs, privacy, and local files
 
@@ -109,6 +111,7 @@ The repo includes **seven** additional skills under [`skills/`](skills/) — one
 | [`skills/mega-eval-hater`](skills/mega-eval-hater) | Phase 1A only → `phase1a-hater-raw.md` |
 | [`skills/mega-eval-competitive`](skills/mega-eval-competitive) | Phase 1B only → `phase1b-competitive-raw.md` |
 | [`skills/mega-eval-strengths`](skills/mega-eval-strengths) | Phase 1C only → `phase1c-strengths-raw.md` |
+| [`skills/mega-eval-ai-architecture-audit`](skills/mega-eval-ai-architecture-audit) | Phase 1D only *(AI subjects)* → `phase1d-architecture-audit-raw.md` |
 | [`skills/mega-eval-synthesis`](skills/mega-eval-synthesis) | Phase 2 only → `phase2-synthesis.md` |
 | [`skills/mega-eval-content-outline`](skills/mega-eval-content-outline) | Phase 3 only → `phase3-content-outline-raw.md` |
 | [`skills/mega-eval-deliverables`](skills/mega-eval-deliverables) | Phase 4 only → `.docx` assembly |

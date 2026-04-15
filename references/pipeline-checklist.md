@@ -18,15 +18,18 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Phase 1A subagent launched (Hater Mode) with `run_id` + `run_log` in prompt
 - [ ] Phase 1B subagent launched (Competitive & Market) with `run_id` + `run_log` in prompt
 - [ ] Phase 1C subagent launched (Strengths & Opportunities) with `run_id` + `run_log` in prompt
-- [ ] All three subagents completed
-- [ ] Raw outputs verified: `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, `phase1c-strengths-raw.md`
+- [ ] **Applicability check:** subject is an AI / agent / LLM / skill system?
+  - [ ] If yes: Phase 1D subagent launched (AI Architecture Audit) with `run_id` + `run_log` in prompt
+  - [ ] If no: Phase 1D explicitly skipped (note in `run-log.md`)
+- [ ] All launched subagents completed
+- [ ] Raw outputs verified: `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, `phase1c-strengths-raw.md`, and `phase1d-architecture-audit-raw.md` (if 1D ran)
 - [ ] If logging: Phase 1 events appended (`phase_start` / `phase_complete`, errors/retries as needed)
 
 ## Phase 2: Synthesis
-- [ ] All Phase 1 outputs read
-- [ ] Critical fixes identified and prioritized
+- [ ] All Phase 1 outputs read (including `phase1d-architecture-audit-raw.md` if present)
+- [ ] Critical fixes identified and prioritized (architecture anti-patterns included when 1D ran)
 - [ ] Design inconsistencies catalogued
-- [ ] Non-breaking next steps ordered by effort-to-impact
+- [ ] Non-breaking next steps ordered by effort-to-impact (architecture remediation items folded in)
 - [ ] Unresolved tensions documented
 - [ ] Output written to `phase2-synthesis.md`
 - [ ] If logging: `phase2` start/complete (and `user_correction` if user steered synthesis)
@@ -43,7 +46,8 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] `03-strengths-opportunities.docx` created
 - [ ] `04-critical-fixes-and-design.docx` created
 - [ ] `05-content-strategy-outline.docx` created
-- [ ] `00-executive-summary.docx` created (LAST — draws from all others)
+- [ ] `06-architecture-audit.docx` created *(only if Phase 1D ran)*
+- [ ] `00-executive-summary.docx` created (LAST — draws from all others; includes Architecture Verdict when 1D ran)
 - [ ] All files saved to workspace output folder
 - [ ] All files presented to user with links
 - [ ] Optional: offered maintainer feedback links (bug / improvement / feature) with `run_id` + redaction reminder — see **Maintainer feedback** in `SKILL.md` Phase 4
@@ -60,4 +64,5 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Competitive analysis cites real competitors (not fabricated)
 - [ ] Strengths analysis is honest (not cheerleading)
 - [ ] Content outline has a clear angle (not generic)
+- [ ] Architecture audit (if ran) cites concrete evidence (file:line / LOC / prompt excerpts); no generic "bloated harness" language; confidence level set honestly
 - [ ] All docs note where information was thin or assumptions were made
