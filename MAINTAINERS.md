@@ -25,6 +25,7 @@ When in doubt, choose the smallest amount of process that still makes scope, res
      - `python3 scripts/validate_artifact.py examples/sample-run/eval-brief.md schemas/eval-brief.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase1b-competitive-raw.md schemas/phase1b-competitive.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase2-synthesis.md schemas/phase2-synthesis.schema.json`
+   - If the change alters host assumptions, fallback behavior, or supported environments, update `docs/architecture/runtime-contract.md` in the same change.
 
 **Thin phase skills** (`skills/*/SKILL.md`) should stay **short** — they point at `references/` and the root `SKILL.md`; do not duplicate long prompt text there. If you change phase behavior, update `references/` and root `SKILL.md` first, then adjust thin skills only for I/O or path-resolution wording.
    - For subagent wording, treat `references/subagent-prompts.md` as the canonical prompt registry. Update `SKILL.md` only when orchestration, inputs, or output requirements change.
@@ -101,5 +102,6 @@ Use [semver](https://semver.org/): `MAJOR.MINOR.PATCH`.
 ## See also
 
 - [`references/learnings.md`](references/learnings.md) — promotion gates  
+- [`docs/architecture/runtime-contract.md`](docs/architecture/runtime-contract.md) — capability contract and fallback rules  
 - [`docs/brainstorms/2026-03-24-self-learning-sustainability-requirements.md`](docs/brainstorms/2026-03-24-self-learning-sustainability-requirements.md) — original requirements  
 - [`docs/plans/2026-03-24-005-feat-claude-plugin-marketplace-packaging-plan.md`](docs/plans/2026-03-24-005-feat-claude-plugin-marketplace-packaging-plan.md) — plugin packaging plan  

@@ -66,6 +66,28 @@ The pipeline produces these files in the workspace folder:
 
 ---
 
+## Runtime Contract
+
+Mega-eval targets **Claude Code** first. Full behavior assumes:
+
+- local file read/write
+- subagent execution
+- access to `references/` and sibling skills
+- markdown artifact generation
+
+Recommended capabilities include `WebFetch`, `WebSearch`, and the external `hater-mode`, `long-form-outline`, and `docx` skills. Browser tooling is optional and primarily improves Phase 1D.
+
+If these capabilities are missing, degrade explicitly rather than pretending behavior is identical:
+
+- no subagents: run sequentially
+- no WebSearch: keep Phase 1B headings, reduce confidence, avoid speculation
+- no browser tooling: use Phase 1D Tier B or Tier C
+- no `docx`: stop at validated markdown artifacts or state that Phase 4 is partial
+
+See `docs/architecture/runtime-contract.md` for the authoritative capability matrix and fallback rules.
+
+---
+
 ## Run feedback & run log (optional)
 
 This is **run feedback**, not model training: an **append-only Markdown log** so you can improve prompts and checklists over time. **Do not** silently rewrite `SKILL.md` or subagent prompts from logs—promotion goes through human review into `references/learnings.md` (see that file for promotion gates).

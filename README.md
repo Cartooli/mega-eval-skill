@@ -40,7 +40,7 @@ Phase 4: Assemble 6 deliverable .docx files
 
 ## Where it runs, privacy, and local files
 
-- **Host environment:** Mega-eval targets **Claude Code** (skills + **hater-mode**, **long-form-outline**, **docx**, and parallel subagents). Other Claude apps or agents may run the steps **partially** or need you to follow `SKILL.md` by hand—do not assume identical behavior.
+- **Host environment:** Mega-eval targets **Claude Code** (skills + **hater-mode**, **long-form-outline**, **docx**, and parallel subagents). Other Claude apps or agents may run the steps **partially** or need you to follow `SKILL.md` by hand—do not assume identical behavior. See [`docs/architecture/runtime-contract.md`](docs/architecture/runtime-contract.md) for the explicit capability contract and fallback rules.
 - **Sensitive data:** You may pass URLs, pitch text, or confidential documents into the pipeline. Treat generated `.docx` files, raw markdown intermediates, and optional **`run-log.md`** as **sensitive** unless you redact them. To skip writing a run log, set `MEGA_EVAL_LOG=off` (see [Run feedback](#run-feedback-optional)).
 - **PDF / Office inputs:** Extracting text from local `.pdf`, `.docx`, or `.pptx` via `scripts/ingest.py` requires **pdftotext** and **pandoc** ([optional tools](#optional-system-tools) below). Plain text, Markdown, pasted content, and many URLs work without them.
 
@@ -341,6 +341,8 @@ The `references/subagent-prompts.md` file is the **canonical prompt registry** f
 The `references/learnings.md` file is for **curated** methodological lessons promoted from run logs.
 
 The root `SKILL.md` file controls the overall pipeline flow. You can reorder phases, skip phases, or add new ones.
+
+Host assumptions and degradation behavior live in [`docs/architecture/runtime-contract.md`](docs/architecture/runtime-contract.md). Update that file whenever you change required capabilities or fallback rules.
 
 Phase-only skills under `skills/` intentionally stay thin; after changing prompts or phase behavior in `references/` or root `SKILL.md`, update a thin skill only if **inputs, outputs, or path resolution** wording needs to change.
 
