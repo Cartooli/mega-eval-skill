@@ -22,9 +22,11 @@ Full orchestration: [`../SKILL.md`](../SKILL.md), or `../mega-eval/SKILL.md` if 
 | `mega-eval-hater` | 1A | `phase1a-hater-raw.md` |
 | `mega-eval-competitive` | 1B | `phase1b-competitive-raw.md` |
 | `mega-eval-strengths` | 1C | `phase1c-strengths-raw.md` |
+| `mega-eval-design` | 1D (optional) | `phase1d-design-raw.md` |
+| `mega-eval-security` | 1E (optional) | `phase1e-security-raw.md` |
+| `mega-eval-durability` | 1F (optional) | `phase1f-durability-raw.md` |
 | `mega-eval-synthesis` | 2 | `phase2-synthesis.md` |
 | `mega-eval-content-outline` | 3 | `phase3-content-outline-raw.md` |
 | `mega-eval-deliverables` | 4 | `01`–`05` and `00` `.docx` |
-| `mega-eval-design` | 1D (optional) | `phase1d-design-raw.md` |
 
 Install instructions for all layouts are in the repo [`README.md`](../README.md).
