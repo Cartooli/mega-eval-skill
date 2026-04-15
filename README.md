@@ -94,7 +94,7 @@ Copy the skill folder into your project:
 # Clone this repo
 git clone https://github.com/Cartooli/mega-eval-skill.git
 
-# Copy into your Claude Code skills directory (include the whole references/ folder for learnings + prompts)
+# Copy into your Claude Code skills directory (include the whole references/ folder for learnings, prompts, and model-selection guidance)
 cp -r mega-eval-skill/SKILL.md mega-eval-skill/references mega-eval-skill/scripts ~/.claude/skills/mega-eval/
 ```
 
@@ -148,6 +148,7 @@ mega-eval-skill/
 ├── references/
 │   ├── pipeline-checklist.md
 │   ├── subagent-prompts.md
+│   ├── model-selection.md
 │   └── learnings.md
 ├── scripts/
 │   ├── ingest.py
@@ -171,6 +172,7 @@ mega-eval/
 ├── references/
 │   ├── pipeline-checklist.md    # Phase-by-phase checklist
 │   ├── subagent-prompts.md      # Ready-to-use prompt templates
+│   ├── model-selection.md       # Model tier guidance for high-quality runs
 │   └── learnings.md             # Human-reviewed methodology patterns (from run feedback)
 └── scripts/
     ├── ingest.py                  # Input file extraction helper

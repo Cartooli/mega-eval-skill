@@ -526,15 +526,15 @@ The executive summary is a standalone document that a decision-maker can read wi
 [2–4 bullets: design risk band, first-impression verdict, top UX credibility issue, top quick win — or state that Phase 1D was skipped/thin]
 
 ### Security Posture (only if Phase 1E ran)
-**Risk band:** Low | Medium | High | Critical  
-[One-line headline from `phase1e-security-raw.md` **Headline for synthesis**]  
-[Top finding, one line with `[1E-S<n>]` citation]  
+**Risk band:** Low | Medium | High | Critical
+[One-line headline from `phase1e-security-raw.md` **Headline for synthesis**]
+[Top finding, one line with `[1E-S<n>]` citation]
 [Top quick-win next step, one line — or omit if none]
 
 ### AI Durability Posture (only if Phase 1F ran and risk band is not N/A)
-**Risk band:** Low | Medium | High | Critical  
-[One-line headline from `phase1f-durability-raw.md` **Headline for synthesis**]  
-[Top finding, one line with `[1F-D<n>]` citation]  
+**Risk band:** Low | Medium | High | Critical
+[One-line headline from `phase1f-durability-raw.md` **Headline for synthesis**]
+[Top finding, one line with `[1F-D<n>]` citation]
 [Top quick-win next step, one line — or omit if none]
 
 When Phase 1F exited with **N/A**, **omit** the AI Durability Posture section entirely — do not include a “not applicable” stub in the executive summary.
