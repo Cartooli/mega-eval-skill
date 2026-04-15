@@ -36,3 +36,7 @@ Free, open-source (MIT license). No hosted version or paid tier.
 - Dependent skill paths (hater-mode, long-form-outline, docx) link to anthropics/claude-code which may not have these exact paths
 - No automated tests or CI
 - Single commit, no community usage data
+
+## Live site / design audit (Phase 1D)
+- **Primary URL for Phase 1D:** n/a
+- **Audit decision:** skipped — this self-evaluation used repository artifacts rather than a public product surface

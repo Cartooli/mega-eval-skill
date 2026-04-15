@@ -125,28 +125,28 @@ These tools overlap partially with mega-eval but serve a different primary use c
 
 ### AI-Powered PM Tools (BuildBetter, Productboard Pulse, ClickUp AI)
 
-**Overlap:** Document generation, feedback analysis, product strategy workflows.
-**Key difference:** These are workflow platforms for ongoing product management, not one-shot evaluation tools. They integrate with existing product data (user interviews, support tickets, analytics) rather than evaluating an idea from scratch. Pricing ranges from $20-100+/month per seat.
+- **Overlap:** Document generation, feedback analysis, product strategy workflows.
+- **Key difference:** These are workflow platforms for ongoing product management, not one-shot evaluation tools. They integrate with existing product data (user interviews, support tickets, analytics) rather than evaluating an idea from scratch. Pricing ranges from $20-100+/month per seat.
 
 ### Prompt Architect Skills (claude-skill-prompt-architect, etc.)
 
-**Overlap:** Claude Code skill ecosystem, structured prompt workflows.
-**Key difference:** These skills optimize individual prompts rather than orchestrating multi-phase evaluation pipelines. They are composable building blocks, not end-to-end analysis tools. Free/open-source.
+- **Overlap:** Claude Code skill ecosystem, structured prompt workflows.
+- **Key difference:** These skills optimize individual prompts rather than orchestrating multi-phase evaluation pipelines. They are composable building blocks, not end-to-end analysis tools. Free/open-source.
 
 ### Claude Skills Marketplaces (alirezarezvani/claude-skills, claude-market/marketplace, SkillsMP)
 
-**Overlap:** Distribution channel and ecosystem for Claude Code skills.
-**Key difference:** These are directories and package managers, not competing products. They represent potential distribution channels for mega-eval. The largest collections include 192-1,367+ skills across engineering, marketing, product, and other domains. None currently list a comparable multi-phase evaluation pipeline skill.
+- **Overlap:** Distribution channel and ecosystem for Claude Code skills.
+- **Key difference:** These are directories and package managers, not competing products. They represent potential distribution channels for mega-eval. The largest collections include 192-1,367+ skills across engineering, marketing, product, and other domains. None currently list a comparable multi-phase evaluation pipeline skill.
 
 ### General-Purpose LLM Prompting (ChatGPT, Claude chat, Gemini)
 
-**Overlap:** Any user can prompt an LLM to "evaluate my idea" in a single conversation.
-**Key difference:** Mega-eval's value proposition is precisely that it replaces this ad-hoc approach with a structured, repeatable, multi-perspective methodology. The single-prompt approach lacks: parallel adversarial/supportive analysis tracks, web-sourced competitive data, cross-track synthesis, and formatted deliverable output. This is mega-eval's most common "competitor" in practice — not a product, but the default behavior it aims to replace.
+- **Overlap:** Any user can prompt an LLM to "evaluate my idea" in a single conversation.
+- **Key difference:** Mega-eval's value proposition is precisely that it replaces this ad-hoc approach with a structured, repeatable, multi-perspective methodology. The single-prompt approach lacks: parallel adversarial/supportive analysis tracks, web-sourced competitive data, cross-track synthesis, and formatted deliverable output. This is mega-eval's most common "competitor" in practice — not a product, but the default behavior it aims to replace.
 
 ### WorthBuild, ValidateMySaaS, ProductGapHunt
 
-**Overlap:** Startup idea validation with structured output.
-**Key difference:** These are web-based SaaS tools focused on market validation and customer discovery rather than multi-perspective product evaluation. ValidateMySaaS charges $19-29/month. They tend to focus on market data and customer signals rather than adversarial critique or content strategy.
+- **Overlap:** Startup idea validation with structured output.
+- **Key difference:** These are web-based SaaS tools focused on market validation and customer discovery rather than multi-perspective product evaluation. ValidateMySaaS charges $19-29/month. They tend to focus on market data and customer signals rather than adversarial critique or content strategy.
 
 ---
 
@@ -255,3 +255,7 @@ Mega-eval occupies a unique position at the intersection of three categories:
 10. **Favorable timing:** The Claude skills ecosystem is growing, agentic AI adoption is accelerating, and PM tool fatigue is real (73% daily AI use but fragmented across many tools). A free, open-source, structured evaluation pipeline addresses a genuine workflow gap.
 
 11. **Window may narrow:** As the ecosystem matures, commercial skill bundles or Anthropic-published evaluation tools could emerge. First-mover advantage in a growing ecosystem is meaningful but not durable without community adoption.
+
+- Ecosystem risk: platform dependency on Claude Code still narrows portability.
+- Market risk: adjacent products can copy parts of the workflow even if the full methodology is differentiated.
+- Execution risk: sample quality and maintainer responsiveness still shape contributor trust.

@@ -1,14 +1,26 @@
-name: Validate plugin manifests
+name: Validate plugin manifests and artifact contracts
 
 on:
   push:
     paths:
       - ".claude-plugin/**"
       - "plugins/**/.claude-plugin/**"
+      - "schemas/**"
+      - "scripts/**"
+      - "tests/**"
+      - "examples/sample-run/**"
+      - "README.md"
+      - "MAINTAINERS.md"
   pull_request:
     paths:
       - ".claude-plugin/**"
       - "plugins/**/.claude-plugin/**"
+      - "schemas/**"
+      - "scripts/**"
+      - "tests/**"
+      - "examples/sample-run/**"
+      - "README.md"
+      - "MAINTAINERS.md"
 
 jobs:
   validate-json:
@@ -56,3 +68,26 @@ jobs:
             fi
             echo "✓ $f"
           done
+
+  validate-artifact-contracts:
+    name: Validate artifact contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest
+
+      - name: Run validator and ingestion tests
+        run: python -m pytest tests/test_validate_artifact.py tests/test_ingest.py
+
+      - name: Validate sample run artifacts
+        run: |
+          python scripts/validate_artifact.py examples/sample-run/eval-brief.md schemas/eval-brief.schema.json
+          python scripts/validate_artifact.py examples/sample-run/phase1b-competitive-raw.md schemas/phase1b-competitive.schema.json
+          python scripts/validate_artifact.py examples/sample-run/phase2-synthesis.md schemas/phase2-synthesis.schema.json

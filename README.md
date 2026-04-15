@@ -268,6 +268,45 @@ That writes `eval-bundle.json` with:
 
 This is useful for maintainer review, partial-run inspection, or lightweight downstream tooling. A checked-in example lives at [`examples/sample-run/eval-bundle.json`](examples/sample-run/eval-bundle.json).
 
+## Artifact contract validation
+
+Mega-eval ships a lightweight artifact contract layer for key markdown outputs. The current pass covers:
+
+- `eval-brief.md`
+- `phase1b-competitive-raw.md`
+- `phase1c-strengths-raw.md`
+- `phase1d-design-raw.md`
+- `phase2-synthesis.md`
+- `phase3-content-outline-raw.md`
+
+Contracts live in [`schemas/`](schemas/) and are enforced by [`scripts/validate_artifact.py`](scripts/validate_artifact.py).
+
+Run the validator manually:
+
+```bash
+python3 scripts/validate_artifact.py path/to/artifact.md path/to/schema.json
+```
+
+Run the full Python test suite locally (validator, ingestion, regression evals, prompt registry, log events):
+
+```bash
+python3 -m pytest tests/
+```
+
+CI also validates the checked-in sample artifacts in [`examples/sample-run/`](examples/sample-run/), so contributors should update contracts, fixtures, and examples together when changing artifact structure.
+
+## Regression eval corpus
+
+Mega-eval also ships a small deterministic regression corpus under [`tests/evals/`](tests/evals/) for representative run behaviors. These checks are intentionally lightweight and offline: they verify things like explicit Phase 1D skipping for text-only runs, honesty about limited competitive data, design-audit fallback stubs, and preserved disagreement in synthesis. They run as part of `python3 -m pytest tests/` above.
+
+Regression-focused debugging only:
+
+```bash
+python3 -m pytest tests/test_regression_evals.py
+```
+
+See [`docs/architecture/regression-evals.md`](docs/architecture/regression-evals.md) for the purpose and current case list.
+
 ## Run feedback (optional)
 
 Mega-eval can write an **append-only** `run-log.md` during a run so you can capture tool errors, retries, and user corrections—not for model training, but to **promote** stable methodology fixes into `references/learnings.md` after human review.

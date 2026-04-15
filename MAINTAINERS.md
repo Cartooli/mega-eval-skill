@@ -20,6 +20,11 @@ When in doubt, choose the smallest amount of process that still makes scope, res
 
 1. **Monthly (calendar):** At least once a month, open recent `run-log.md` files (or your workspace log), find **Promotion candidates**, and decide: promote to `references/learnings.md`, drop, or defer. Update **`last_reviewed`** in `references/learnings.md` even if you promote nothing—honest staleness beats fake freshness.
 2. **Merge / release gate:** On each merge to the default branch that touches `SKILL.md`, `references/`, `skills/`, or `examples/`, or when you tag a release—spend **≤5 minutes**: skim promotion candidates; update `last_reviewed` if you performed a review.
+   - If the change also touches `schemas/`, artifact structure, sample outputs, or validation tooling, run:
+     - `python3 -m pytest tests/test_validate_artifact.py tests/test_ingest.py`
+     - `python3 scripts/validate_artifact.py examples/sample-run/eval-brief.md schemas/eval-brief.schema.json`
+     - `python3 scripts/validate_artifact.py examples/sample-run/phase1b-competitive-raw.md schemas/phase1b-competitive.schema.json`
+     - `python3 scripts/validate_artifact.py examples/sample-run/phase2-synthesis.md schemas/phase2-synthesis.schema.json`
 
 **Thin phase skills** (`skills/*/SKILL.md`) should stay **short** — they point at `references/` and the root `SKILL.md`; do not duplicate long prompt text there. If you change phase behavior, update `references/` and root `SKILL.md` first, then adjust thin skills only for I/O or path-resolution wording.
 3. **Optional priority bump:** If **≥3** unchecked promotion candidates pile up in the active log, do a review before the next merge.
@@ -41,6 +46,8 @@ Use the taxonomy in `SKILL.md` (`tool_error`, `user_correction`, `retry`, `failu
 
 - **`scripts/suggest_learnings.py`** reads a `run-log.md` path and prints **Promotion candidates** and **Failure modes** lines to stdout. It **never** writes files. If it’s noisy or unused, delete it—docs stay authoritative.
 - Usage: `python3 scripts/suggest_learnings.py path/to/run-log.md`
+- **`scripts/validate_artifact.py`** checks markdown artifacts against lightweight contracts in `schemas/`. Use it whenever you change artifact structure, sample runs, or prompt wording that affects required sections.
+- Usage: `python3 scripts/validate_artifact.py <artifact-path> <schema-path>`
 
 ## 90-day success check (from project requirements)
 
@@ -84,8 +91,9 @@ Use [semver](https://semver.org/): `MAJOR.MINOR.PATCH`.
 1. Bump `version` in `.claude-plugin/marketplace.json` and `plugins/mega-eval/.claude-plugin/plugin.json`.
 2. Confirm all symlinks in `plugins/mega-eval/` still resolve: `find plugins/mega-eval -type l | while read l; do [ -e "$l" ] || echo "BROKEN: $l"; done`.
 3. Validate JSON: `python3 -m json.tool .claude-plugin/marketplace.json && python3 -m json.tool plugins/mega-eval/.claude-plugin/plugin.json`.
-4. Run the monthly/merge-gate learnings review above if skipped.
-5. Tag: `git tag vX.Y.Z && git push --tags`.
+4. Run artifact contract checks if the release changes schemas, examples, validation tooling, or artifact structure.
+5. Run the monthly/merge-gate learnings review above if skipped.
+6. Tag: `git tag vX.Y.Z && git push --tags`.
 
 **Marketplace name:** `cartooli` — not in Anthropic's reserved list; kebab-case; do not change without updating README.
 
