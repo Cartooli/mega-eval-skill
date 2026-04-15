@@ -348,6 +348,8 @@ Host assumptions and degradation behavior live in [`docs/architecture/runtime-co
 
 Structured run telemetry lives in [`docs/architecture/observability.md`](docs/architecture/observability.md). Update it whenever you change event semantics or log formats.
 
+Behavior regression expectations live in [`docs/architecture/regression-evals.md`](docs/architecture/regression-evals.md). Update that file and the corpus under `tests/evals/` when you change expected run behavior.
+
 Phase-only skills under `skills/` intentionally stay thin; after changing prompts or phase behavior in `references/` or root `SKILL.md`, update a thin skill only if **inputs, outputs, or path resolution** wording needs to change.
 
 ## Examples and templates

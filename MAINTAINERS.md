@@ -26,6 +26,7 @@ When in doubt, choose the smallest amount of process that still makes scope, res
      - `python3 scripts/validate_artifact.py examples/sample-run/phase1b-competitive-raw.md schemas/phase1b-competitive.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase2-synthesis.md schemas/phase2-synthesis.schema.json`
    - If the change alters host assumptions, fallback behavior, or supported environments, update `docs/architecture/runtime-contract.md` in the same change.
+   - If the change alters expected run behavior, update `tests/evals/`, `tests/test_regression_evals.py`, and `docs/architecture/regression-evals.md` in the same change.
 
 **Thin phase skills** (`skills/*/SKILL.md`) should stay **short** — they point at `references/` and the root `SKILL.md`; do not duplicate long prompt text there. If you change phase behavior, update `references/` and root `SKILL.md` first, then adjust thin skills only for I/O or path-resolution wording.
    - For subagent wording, treat `references/subagent-prompts.md` as the canonical prompt registry. Update `SKILL.md` only when orchestration, inputs, or output requirements change.
@@ -53,6 +54,8 @@ Use the taxonomy in `SKILL.md` (`tool_error`, `user_correction`, `retry`, `failu
 - Usage: `python3 scripts/validate_artifact.py <artifact-path> <schema-path>`
 - **`scripts/log_event.py`** appends structured events to `run-log.jsonl`. Use it when the runtime can emit machine-readable telemetry beside `run-log.md`.
 - Usage: `python3 scripts/log_event.py <log-path> <event-type> --run-id <id> [--phase ...] [--status ...]`
+- **`tests/test_regression_evals.py`** checks the deterministic eval corpus under `tests/evals/`. Use it to protect behavioral guarantees that are stronger than simple section validation.
+- Usage: `python3 -m pytest tests/test_regression_evals.py`
 
 ## 90-day success check (from project requirements)
 
@@ -107,5 +110,6 @@ Use [semver](https://semver.org/): `MAJOR.MINOR.PATCH`.
 - [`references/learnings.md`](references/learnings.md) — promotion gates  
 - [`docs/architecture/runtime-contract.md`](docs/architecture/runtime-contract.md) — capability contract and fallback rules  
 - [`docs/architecture/observability.md`](docs/architecture/observability.md) — structured logging model and event types  
+- [`docs/architecture/regression-evals.md`](docs/architecture/regression-evals.md) — deterministic behavior corpus and case list  
 - [`docs/brainstorms/2026-03-24-self-learning-sustainability-requirements.md`](docs/brainstorms/2026-03-24-self-learning-sustainability-requirements.md) — original requirements  
 - [`docs/plans/2026-03-24-005-feat-claude-plugin-marketplace-packaging-plan.md`](docs/plans/2026-03-24-005-feat-claude-plugin-marketplace-packaging-plan.md) — plugin packaging plan  

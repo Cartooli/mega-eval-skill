@@ -84,7 +84,7 @@ jobs:
         run: python -m pip install --upgrade pip pytest
 
       - name: Run validator and ingestion tests
-        run: python -m pytest tests/test_validate_artifact.py tests/test_prompt_registry.py tests/test_log_event.py tests/test_ingest.py
+        run: python -m pytest tests/test_validate_artifact.py tests/test_prompt_registry.py tests/test_log_event.py tests/test_regression_evals.py tests/test_ingest.py
 
       - name: Validate sample run artifacts
         run: |
