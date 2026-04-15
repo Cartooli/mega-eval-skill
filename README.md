@@ -159,6 +159,7 @@ mega-eval-skill/
 │   └── learnings.md
 ├── scripts/
 │   ├── ingest.py
+│   ├── build_eval_bundle.py
 │   └── suggest_learnings.py
 └── skills/                  # Thin phase-only skills (see "Phase-only skills" above)
     ├── README.md
@@ -189,6 +190,7 @@ mega-eval/
 │   └── learnings.md             # Human-reviewed methodology patterns (from run feedback)
 └── scripts/
     ├── ingest.py                  # Input file extraction helper
+    ├── build_eval_bundle.py       # Optional: machine-readable bundle + run status export
     └── suggest_learnings.py       # Optional: print promotion candidates from run-log (stdout only)
 ```
 
@@ -246,6 +248,23 @@ The [`examples/sample-run/`](examples/sample-run/) directory contains a complete
 - Concrete fixes: duplicate README sections, unvalidated links, missing audience clarity
 
 Browse the `.docx` files to see what the pipeline produces, or read the raw `.md` intermediates for the unformatted analysis.
+
+## Machine-readable bundle & resume support
+
+If you want a tooling-friendly summary of a mega-eval workspace, run:
+
+```bash
+python3 scripts/build_eval_bundle.py path/to/workspace
+```
+
+That writes `eval-bundle.json` with:
+
+- discovered markdown and `.docx` artifacts
+- per-phase completion status
+- the next recommended phase/action for partial runs
+- heading-based section data for the markdown artifacts
+
+This is useful for maintainer review, partial-run inspection, or lightweight downstream tooling. A checked-in example lives at [`examples/sample-run/eval-bundle.json`](examples/sample-run/eval-bundle.json).
 
 ## Run feedback (optional)
 
