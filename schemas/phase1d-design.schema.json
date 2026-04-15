@@ -1,0 +1,40 @@
+{
+  "artifact_type": "phase1d-design",
+  "required_headings": [
+    "Meta",
+    "First impression",
+    "Inferred design system",
+    "Checklist highlights",
+    "AI slop & template tells",
+    "Litmus checks (YES/NO)",
+    "Quick wins (3–5)",
+    "Evidence",
+    "Headline for synthesis"
+  ],
+  "required_nonempty_sections": [
+    "Meta",
+    "First impression",
+    "Inferred design system",
+    "Checklist highlights",
+    "AI slop & template tells",
+    "Litmus checks (YES/NO)",
+    "Quick wins (3–5)",
+    "Evidence",
+    "Headline for synthesis"
+  ],
+  "section_required_substrings": {
+    "Headline for synthesis": [
+      "Design risk band:",
+      "One-line summary:"
+    ]
+  },
+  "section_min_words": {
+    "Meta": 8,
+    "Evidence": 4
+  },
+  "forbidden_patterns": [
+    "\\[TO BE FILLED[^\\]]*\\]",
+    "<paste[^>]*>",
+    "TODO"
+  ]
+}

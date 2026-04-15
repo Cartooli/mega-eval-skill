@@ -1,0 +1,31 @@
+{
+  "artifact_type": "phase3-content-outline",
+  "required_title_prefix": "Phase 3: Content Strategy Outline",
+  "required_headings": [
+    "The Angle",
+    "Outline",
+    "Distribution Notes"
+  ],
+  "required_nonempty_sections": [
+    "The Angle",
+    "Outline",
+    "Distribution Notes"
+  ],
+  "section_required_substrings": {
+    "Outline": [
+      "### I.",
+      "### II.",
+      "### VII."
+    ]
+  },
+  "section_min_words": {
+    "The Angle": 20,
+    "Outline": 80,
+    "Distribution Notes": 20
+  },
+  "forbidden_patterns": [
+    "\\[TO BE FILLED[^\\]]*\\]",
+    "<paste[^>]*>",
+    "TODO"
+  ]
+}

@@ -15,7 +15,10 @@ This first pass covers:
 
 - `eval-brief.md`
 - `phase1b-competitive-raw.md`
+- `phase1c-strengths-raw.md`
+- `phase1d-design-raw.md`
 - `phase2-synthesis.md`
+- `phase3-content-outline-raw.md`
 
 The contracts live under `schemas/` as JSON files and are enforced by `scripts/validate_artifact.py`.
 
@@ -51,15 +54,12 @@ Successful validation exits `0`. Validation failures print a readable error list
 
 `phase1b-competitive-raw.md` is a representative structured phase output with both bullet-heavy and prose-heavy sections.
 
+`phase1c-strengths-raw.md` and `phase3-content-outline-raw.md` extend contract coverage to positive analysis and narrative output, not just critique and synthesis.
+
+`phase1d-design-raw.md` covers the report-only design audit path, including thin fallback behavior.
+
 `phase2-synthesis.md` is the most judgment-heavy artifact and the place where drift is likely to show up as missing action structure.
 
 ## Near-term follow-up
 
-Later PRs can extend the same pattern to:
-
-- `phase1a-hater-raw.md`
-- `phase1c-strengths-raw.md`
-- `phase1d-design-raw.md`
-- `phase3-content-outline-raw.md`
-
-Those later contracts should reuse the same validator unless a more formal schema engine becomes necessary.
+The most notable remaining gap is `phase1a-hater-raw.md`, whose output shape is currently governed largely by the external hater-mode skill. If mega-eval takes ownership of that contract later, it should reuse the same validator unless a more formal schema engine becomes necessary.

@@ -91,6 +91,14 @@ def validate_text(text: str, schema: dict) -> list[str]:
                 f"Expected first heading '{required_title}', found '{actual_title or '<none>'}'."
             )
 
+    required_title_prefix = schema.get("required_title_prefix")
+    if required_title_prefix:
+        actual_title = first_heading_title(text)
+        if not actual_title or not actual_title.startswith(required_title_prefix):
+            errors.append(
+                f"Expected first heading starting with '{required_title_prefix}', found '{actual_title or '<none>'}'."
+            )
+
     for heading in schema.get("required_headings", []):
         if heading not in headings:
             errors.append(f"Missing required heading: '{heading}'.")

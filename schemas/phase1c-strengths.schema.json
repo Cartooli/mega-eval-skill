@@ -1,0 +1,27 @@
+{
+  "artifact_type": "phase1c-strengths",
+  "required_headings": [
+    "Core Strengths",
+    "Growth Opportunities",
+    "Unfair Advantages",
+    "Success Conditions",
+    "Ideal Use Cases & Customer Profiles"
+  ],
+  "required_nonempty_sections": [
+    "Core Strengths",
+    "Growth Opportunities",
+    "Unfair Advantages",
+    "Success Conditions",
+    "Ideal Use Cases & Customer Profiles"
+  ],
+  "section_min_words": {
+    "Core Strengths": 30,
+    "Growth Opportunities": 20,
+    "Success Conditions": 20
+  },
+  "forbidden_patterns": [
+    "\\[TO BE FILLED[^\\]]*\\]",
+    "<paste[^>]*>",
+    "TODO"
+  ]
+}

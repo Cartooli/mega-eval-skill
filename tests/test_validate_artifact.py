@@ -22,7 +22,10 @@ SCHEMAS_DIR = Path(__file__).parent.parent / "schemas"
     [
         ("eval-brief.md", "eval-brief.schema.json"),
         ("phase1b-competitive-raw.md", "phase1b-competitive.schema.json"),
+        ("phase1c-strengths-raw.md", "phase1c-strengths.schema.json"),
+        ("phase1d-design-raw.md", "phase1d-design.schema.json"),
         ("phase2-synthesis.md", "phase2-synthesis.schema.json"),
+        ("phase3-content-outline-raw.md", "phase3-content-outline.schema.json"),
     ],
 )
 def test_valid_artifacts_pass(fixture_name, schema_name):
@@ -39,7 +42,10 @@ def test_valid_artifacts_pass(fixture_name, schema_name):
     [
         ("eval-brief.md", "eval-brief.schema.json"),
         ("phase1b-competitive-raw.md", "phase1b-competitive.schema.json"),
+        ("phase1c-strengths-raw.md", "phase1c-strengths.schema.json"),
+        ("phase1d-design-raw.md", "phase1d-design.schema.json"),
         ("phase2-synthesis.md", "phase2-synthesis.schema.json"),
+        ("phase3-content-outline-raw.md", "phase3-content-outline.schema.json"),
     ],
 )
 def test_invalid_artifacts_fail(fixture_name, schema_name):

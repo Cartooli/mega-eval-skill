@@ -90,4 +90,6 @@ jobs:
         run: |
           python scripts/validate_artifact.py examples/sample-run/eval-brief.md schemas/eval-brief.schema.json
           python scripts/validate_artifact.py examples/sample-run/phase1b-competitive-raw.md schemas/phase1b-competitive.schema.json
+          python scripts/validate_artifact.py examples/sample-run/phase1c-strengths-raw.md schemas/phase1c-strengths.schema.json
           python scripts/validate_artifact.py examples/sample-run/phase2-synthesis.md schemas/phase2-synthesis.schema.json
+          python scripts/validate_artifact.py examples/sample-run/phase3-content-outline-raw.md schemas/phase3-content-outline.schema.json
