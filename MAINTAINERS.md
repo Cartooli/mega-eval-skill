@@ -1,5 +1,7 @@
 # Maintainers: sustaining the self-learning loop
 
+> **For maintainers and contributors only.** End users should start with [README.md](README.md).
+
 Mega-eval’s “self-learning” is **human-in-the-loop**: run logs and promotion candidates feed **reviewed** updates to `references/learnings.md`. Nothing here auto-edits `SKILL.md` or prompts.
 
 ## Planning a change
