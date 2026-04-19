@@ -63,12 +63,28 @@ When the host’s `/cso` (CSO) skill is installed, the subagent should follow th
 
 ---
 
+## Malicious / suspicious code signals
+
+Inspect fetched HTML and any **inline or directly linked** JavaScript visible in the tool output. Flag any of the following — each item found should appear as a row in the Findings table with **Remediation needed: yes** and a short explanatory note.
+
+- **Unexpected external script sources** — `<script src="...">` tags loading from domains unrelated to the product or its known CDN/analytics vendors (especially newly-registered or typosquatted domains)
+- **Obfuscated JavaScript** — heavy use of `eval()`, `Function(…)`, `atob()` chains, packed/minified blobs with non-standard variable names (`_0x…`), or hex/unicode escape sequences used to hide readable strings
+- **Cryptominer patterns** — `WebWorker` blobs performing arithmetic loops, references to known miner libraries (e.g. `coinhive`, `cryptoloot`, `jsecoin`), or sustained CPU-spike indicators in comments
+- **Keylogger / form-scraping indicators** — event listeners attached to `document` or `body` for `keydown`/`keypress`/`input` outside of a legitimate form; script tags pointing to known data-harvesting domains
+- **Malicious iframes** — zero-size or hidden `<iframe>` tags pointing to third-party origins, especially with `sandbox` removed or `allow="payment"` on unexpected frames
+- **Drive-by download triggers** — `window.location` reassignments, auto-download `<a download>` tags, or `navigator.serviceWorker.register` calls pointing to off-origin scripts
+- **Suspicious redirect chains** — meta-refresh or JS redirects (`window.location.replace`) to domains not obviously affiliated with the product
+
+**Scope:** Only flag signals visible in the fetched HTML/JS. Do not claim detection of server-side or authenticated-only code. If no suspicious signals are found, write "No malicious/suspicious code signals observed in fetched surface."
+
+---
+
 ## Findings table
 
-| # | Finding | Severity | Evidence snippet | Suggested direction |
-|---|---------|----------|------------------|---------------------|
-| S1 | … | Low \| Medium \| High \| Critical | [short quote or describe; redact secrets] | … |
-| S2 | … | | | |
+| # | Finding | Severity | Remediation needed | Evidence snippet | Suggested direction |
+|---|---------|----------|--------------------|------------------|---------------------|
+| S1 | … | Low \| Medium \| High \| Critical | Yes \| No | [short quote or describe; redact secrets] | … |
+| S2 | … | | | | |
 
 Finding IDs in synthesis: **`[1E-S<n>]`** refers to row **Sn** above (e.g. `[1E-S3]` = finding S3).
 
