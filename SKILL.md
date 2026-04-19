@@ -387,6 +387,8 @@ Read `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, and `phase1c-strength
 
 **If `phase1e-security-raw.md` exists**, read it. Treat it as the **authoritative source for structured security findings** (risk band, findings table). **Deduplicate** against Phase 1A: if 1A personas touched trust/security, keep narrative in 1A but **do not** duplicate 1E’s Critical/High items as separate critical fixes — prefer **1E** for security specifics.
 
+**If `phase1e-malicious-signals.md` exists**, read it immediately after `phase1e-security-raw.md`. Every signal in that file is **auto-Critical** in synthesis — add each as a top-priority Critical Fix entry (before other 1E findings) tagged `[1E-MS<n>]` where `<n>` is the signal number. Note in the fix entry that a full remediation checklist is in `phase1e-malicious-signals.md`.
+
 **If `phase1f-durability-raw.md` exists** and the risk band is **not** `N/A`, read it. Treat it as the **authoritative source for AI/agent durability** (model abstraction, prompt architecture, provider concentration, evals). **Deduplicate** against Phase 1B: general vendor/platform lock-in stays in 1B; 1F is strictly AI/agent durability. If a finding is genuinely cross-cutting, cite both.
 
 ### Cross-reference tags (compact citations)
