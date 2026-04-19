@@ -7,6 +7,8 @@ Official catalogs (check periodically — IDs and defaults change):
 - OpenAI: [Models](https://developers.openai.com/api/docs/models)
 - Anthropic: [Models overview](https://platform.claude.com/docs/en/about-claude/models/overview)
 
+> **Link freshness:** last verified 2026-04-19. If a link is stale, search the provider's docs directly — model IDs and catalog URLs change with each major release.
+
 ---
 
 ## Default stance

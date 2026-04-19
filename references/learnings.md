@@ -29,11 +29,14 @@ Each entry is a short **imperative** rule the orchestrator or subagent prompts s
 
 ---
 
-## Patterns (seed / examples)
+## Patterns
 
-<!-- Example entry (fictional)—replace or extend as real promotions land. -->
+<!-- Entries below are promoted from real or illustrative run feedback after human review. -->
+<!-- The first entry is a seed/example to demonstrate format. Replace with real promotions as they land. -->
 
 - **2026-03-24 (example):** When web search returns thin data for Phase 1B, state confidence explicitly and avoid inventing market statistics; say "limited public data" instead of padding.
+
+*This file grows as real runs surface and validate improvements. Initial methodology comes from [SKILL.md](../SKILL.md) and [subagent-prompts.md](subagent-prompts.md). First real promotion is expected after substantive pilot runs; see promotion gates above.*
 
 ---
 
