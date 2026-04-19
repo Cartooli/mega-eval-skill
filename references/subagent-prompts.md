@@ -203,7 +203,9 @@ Evidence tier (pick honestly; mirror Phase 1D):
 - Use **only** the Primary URL for live inspection (WebFetch or browse). Do **not** run broad WebSearch, do **not** inspect private repos, do **not** attempt logins or authenticated flows unless the parent explicitly provided credentials (default: no).
 - **Redact** anything resembling secrets, tokens, API keys, or sensitive query params before saving — replace with `[REDACTED]` in evidence snippets.
 
-Output sections must follow `security-audit-template.md` (Meta, Transport & headers, Auth & session surface, Privacy & data handling, LLM/AI exposure, Red flags, Findings table with severities, Disclaimer, Headline for synthesis with **Security risk band**).
+Output sections must follow `security-audit-template.md` (Meta, Transport & headers, Auth & session surface, Privacy & data handling, LLM/AI exposure, Red flags, **Malicious / suspicious code signals**, Findings table with severities and **Remediation needed** column, Disclaimer, Headline for synthesis with **Security risk band**).
+
+For the **Malicious / suspicious code signals** section: scan all inline and directly linked JavaScript visible in the fetched HTML for obfuscated code, unexpected external script sources, cryptominer patterns, keylogger/form-scraping indicators, malicious iframes, drive-by download triggers, and suspicious redirects. Each signal found must appear as a row in the Findings table with `Remediation needed: Yes` and a short note explaining the risk. If none found, state that explicitly.
 
 Save the complete markdown to: <workspace>/phase1e-security-raw.md
 ```
