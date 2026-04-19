@@ -205,9 +205,16 @@ Evidence tier (pick honestly; mirror Phase 1D):
 
 Output sections must follow `security-audit-template.md` (Meta, Transport & headers, Auth & session surface, Privacy & data handling, LLM/AI exposure, Red flags, **Malicious / suspicious code signals**, Findings table with severities and **Remediation needed** column, Disclaimer, Headline for synthesis with **Security risk band**).
 
-For the **Malicious / suspicious code signals** section: scan all inline and directly linked JavaScript visible in the fetched HTML for obfuscated code, unexpected external script sources, cryptominer patterns, keylogger/form-scraping indicators, malicious iframes, drive-by download triggers, and suspicious redirects. Each signal found must appear as a row in the Findings table with `Remediation needed: Yes` and a short note explaining the risk. If none found, state that explicitly.
+For the **Malicious / suspicious code signals** section:
+- Scan all inline and directly linked JavaScript visible in the fetched HTML for obfuscated code, unexpected external script sources, cryptominer patterns, keylogger/form-scraping indicators, malicious iframes, drive-by download triggers, and suspicious redirects.
+- Cross-check all external script/iframe/fetch domains against the **Known-bad domain quick-reference table** in `security-audit-template.md`. A match is automatic **Critical** severity.
+- For Tier A runs: cross-reference unfamiliar domains against URLhaus (urlhaus.abuse.ch), PhishTank, and Google Safe Browsing Transparency Report where feasible.
+- Each signal found must appear as a row in the Findings table with `Remediation needed: Yes` and a short note explaining the risk. If none found, state that explicitly.
 
-Save the complete markdown to: <workspace>/phase1e-security-raw.md
+**Stub file rule:** If 1 or more signals are found, also write `<workspace>/phase1e-malicious-signals.md` using the stub format defined in `security-audit-template.md` (full evidence, redacted snippets, step-by-step remediation, checklist). In the main `phase1e-security-raw.md` Malicious / suspicious code signals section, replace detail with the one-line reference summary (signal count + highest severity + pointer to stub file).
+
+Save the main security audit to: <workspace>/phase1e-security-raw.md
+Save the malicious signals stub (only if signals found) to: <workspace>/phase1e-malicious-signals.md
 ```
 
 ---
