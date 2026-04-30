@@ -21,10 +21,13 @@ When in doubt, choose the smallest amount of process that still makes scope, res
 1. **Monthly (calendar):** At least once a month, open recent `run-log.md` files (or your workspace log), find **Promotion candidates**, and decide: promote to `references/learnings.md`, drop, or defer. Update **`last_reviewed`** in `references/learnings.md` even if you promote nothing—honest staleness beats fake freshness.
 2. **Merge / release gate:** On each merge to the default branch that touches `SKILL.md`, `references/`, `skills/`, or `examples/`, or when you tag a release—spend **≤5 minutes**: skim promotion candidates; update `last_reviewed` if you performed a review.
    - If the change also touches `schemas/`, artifact structure, sample outputs, or validation tooling, run:
-     - `python3 -m pytest tests/test_validate_artifact.py tests/test_ingest.py`
+     - `python3 -m pytest tests/`
      - `python3 scripts/validate_artifact.py examples/sample-run/eval-brief.md schemas/eval-brief.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase1b-competitive-raw.md schemas/phase1b-competitive.schema.json`
+     - `python3 scripts/validate_artifact.py examples/sample-run/phase1c-strengths-raw.md schemas/phase1c-strengths.schema.json`
+     - `python3 scripts/validate_artifact.py examples/sample-run/phase1d-design-raw.md schemas/phase1d-design.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase2-synthesis.md schemas/phase2-synthesis.schema.json`
+     - `python3 scripts/validate_artifact.py examples/sample-run/phase3-content-outline-raw.md schemas/phase3-content-outline.schema.json`
    - If the change alters host assumptions, fallback behavior, or supported environments, update `docs/architecture/runtime-contract.md` in the same change.
    - If the change alters expected run behavior, update `tests/evals/`, `tests/test_regression_evals.py`, and `docs/architecture/regression-evals.md` in the same change.
 

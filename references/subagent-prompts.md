@@ -299,7 +299,7 @@ Save the complete markdown to: <workspace>/phase1f-durability-raw.md
 
 ## Phase 3: Content Strategy Outline Subagent
 
-### Prompt ID: `phase3.content-outline.v1`
+## Prompt ID: `phase3.content-outline.v1`
 
 **Purpose:** Produce the raw content strategy outline using the external long-form-outline skill.
 **Inputs:** `run_id`, `run_log`, `subject_name`, `eval_brief`, `top_strengths`, `top_criticisms`, `competitive_positioning`, `long_form_outline_skill_path`
