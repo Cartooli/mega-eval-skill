@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.3.0",
+  "run_id": "future-builders-live-2026-05-25",
+  "subject": "Future Builders Live",
+  "run_date": "2026-05-25",
+  "input_sources": [
+    { "type": "text", "label": "User-provided pitch document", "url": null }
+  ],
+  "phases": {
+    "phase0": { "status": "complete", "artifact": "eval-brief.md" },
+    "phase1a": { "status": "complete", "artifact": "phase1a-hater-raw.md", "persona_count": 12 },
+    "phase1b": { "status": "complete", "artifact": "phase1b-competitive-raw.md", "competitor_count": 5 },
+    "phase1c": { "status": "complete", "artifact": "phase1c-strengths-raw.md" },
+    "phase1d": { "status": "skipped", "reason": "No primary URL in scope; no live site exists" },
+    "phase1e": { "status": "skipped", "reason": "No primary URL in scope" },
+    "phase1f": { "status": "skipped", "reason": "No primary URL in scope" },
+    "phase2": { "status": "complete", "artifact": "phase2-synthesis.md" },
+    "phase3": { "status": "complete", "artifact": "phase3-content-outline-raw.md" },
+    "phase4": { "status": "complete" }
+  },
+  "deliverables": [
+    { "filename": "00-executive-summary.docx", "phase": "summary", "status": "complete" },
+    { "filename": "01-hater-mode-feedback.docx", "phase": "1a", "status": "complete" },
+    { "filename": "02-competitive-landscape.docx", "phase": "1b", "status": "complete" },
+    { "filename": "03-strengths-opportunities.docx", "phase": "1c", "status": "complete" },
+    { "filename": "04-critical-fixes-and-design.docx", "phase": "2", "status": "complete" },
+    { "filename": "05-content-strategy-outline.docx", "phase": "3", "status": "complete" }
+  ],
+  "flags": {
+    "MEGA_EVAL_DESIGN_AUDIT": "off",
+    "MEGA_EVAL_SECURITY_AUDIT": "off",
+    "MEGA_EVAL_DURABILITY_AUDIT": "off"
+  },
+  "top_findings": [
+    "Missing ticket price — every revenue assumption is unvalidated without a stated price",
+    "Founder anonymity is the single largest trust barrier for parents and sponsors",
+    "Student presenter recruitment system is undefined — the emotional core of the event has no cold-start solution",
+    "Break-even math does not account for founder labor — the business model earns zero for the organizer",
+    "Premium positioning requires visually demonstrable premium quality before the first ticket is sold"
+  ],
+  "verdict": "Compelling concept with strong AI/robotics timing and a genuinely differentiated emotional core (kids on stage). Fundable and buildable, but requires 6 critical infrastructure pieces before Event 1 or the premium promise will underdeliver."
+}
