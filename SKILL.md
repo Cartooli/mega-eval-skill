@@ -40,16 +40,11 @@ INPUT (text / doc / URL / combo)
 
 ## Model fit check (required before Phase 1)
 
-Mega Eval is **reasoning- and synthesis-heavy**; model tier directly affects depth, grounding, and whether Phase 2 surfaces real tradeoffs versus generic advice. **Do not skip this check.**
+Mega Eval is **reasoning- and synthesis-heavy**; model tier directly affects depth and grounding. **Do not skip this check.** Read `references/model-selection.md` for the full phase→tier mapping, minimum tiers, deprecation notes, and vendor-doc links, then discover what the host allows (one global model, per-subagent routing, or fixed defaults).
 
-1. **Read** `references/model-selection.md` in this skill’s package (phase mapping, minimum tiers, deprecation notes).
-2. **Consult vendor docs** when verifying IDs or aliases: [OpenAI Models](https://developers.openai.com/api/docs/models), [Anthropic models overview](https://platform.claude.com/docs/en/about-claude/models/overview).
-3. **Discover** what the host allows: one global model, per-subagent routing, or fixed defaults you cannot change.
-4. **Verify selections:**
-   - **Phase 2 (synthesis)** must use the **frontier / flagship** text model for the active provider when available (e.g. `gpt-5.4`, `claude-opus-4-6`). Never run synthesis on **mini / nano / haiku–class** models unless the user **explicitly** asked for a cost-saving run.
-   - **Phase 1 (1A–1C, optional 1D)** should use at least the **strong general** tier when the host can split models (e.g. `gpt-5.4-mini`, `claude-sonnet-4-6`). If the host exposes **only one** model for all steps, use the **frontier** tier for the entire pipeline.
-   - **Phase 3** should not use a weaker tier than Phase 1 unless the same constraint as Phase 2 applies.
-5. **If models are constrained** (locked mini tier, deprecated snapshot, or unknown routing): add a short **Model limitation** bullet under **Open Questions** in `eval-brief.md`, and if run logging is on append a `model_check` line to `run-log.md` (see [Run feedback & run log](#run-feedback--run-log-optional)).
+Hard rule: **Phase 2 (synthesis) must use the frontier/flagship model** when available (e.g. `gpt-5.4`, `claude-opus-4-6`) — never mini/nano/haiku-class unless the user explicitly asked for a cost-saving run. Phases 1 and 3 should run at least the strong-general tier; if the host exposes only one model, use frontier for the whole pipeline.
+
+If models are constrained (locked mini tier, deprecated snapshot, unknown routing): add a **Model limitation** bullet under **Open Questions** in `eval-brief.md`, and append a `model_check` line to the run log if logging is on.
 
 ---
 
@@ -91,6 +86,8 @@ See `docs/architecture/runtime-contract.md` for the authoritative capability mat
 ## Run feedback & run log (optional)
 
 This is **run feedback**, not model training: an **append-only Markdown log** so you can improve prompts and checklists over time. **Do not** silently rewrite `SKILL.md` or subagent prompts from logs—promotion goes through human review into `references/learnings.md` (see that file for promotion gates).
+
+> **Global logging rule (applies to every phase below).** When logging is on, wrap each phase in `phase_start` / `phase_complete` lines and record any `tool_error` / `retry` / `failure_mode` / `user_correction` as they occur. If `run-log.jsonl` is enabled, mirror each markdown event with its structured equivalent (`phase_start`, `phase_complete`, `prompt_selected`, `artifact_written`, `artifact_validated`, `fallback_used`, `quality_gate_fail`). The per-phase sections below only call out logging where a phase needs something *beyond* this rule.
 
 When the runtime can append structured files, prefer a matching **`run-log.jsonl`** sidecar beside `run-log.md`. Use the markdown file for human review and the JSONL sidecar for structured telemetry like phase timing, prompt selection, artifact validation, and fallback paths. See `docs/architecture/observability.md` for the event model.
 
@@ -144,18 +141,7 @@ Append a timestamped line when any of these occur (not only at the end):
 | `failure_mode` | Short tag for search: `grounding`, `tool_timeout`, `scope_creep`, `format_mismatch`, etc. |
 | `outcome_note` | Optional forensics only: e.g. `outcome_complete` or `outcome_abandoned` after Phase 4 (or if the user stops early)—**not** a measure of methodology quality |
 
-If `run-log.jsonl` is enabled, prefer these structured event types:
-
-- `phase_start`
-- `phase_complete`
-- `prompt_selected`
-- `artifact_written`
-- `artifact_validated`
-- `tool_error`
-- `retry`
-- `fallback_used`
-- `quality_gate_fail`
-- `user_correction`
+(Structured `run-log.jsonl` event types are listed in the Global logging rule above.)
 
 ### Learned patterns (human-curated)
 
@@ -171,11 +157,9 @@ Before generating `.docx` files: read `run-log.md` (if present). Ensure final na
 
 Before anything else, normalize all inputs into a single **Evaluation Brief** — a structured text block that every downstream phase consumes. This ensures consistency regardless of input format.
 
-If run logging is enabled (`MEGA_EVAL_LOG` not opted out): generate a `run_id`, create `run-log.md` at the chosen path with a **Meta** section (`run_id`, `started` ISO time, `workspace`, `status: in_progress`), and append `phase_start phase0`.
+If run logging is enabled (`MEGA_EVAL_LOG` not opted out): generate a `run_id` and create `run-log.md` at the chosen path with a **Meta** section (`run_id`, `started` ISO time, `workspace`, `status: in_progress`). (The Global logging rule then governs phase boundaries; if structured telemetry is on, create `run-log.jsonl` beside it via `scripts/log_event.py`.)
 
 If the target workspace already contains canonical mega-eval artifacts from an earlier or partial run, inspect them before rerunning phases. Reuse valid outputs and continue from the **first incomplete phase** when appropriate instead of regenerating everything by default. The helper script `scripts/build_eval_bundle.py` can export `eval-bundle.json` with artifact presence, phase status, and a recommended next phase.
-
-If structured telemetry is enabled too and `scripts/log_event.py` is available, create `run-log.jsonl` beside `run-log.md` and append a matching `phase_start` event for `phase0`.
 
 ### Handling Input Types
 
@@ -265,8 +249,6 @@ Use the **same** primary **`https://`** URL for 1D, 1E, and 1F when more than on
 **Default when env is unset:** **Launch** 1F when allowed; the subagent writes a short **N/A** stub (no padded content) if there is no meaningful AI/LLM/agent surface.
 
 **Ambiguity:** If multiple URLs qualify for the primary site, pick **one** and note the others under Open Questions — do not spawn multiple primary-url tracks.
-
-When Phase 0 finishes, append `phase_complete phase0` to the run log (if logging). If `run-log.jsonl` is enabled, append the matching structured `phase_complete` event too.
 
 ---
 
@@ -387,9 +369,7 @@ After launching subagents, wait until:
 - **If Phase 1E was launched:** `phase1e-security-raw.md` exists **or** you have logged abandonment / thin output for 1E and chosen to proceed.
 - **If Phase 1F was launched:** `phase1f-durability-raw.md` exists **or** you have logged abandonment / thin output for 1F and chosen to proceed.
 
-While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
-
-If logging: append `phase_start phase1` before launch and `phase_complete phase1` when the conditions above are met (note `tool_error` / `retry` / `failure_mode` / partial output for any track, including 1D, 1E, and 1F, as needed). If `run-log.jsonl` is enabled, mirror those events with `phase_start`, `phase_complete`, `tool_error`, `retry`, `fallback_used`, and `quality_gate_fail` as appropriate.
+While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript. (Per the Global logging rule, scope any `tool_error` / `failure_mode` line to the specific track, e.g. 1E or 1F.)
 
 ---
 
@@ -461,8 +441,6 @@ Create `phase2-synthesis.md` with these sections:
 **When relevant:** Name tensions such as security vs. speed-to-market, or durability vs. model-chasing, using 1E/1F evidence.
 ```
 
-If logging: append `phase_start phase2` and `phase_complete phase2` around synthesis. Log `user_correction` if the user steers synthesis before Phase 3. If `run-log.jsonl` is enabled, mirror phase boundaries and any `artifact_validated` or `user_correction` events there too.
-
 ---
 
 ## Phase 3: Content Strategy Outline
@@ -488,7 +466,7 @@ Non-negotiable output requirements:
 - Ground the outline in Phase 1 and Phase 2 analysis rather than speculation
 - Keep the output in raw markdown; `.docx` assembly still happens in Phase 4
 
-If logging: append `phase_start phase3` / `phase_complete phase3` around the subagent. If `run-log.jsonl` is enabled, mirror those events and record `prompt_selected` for `phase3.content-outline.v1`.
+(Global logging rule applies; also record `prompt_selected` for `phase3.content-outline.v1` when JSONL is on.)
 
 ---
 
@@ -498,7 +476,7 @@ Perform the **pre–Phase 4 review** from [Run feedback & run log](#run-feedback
 
 Now compile all raw outputs into polished .docx files. Use the docx skill (read its SKILL.md for formatting instructions) to produce each deliverable.
 
-If logging: append `phase_start phase4`, then `phase_complete phase4`, and set `status: complete` (or `abandoned` if stopped early) in the run log Meta section. If `run-log.jsonl` is enabled, mirror those events and record any `artifact_written` / `artifact_validated` events for the final deliverables.
+(Global logging rule applies; additionally set `status: complete` — or `abandoned` if stopped early — in the run log Meta section, and record `artifact_written` / `artifact_validated` for the final deliverables when JSONL is on.)
 
 ### Assembly Order
 
