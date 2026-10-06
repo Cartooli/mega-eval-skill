@@ -27,3 +27,10 @@ Open-source skill package with no direct pricing model stated in this artifact.
 ## Live site / design audit (Phase 1D)
 - **Primary URL for Phase 1D:** n/a
 - **Audit decision:** skipped — repository-only evaluation with no public product URL
+
+## Security audit (Phase 1E)
+- **Audit decision:** skipped — no Primary URL for observation-only review
+
+## AI durability audit (Phase 1F)
+- **Audit decision:** skipped — no Primary URL; AI-surface applicability deferred
+- **AI-surface applicability note:** defer to 1F subagent

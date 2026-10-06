@@ -28,5 +28,6 @@ Full orchestration: [`../SKILL.md`](../SKILL.md), or `../mega-eval/SKILL.md` if 
 | `mega-eval-synthesis` | 2 | `phase2-synthesis.md` |
 | `mega-eval-content-outline` | 3 | `phase3-content-outline-raw.md` |
 | `mega-eval-deliverables` | 4 | `01`–`05` and `00` `.docx` |
+| `mega-eval-prompt-derivation` | helper | `prompt-derivation-spec.json` |
 
 Install instructions for all layouts are in the repo [`README.md`](../README.md).

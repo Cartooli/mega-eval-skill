@@ -40,3 +40,10 @@ Free, open-source (MIT license). No hosted version or paid tier.
 ## Live site / design audit (Phase 1D)
 - **Primary URL for Phase 1D:** n/a
 - **Audit decision:** skipped — this self-evaluation used repository artifacts rather than a public product surface
+
+## Security audit (Phase 1E)
+- **Audit decision:** skipped — no Primary URL for observation-only review
+
+## AI durability audit (Phase 1F)
+- **Audit decision:** skipped — repository-only self-eval with no live product URL
+- **AI-surface applicability note:** subject is an AI skill pipeline; durability track deferred without Primary URL

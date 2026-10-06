@@ -75,3 +75,4 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Strengths analysis is honest (not cheerleading)
 - [ ] Content outline has a clear angle (not generic)
 - [ ] All docs note where information was thin or assumptions were made
+- [ ] When `scripts/validate_artifact.py` is available, validate covered markdown artifacts against `schemas/` (`eval-brief`, `phase1b`, `phase1c`, `phase1d`, `phase2`, `phase3`) before Phase 4; log `artifact_validated` / `quality_gate_fail` if JSONL logging is on
