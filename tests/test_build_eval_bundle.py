@@ -129,6 +129,18 @@ class TestBuildBundle:
         assert raised
         assert "Session not found" in message
 
+    def test_session_path_traversal_rejected(self, tmp_path):
+        (tmp_path / "sessions" / "run-a").mkdir(parents=True)
+        (tmp_path / "sessions" / "run-a" / "eval-brief.md").write_text("# Evaluation Brief\n", encoding="utf-8")
+
+        for bad in ("..", "../..", "foo/bar", r"foo\bar"):
+            try:
+                build_eval_bundle.build_bundle(tmp_path, session=bad)
+                raised = False
+            except SystemExit:
+                raised = True
+            assert raised, f"expected SystemExit for session={bad!r}"
+
 
 class TestCLI:
     """CLI tests for bundle generation."""

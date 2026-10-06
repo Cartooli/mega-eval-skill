@@ -223,6 +223,17 @@ def has_root_artifacts(workspace: Path) -> bool:
     return (workspace / "eval-brief.md").exists()
 
 
+def _safe_session_name(session: str) -> str:
+    """Reject path segments so --session cannot escape sessions/."""
+    if not session or session in {".", ".."}:
+        raise SystemExit(f"Invalid session name: {session!r}")
+    if "/" in session or "\\" in session or "\x00" in session:
+        raise SystemExit(
+            f"Invalid session name: {session!r} (must be a single directory name under sessions/)"
+        )
+    return session
+
+
 def resolve_artifact_root(workspace: Path, session: str | None = None) -> Path:
     """Resolve the directory that holds mega-eval artifacts.
 
@@ -230,17 +241,19 @@ def resolve_artifact_root(workspace: Path, session: str | None = None) -> Path:
     auto-pick only when exactly one populated session exists and the root is empty.
     """
     workspace = workspace.resolve()
+    sessions_root = (workspace / "sessions").resolve()
     session_dirs = list_session_dirs(workspace)
     populated = [path for path in session_dirs if session_has_artifacts(path)]
 
     if session is not None:
-        candidate = workspace / "sessions" / session
-        if not candidate.is_dir():
+        name = _safe_session_name(session)
+        candidate = (workspace / "sessions" / name).resolve()
+        if candidate.parent != sessions_root or not candidate.is_dir():
             available = ", ".join(path.name for path in session_dirs) or "(none)"
             raise SystemExit(
-                f"Session not found: sessions/{session}\nAvailable sessions: {available}"
+                f"Session not found: sessions/{name}\nAvailable sessions: {available}"
             )
-        return candidate.resolve()
+        return candidate
 
     root_has = has_root_artifacts(workspace)
 
