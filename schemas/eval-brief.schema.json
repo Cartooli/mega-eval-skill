@@ -9,7 +9,9 @@
     "Pricing/Model (if known)",
     "Source Material",
     "Open Questions",
-    "Live site / design audit (Phase 1D)"
+    "Live site / design audit (Phase 1D)",
+    "Security audit (Phase 1E)",
+    "AI durability audit (Phase 1F)"
   ],
   "required_nonempty_sections": [
     "Subject",
@@ -19,18 +21,29 @@
     "Pricing/Model (if known)",
     "Source Material",
     "Open Questions",
-    "Live site / design audit (Phase 1D)"
+    "Live site / design audit (Phase 1D)",
+    "Security audit (Phase 1E)",
+    "AI durability audit (Phase 1F)"
   ],
   "required_bullet_sections": [
     "Key Claims & Features",
     "Source Material",
     "Open Questions",
-    "Live site / design audit (Phase 1D)"
+    "Live site / design audit (Phase 1D)",
+    "Security audit (Phase 1E)",
+    "AI durability audit (Phase 1F)"
   ],
   "section_required_substrings": {
     "Live site / design audit (Phase 1D)": [
       "Primary URL for Phase 1D:",
       "Audit decision:"
+    ],
+    "Security audit (Phase 1E)": [
+      "Audit decision:"
+    ],
+    "AI durability audit (Phase 1F)": [
+      "Audit decision:",
+      "AI-surface applicability note:"
     ]
   },
   "section_min_words": {
