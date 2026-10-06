@@ -88,7 +88,21 @@ rm -rf ~/.claude/plugins/cache
 
 ---
 
-### Full pipeline only (`mega-eval`)
+### Alternatives (manual / thin skills)
+
+Prefer the plugin path above. These layouts still work when you need a full clone or a single phase skill, but you must keep `references/` resolvable.
+
+After any manual copy, run:
+
+```bash
+python3 scripts/check_references.py ~/.claude/skills/mega-eval
+# or, for a thin skill folder:
+python3 scripts/check_references.py ~/.claude/skills/mega-eval-brief
+```
+
+A non-zero exit means required templates/prompts are missing — fix that before invoking the skill.
+
+#### Full pipeline only (`mega-eval`)
 
 Copy the skill folder into your project:
 
@@ -102,7 +116,7 @@ cp -r mega-eval-skill/SKILL.md mega-eval-skill/references mega-eval-skill/script
 
 Or if you prefer, copy just the skill folder contents into any `.claude/skills/mega-eval/` directory in your project.
 
-### Phase-only skills (thin entrypoints)
+#### Phase-only skills (thin entrypoints)
 
 The repo includes **eleven** additional skills under [`skills/`](skills/) — phases 0, 1A, 1B, 1C, optional **1D** (design audit), optional **1E** (security), optional **1F** (AI durability), 2, 3, 4, plus a **prompt-derivation** helper — so you can pick **e.g. competitive only** or **brief only** from the skill picker. Methodology is **not** duplicated: each thin `SKILL.md` points at the shared [`references/`](references/) folder and the [full `SKILL.md`](SKILL.md).
 
