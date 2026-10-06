@@ -1,0 +1,25 @@
+{
+  "artifact_type": "phase1f-durability",
+  "required_headings": [
+    "Meta",
+    "Headline for synthesis"
+  ],
+  "required_nonempty_sections": [
+    "Meta",
+    "Headline for synthesis"
+  ],
+  "section_required_substrings": {
+    "Headline for synthesis": [
+      "AI durability risk band:",
+      "One-line summary:"
+    ]
+  },
+  "section_min_words": {
+    "Meta": 8
+  },
+  "forbidden_patterns": [
+    "\\[TO BE FILLED[^\\]]*\\]",
+    "<paste[^>]*>",
+    "TODO"
+  ]
+}

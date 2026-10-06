@@ -89,12 +89,12 @@ def test_pipeline_checklist_requires_artifact_validation():
     assert "schemas/" in text
 
 
-# insight: schema-gap-documented — contracts doc names the 1E/1F schema debt
-def test_artifact_contracts_doc_names_1e_1f_schema_gap():
+# insight: schema-gap-documented — phase1a remains deferred; 1E/1F schemas now exist
+def test_artifact_contracts_doc_names_remaining_phase1a_gap():
     text = (REPO_ROOT / "docs" / "architecture" / "artifact-contracts.md").read_text(encoding="utf-8")
-    assert "phase1e-security-raw.md" in text
-    assert "phase1f-durability-raw.md" in text
-    assert "Security audit (Phase 1E)" in text
+    assert "phase1a-hater-raw.md" in text
+    assert (REPO_ROOT / "schemas" / "phase1e-security.schema.json").exists()
+    assert (REPO_ROOT / "schemas" / "phase1f-durability.schema.json").exists()
 
 
 # insight: skill-count-docs — README lists prompt-derivation among phase skills
@@ -104,22 +104,24 @@ def test_readme_lists_prompt_derivation_skill():
     assert "eleven" in text.lower() or "prompt-derivation" in text
 
 
-# insight: bundle-sessions-opaque — docs tell operators to pass the session folder
+# insight: bundle-sessions — docs describe session discovery / --session
 def test_readme_documents_bundle_session_folder_requirement():
     text = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
-    assert "sessions/<session>/" in text or "session folder" in text
+    assert "sessions/<session>/" in text or "sessions/<name>/" in text
+    assert "--session" in text
 
 
-# insight: brief-1e1f-drift — current schema still passes fixture (debt parked; do not red-assert)
-def test_eval_brief_schema_still_passes_valid_fixture_without_requiring_1e_1f():
-    """Documents current contract lag: schema does not yet require 1E/1F headings.
-
-    Major Project: extend eval-brief.schema.json — do not flip this into a failing
-    assertion until that schema change lands.
-    """
+# insight: brief-1e1f-drift — schema requires Phase 1E/1F brief headings
+def test_eval_brief_schema_requires_1e_1f_headings():
     artifact = REPO_ROOT / "tests" / "fixtures" / "valid" / "eval-brief.md"
     schema = REPO_ROOT / "schemas" / "eval-brief.schema.json"
     errors = validate_artifact.validate_file(artifact, schema)
     assert errors == []
     schema_text = schema.read_text(encoding="utf-8")
-    assert "Security audit (Phase 1E)" not in schema_text
+    assert "Security audit (Phase 1E)" in schema_text
+    assert "AI durability audit (Phase 1F)" in schema_text
+
+    stripped = artifact.read_text(encoding="utf-8")
+    stripped = stripped.split("## Security audit (Phase 1E)")[0].rstrip() + "\n"
+    stripped_errors = validate_artifact.validate_text(stripped, validate_artifact.load_schema(schema))
+    assert any("Security audit (Phase 1E)" in err for err in stripped_errors)

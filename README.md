@@ -88,7 +88,21 @@ rm -rf ~/.claude/plugins/cache
 
 ---
 
-### Full pipeline only (`mega-eval`)
+### Alternatives (manual / thin skills)
+
+Prefer the plugin path above. These layouts still work when you need a full clone or a single phase skill, but you must keep `references/` resolvable.
+
+After any manual copy, run:
+
+```bash
+python3 scripts/check_references.py ~/.claude/skills/mega-eval
+# or, for a thin skill folder:
+python3 scripts/check_references.py ~/.claude/skills/mega-eval-brief
+```
+
+A non-zero exit means required templates/prompts are missing — fix that before invoking the skill.
+
+#### Full pipeline only (`mega-eval`)
 
 Copy the skill folder into your project:
 
@@ -102,7 +116,7 @@ cp -r mega-eval-skill/SKILL.md mega-eval-skill/references mega-eval-skill/script
 
 Or if you prefer, copy just the skill folder contents into any `.claude/skills/mega-eval/` directory in your project.
 
-### Phase-only skills (thin entrypoints)
+#### Phase-only skills (thin entrypoints)
 
 The repo includes **eleven** additional skills under [`skills/`](skills/) — phases 0, 1A, 1B, 1C, optional **1D** (design audit), optional **1E** (security), optional **1F** (AI durability), 2, 3, 4, plus a **prompt-derivation** helper — so you can pick **e.g. competitive only** or **brief only** from the skill picker. Methodology is **not** duplicated: each thin `SKILL.md` points at the shared [`references/`](references/) folder and the [full `SKILL.md`](SKILL.md).
 
@@ -262,7 +276,11 @@ If you want a tooling-friendly summary of a mega-eval workspace, run:
 python3 scripts/build_eval_bundle.py path/to/workspace
 ```
 
-Pass the directory that **contains** the artifacts (`eval-brief.md`, phase raw files, `.docx`). If the run wrote files under `sessions/<session>/`, point the command at that session folder — the helper does not yet recurse into `sessions/` for you.
+Pass the workspace directory that contains the artifacts (`eval-brief.md`, phase raw files, `.docx`), or a parent that uses `sessions/<session>/`:
+
+- Flat workspace with `eval-brief.md` at the path → uses that path.
+- Exactly one populated `sessions/<name>/` and no root `eval-brief.md` → auto-selects that session.
+- Multiple sessions, or both a root brief and populated sessions → pass `--session <name>` (fail closed otherwise).
 
 That writes `eval-bundle.json` with:
 
@@ -281,6 +299,8 @@ Mega-eval ships a lightweight artifact contract layer for key markdown outputs. 
 - `phase1b-competitive-raw.md`
 - `phase1c-strengths-raw.md`
 - `phase1d-design-raw.md`
+- `phase1e-security-raw.md`
+- `phase1f-durability-raw.md`
 - `phase2-synthesis.md`
 - `phase3-content-outline-raw.md`
 

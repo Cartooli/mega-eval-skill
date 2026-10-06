@@ -31,3 +31,5 @@ Full orchestration: [`../SKILL.md`](../SKILL.md), or `../mega-eval/SKILL.md` if 
 | `mega-eval-prompt-derivation` | helper | `prompt-derivation-spec.json` |
 
 Install instructions for all layouts are in the repo [`README.md`](../README.md).
+
+**References preflight:** after a manual or thin-skill install, run `python3 scripts/check_references.py <skill-or-install-dir>` so missing templates fail before a run. Resolution order matches the table above.

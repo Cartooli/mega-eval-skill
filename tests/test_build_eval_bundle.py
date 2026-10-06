@@ -71,6 +71,76 @@ class TestBuildBundle:
         assert any(section["title"] == "Subject" for section in sections)
         assert any(section["title"] == "Core Proposition" for section in sections)
 
+    def test_single_session_under_sessions_auto_resolves(self, tmp_path):
+        session = tmp_path / "sessions" / "run-a"
+        session.mkdir(parents=True)
+        (session / "eval-brief.md").write_text("# Evaluation Brief\n\n## Subject\nSession\n", encoding="utf-8")
+
+        bundle = build_eval_bundle.build_bundle(tmp_path)
+
+        assert Path(bundle["artifact_root"]) == session.resolve()
+        assert bundle["artifacts"]["eval_brief"]["exists"] is True
+
+    def test_multiple_sessions_without_flag_fail_closed(self, tmp_path):
+        for name in ("run-a", "run-b"):
+            session = tmp_path / "sessions" / name
+            session.mkdir(parents=True)
+            (session / "eval-brief.md").write_text("# Evaluation Brief\n", encoding="utf-8")
+
+        try:
+            build_eval_bundle.build_bundle(tmp_path)
+            raised = False
+        except SystemExit as exc:
+            raised = True
+            message = str(exc)
+
+        assert raised
+        assert "Multiple populated sessions" in message
+        assert "run-a" in message and "run-b" in message
+
+    def test_root_and_sessions_conflict_requires_session_flag(self, tmp_path):
+        (tmp_path / "eval-brief.md").write_text("# Evaluation Brief\n\n## Subject\nRoot\n", encoding="utf-8")
+        session = tmp_path / "sessions" / "run-a"
+        session.mkdir(parents=True)
+        (session / "eval-brief.md").write_text("# Evaluation Brief\n\n## Subject\nSession\n", encoding="utf-8")
+
+        try:
+            build_eval_bundle.build_bundle(tmp_path)
+            raised = False
+        except SystemExit as exc:
+            raised = True
+            message = str(exc)
+
+        assert raised
+        assert "Ambiguous workspace" in message
+
+        bundle = build_eval_bundle.build_bundle(tmp_path, session="run-a")
+        assert Path(bundle["artifact_root"]) == session.resolve()
+
+    def test_explicit_session_missing_fails(self, tmp_path):
+        (tmp_path / "sessions").mkdir()
+        try:
+            build_eval_bundle.build_bundle(tmp_path, session="missing")
+            raised = False
+        except SystemExit as exc:
+            raised = True
+            message = str(exc)
+
+        assert raised
+        assert "Session not found" in message
+
+    def test_session_path_traversal_rejected(self, tmp_path):
+        (tmp_path / "sessions" / "run-a").mkdir(parents=True)
+        (tmp_path / "sessions" / "run-a" / "eval-brief.md").write_text("# Evaluation Brief\n", encoding="utf-8")
+
+        for bad in ("..", "../..", "foo/bar", r"foo\bar"):
+            try:
+                build_eval_bundle.build_bundle(tmp_path, session=bad)
+                raised = False
+            except SystemExit:
+                raised = True
+            assert raised, f"expected SystemExit for session={bad!r}"
+
 
 class TestCLI:
     """CLI tests for bundle generation."""
@@ -93,3 +163,29 @@ class TestCLI:
         payload = json.loads(output_path.read_text(encoding="utf-8"))
         assert payload["artifacts"]["eval_brief"]["exists"] is True
         assert payload["phases"]["next_recommended_phase"] == "phase1"
+
+    def test_cli_session_flag_selects_session(self, tmp_path):
+        session = tmp_path / "sessions" / "run-a"
+        session.mkdir(parents=True)
+        (session / "eval-brief.md").write_text("# Evaluation Brief\n\n## Subject\nCLI session\n", encoding="utf-8")
+        output_path = tmp_path / "bundle.json"
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/build_eval_bundle.py",
+                str(tmp_path),
+                "--session",
+                "run-a",
+                "-o",
+                str(output_path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            cwd=str(REPO_ROOT),
+        )
+
+        assert result.returncode == 0
+        payload = json.loads(output_path.read_text(encoding="utf-8"))
+        assert payload["artifact_root"] == str(session.resolve())
