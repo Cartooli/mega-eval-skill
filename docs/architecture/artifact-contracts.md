@@ -65,4 +65,3 @@ Successful validation exits `0`. Validation failures print a readable error list
 The most notable remaining gaps are:
 
 - `phase1a-hater-raw.md`, whose output shape is currently governed largely by the external hater-mode skill. If mega-eval takes ownership of that contract later, it should reuse the same validator unless a more formal schema engine becomes necessary.
-- `phase1e-security-raw.md` and `phase1f-durability-raw.md`, which are first-class Phase 1 tracks in `SKILL.md` / `references/pipeline-checklist.md` but are not yet covered by `schemas/` (brief-level 1E/1F headings are already required by `eval-brief.schema.json`).

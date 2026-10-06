@@ -89,13 +89,12 @@ def test_pipeline_checklist_requires_artifact_validation():
     assert "schemas/" in text
 
 
-# insight: schema-gap-documented — contracts doc still names pending 1E/1F raw schemas
-def test_artifact_contracts_doc_names_1e_1f_schema_gap():
+# insight: schema-gap-documented — phase1a remains deferred; 1E/1F schemas now exist
+def test_artifact_contracts_doc_names_remaining_phase1a_gap():
     text = (REPO_ROOT / "docs" / "architecture" / "artifact-contracts.md").read_text(encoding="utf-8")
-    assert "phase1e-security-raw.md" in text
-    assert "phase1f-durability-raw.md" in text
-    assert "eval-brief.schema.json" in text
-    assert "not yet covered by `schemas/`" in text
+    assert "phase1a-hater-raw.md" in text
+    assert (REPO_ROOT / "schemas" / "phase1e-security.schema.json").exists()
+    assert (REPO_ROOT / "schemas" / "phase1f-durability.schema.json").exists()
 
 
 # insight: skill-count-docs — README lists prompt-derivation among phase skills

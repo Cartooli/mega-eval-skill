@@ -26,6 +26,8 @@ When in doubt, choose the smallest amount of process that still makes scope, res
      - `python3 scripts/validate_artifact.py examples/sample-run/phase1b-competitive-raw.md schemas/phase1b-competitive.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase1c-strengths-raw.md schemas/phase1c-strengths.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase1d-design-raw.md schemas/phase1d-design.schema.json`
+     - `python3 scripts/validate_artifact.py tests/fixtures/valid/phase1e-security-raw.md schemas/phase1e-security.schema.json`
+     - `python3 scripts/validate_artifact.py tests/fixtures/valid/phase1f-durability-raw.md schemas/phase1f-durability.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase2-synthesis.md schemas/phase2-synthesis.schema.json`
      - `python3 scripts/validate_artifact.py examples/sample-run/phase3-content-outline-raw.md schemas/phase3-content-outline.schema.json`
    - If the change alters host assumptions, fallback behavior, or supported environments, update `docs/architecture/runtime-contract.md` in the same change.

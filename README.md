@@ -281,6 +281,8 @@ Mega-eval ships a lightweight artifact contract layer for key markdown outputs. 
 - `phase1b-competitive-raw.md`
 - `phase1c-strengths-raw.md`
 - `phase1d-design-raw.md`
+- `phase1e-security-raw.md`
+- `phase1f-durability-raw.md`
 - `phase2-synthesis.md`
 - `phase3-content-outline-raw.md`
 
