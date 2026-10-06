@@ -104,10 +104,11 @@ def test_readme_lists_prompt_derivation_skill():
     assert "eleven" in text.lower() or "prompt-derivation" in text
 
 
-# insight: bundle-sessions-opaque — docs tell operators to pass the session folder
+# insight: bundle-sessions — docs describe session discovery / --session
 def test_readme_documents_bundle_session_folder_requirement():
     text = (REPO_ROOT / "README.md").read_text(encoding="utf-8")
-    assert "sessions/<session>/" in text or "session folder" in text
+    assert "sessions/<session>/" in text or "sessions/<name>/" in text
+    assert "--session" in text
 
 
 # insight: brief-1e1f-drift — schema requires Phase 1E/1F brief headings

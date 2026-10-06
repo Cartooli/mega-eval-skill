@@ -262,7 +262,11 @@ If you want a tooling-friendly summary of a mega-eval workspace, run:
 python3 scripts/build_eval_bundle.py path/to/workspace
 ```
 
-Pass the directory that **contains** the artifacts (`eval-brief.md`, phase raw files, `.docx`). If the run wrote files under `sessions/<session>/`, point the command at that session folder — the helper does not yet recurse into `sessions/` for you.
+Pass the workspace directory that contains the artifacts (`eval-brief.md`, phase raw files, `.docx`), or a parent that uses `sessions/<session>/`:
+
+- Flat workspace with `eval-brief.md` at the path → uses that path.
+- Exactly one populated `sessions/<name>/` and no root `eval-brief.md` → auto-selects that session.
+- Multiple sessions, or both a root brief and populated sessions → pass `--session <name>` (fail closed otherwise).
 
 That writes `eval-bundle.json` with:
 

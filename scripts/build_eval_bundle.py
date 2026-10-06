@@ -2,7 +2,7 @@
 """Build a machine-readable bundle for a mega-eval workspace.
 
 Usage:
-    python build_eval_bundle.py <workspace> [--output eval-bundle.json]
+    python build_eval_bundle.py <workspace> [--session <name>] [--output eval-bundle.json]
 """
 
 from __future__ import annotations
@@ -208,19 +208,79 @@ def build_phase_summary(artifacts: dict[str, dict]) -> dict:
     }
 
 
-def build_bundle(workspace: Path) -> dict:
+def list_session_dirs(workspace: Path) -> list[Path]:
+    sessions = workspace / "sessions"
+    if not sessions.is_dir():
+        return []
+    return sorted(path for path in sessions.iterdir() if path.is_dir() and not path.name.startswith("."))
+
+
+def session_has_artifacts(session_dir: Path) -> bool:
+    return any((session_dir / filename).exists() for _, filename, _, _ in MARKDOWN_ARTIFACTS)
+
+
+def has_root_artifacts(workspace: Path) -> bool:
+    return (workspace / "eval-brief.md").exists()
+
+
+def resolve_artifact_root(workspace: Path, session: str | None = None) -> Path:
+    """Resolve the directory that holds mega-eval artifacts.
+
+    See plan KTD3: prefer --session; fail closed on ambiguous root+sessions;
+    auto-pick only when exactly one populated session exists and the root is empty.
+    """
     workspace = workspace.resolve()
+    session_dirs = list_session_dirs(workspace)
+    populated = [path for path in session_dirs if session_has_artifacts(path)]
+
+    if session is not None:
+        candidate = workspace / "sessions" / session
+        if not candidate.is_dir():
+            available = ", ".join(path.name for path in session_dirs) or "(none)"
+            raise SystemExit(
+                f"Session not found: sessions/{session}\nAvailable sessions: {available}"
+            )
+        return candidate.resolve()
+
+    root_has = has_root_artifacts(workspace)
+
+    if root_has and populated:
+        names = ", ".join(path.name for path in populated)
+        raise SystemExit(
+            "Ambiguous workspace: eval-brief.md exists at the workspace root and "
+            f"populated sessions/ dirs were found ({names}). "
+            "Pass --session <name> to choose a session, or remove the root artifacts."
+        )
+
+    if root_has:
+        return workspace
+
+    if len(populated) == 1:
+        return populated[0].resolve()
+
+    if len(populated) > 1:
+        names = ", ".join(path.name for path in populated)
+        raise SystemExit(
+            f"Multiple populated sessions found ({names}). Pass --session <name>."
+        )
+
+    return workspace
+
+
+def build_bundle(workspace: Path, session: str | None = None) -> dict:
+    requested = workspace.resolve()
+    artifact_root = resolve_artifact_root(requested, session=session)
     artifacts: dict[str, dict] = {}
 
     for key, filename, required, phase in MARKDOWN_ARTIFACTS:
-        artifacts[key] = markdown_artifact_payload(workspace, filename, required, phase)
+        artifacts[key] = markdown_artifact_payload(artifact_root, filename, required, phase)
 
     for key, filename in DOCX_ARTIFACTS:
-        artifacts[key] = binary_artifact_payload(workspace, filename)
+        artifacts[key] = binary_artifact_payload(artifact_root, filename)
 
     run_id = None
     if artifacts["run_log"]["exists"]:
-        run_log_path = workspace / artifacts["run_log"]["file_name"]
+        run_log_path = artifact_root / artifacts["run_log"]["file_name"]
         run_id = extract_run_id(run_log_path.read_text(encoding="utf-8"))
 
     phase_summary = build_phase_summary(artifacts)
@@ -229,7 +289,8 @@ def build_bundle(workspace: Path) -> dict:
     return {
         "schema_version": "1.0",
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "workspace": str(workspace),
+        "workspace": str(requested),
+        "artifact_root": str(artifact_root),
         "run_id": run_id,
         "present_file_count": len(present_files),
         "present_files": sorted(present_files),
@@ -242,9 +303,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build a machine-readable mega-eval bundle")
     parser.add_argument("workspace", help="Workspace directory containing mega-eval artifacts")
     parser.add_argument(
+        "--session",
+        help="Session directory name under sessions/ when artifacts live in sessions/<name>/",
+    )
+    parser.add_argument(
         "--output",
         "-o",
-        help="Output JSON path (defaults to <workspace>/eval-bundle.json)",
+        help="Output JSON path (defaults to <artifact-root>/eval-bundle.json)",
     )
     args = parser.parse_args()
 
@@ -252,8 +317,9 @@ def main() -> None:
     if not workspace.exists() or not workspace.is_dir():
         raise SystemExit(f"Workspace directory not found: {workspace}")
 
-    output_path = Path(args.output).resolve() if args.output else workspace / "eval-bundle.json"
-    bundle = build_bundle(workspace)
+    bundle = build_bundle(workspace, session=args.session)
+    artifact_root = Path(bundle["artifact_root"])
+    output_path = Path(args.output).resolve() if args.output else artifact_root / "eval-bundle.json"
     output_path.write_text(json.dumps(bundle, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     print(f"Wrote bundle to: {output_path}")
 
