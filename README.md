@@ -104,7 +104,7 @@ Or if you prefer, copy just the skill folder contents into any `.claude/skills/m
 
 ### Phase-only skills (thin entrypoints)
 
-The repo includes **ten** additional skills under [`skills/`](skills/) — phases 0, 1A, 1B, 1C, optional **1D** (design audit), optional **1E** (security), optional **1F** (AI durability), 2, 3, and 4 — so you can pick **e.g. competitive only** or **brief only** from the skill picker. Methodology is **not** duplicated: each thin `SKILL.md` points at the shared [`references/`](references/) folder and the [full `SKILL.md`](SKILL.md).
+The repo includes **eleven** additional skills under [`skills/`](skills/) — phases 0, 1A, 1B, 1C, optional **1D** (design audit), optional **1E** (security), optional **1F** (AI durability), 2, 3, 4, plus a **prompt-derivation** helper — so you can pick **e.g. competitive only** or **brief only** from the skill picker. Methodology is **not** duplicated: each thin `SKILL.md` points at the shared [`references/`](references/) folder and the [full `SKILL.md`](SKILL.md).
 
 | Skill folder | Use when you want |
 |--------------|-------------------|
@@ -118,6 +118,7 @@ The repo includes **ten** additional skills under [`skills/`](skills/) — phase
 | [`skills/mega-eval-synthesis`](skills/mega-eval-synthesis) | Phase 2 only → `phase2-synthesis.md` |
 | [`skills/mega-eval-content-outline`](skills/mega-eval-content-outline) | Phase 3 only → `phase3-content-outline-raw.md` |
 | [`skills/mega-eval-deliverables`](skills/mega-eval-deliverables) | Phase 4 only → `.docx` assembly |
+| [`skills/mega-eval-prompt-derivation`](skills/mega-eval-prompt-derivation) | Prompt Derivation Engine only → `prompt-derivation-spec.json` |
 
 **Path resolution:** Thin skills load `references/` from the first path that exists (see [skills/README.md](skills/README.md)): `./references/` next to the phase `SKILL.md`, `../../references/` when the whole **mega-eval-skill** repo is present, or `../mega-eval/references/` when the phase skill is a sibling of the full **`mega-eval`** folder.
 
@@ -142,7 +143,7 @@ See **[skills/README.md](skills/README.md)** for path resolution order and artif
 
 ### Cowork (Desktop app)
 
-If a **`mega-eval.skill`** bundle is available (e.g. from a project release or attachment), open it in Cowork and use **Copy to your skills**. **The repo root may not include a `.skill` file**—in that case install the same **`SKILL.md` + `references/` + `scripts/`** folder your app expects, using the layout under [Manual install](#manual-install).
+If a **`mega-eval.skill`** bundle is available (this repo ships [`mega-eval.skill`](mega-eval.skill) at the root), open it in Cowork and use **Copy to your skills**. If your checkout or release omits the `.skill` file, install the same **`SKILL.md` + `references/` + `scripts/`** folder your app expects, using the layout under [Manual install](#manual-install).
 
 ### Manual install
 
@@ -193,6 +194,8 @@ mega-eval/
 └── scripts/
     ├── ingest.py                  # Input file extraction helper
     ├── build_eval_bundle.py       # Optional: machine-readable bundle + run status export
+    ├── validate_artifact.py       # Optional: markdown artifact contract checks
+    ├── log_event.py               # Optional: append structured run-log.jsonl events
     └── suggest_learnings.py       # Optional: print promotion candidates from run-log (stdout only)
 ```
 
@@ -258,6 +261,8 @@ If you want a tooling-friendly summary of a mega-eval workspace, run:
 ```bash
 python3 scripts/build_eval_bundle.py path/to/workspace
 ```
+
+Pass the directory that **contains** the artifacts (`eval-brief.md`, phase raw files, `.docx`). If the run wrote files under `sessions/<session>/`, point the command at that session folder — the helper does not yet recurse into `sessions/` for you.
 
 That writes `eval-bundle.json` with:
 

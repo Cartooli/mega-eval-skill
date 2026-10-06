@@ -70,6 +70,21 @@ def extract_text(file_path: str) -> str:
     return f"[Unsupported file type: {ext}. Read the file manually.]"
 
 
+def is_extraction_failure(content: str) -> bool:
+    """Return True when extract_text embedded an operator-visible failure marker."""
+    stripped = content.lstrip()
+    if stripped.startswith("[ERROR:"):
+        return True
+    failure_markers = (
+        "[pdftotext not available",
+        "[pandoc not available",
+        "[PDF extraction via pdftotext failed",
+        "[pandoc extraction failed",
+        "[Unsupported file type:",
+    )
+    return any(marker in content for marker in failure_markers)
+
+
 def generate_brief_template(sources: list[dict]) -> str:
     """Generate an evaluation brief template with extracted content."""
     source_sections = []
@@ -131,9 +146,12 @@ def main():
     args = parser.parse_args()
 
     sources = []
+    failures = []
     for f in args.files:
         p = Path(f).resolve()
         content = extract_text(f)
+        if is_extraction_failure(content):
+            failures.append(f"{p.name}: {content.strip().splitlines()[0]}")
         sources.append({
             'name': p.name,
             'type': p.suffix.lower() or 'text',
@@ -141,12 +159,19 @@ def main():
         })
         print(f"Extracted: {p.name} ({len(content.split())} words)", file=sys.stderr)
 
+    if failures:
+        print("\nIngestion failed — fix inputs or install optional tools:", file=sys.stderr)
+        for failure in failures:
+            print(f"- {failure}", file=sys.stderr)
+        return 1
+
     brief = generate_brief_template(sources)
     output_path = Path(args.output).resolve()
     output_path.write_text(brief)
     print(f"\nBrief template written to: {args.output}", file=sys.stderr)
     print(f"Total sources: {len(sources)}", file=sys.stderr)
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
