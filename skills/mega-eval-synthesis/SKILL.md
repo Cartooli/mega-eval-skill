@@ -9,9 +9,9 @@ You are running **only Phase 2** of the mega-eval pipeline: read Phase **1A–1C
 
 ## Shared methodology location
 
-Resolve `references/` per [skills/README.md](../README.md). **Read:** `references/pipeline-checklist.md` (Phase 2).
+Resolve `references/` per [skills/README.md](../README.md). **Read:** `references/pipeline-checklist.md` (Phase 2) and **Prompt ID** `phase2.synthesis.v1` in `references/subagent-prompts.md`.
 
-Full section structure: **Phase 2: Synthesis** in full `SKILL.md` (`../../SKILL.md` or `../mega-eval/SKILL.md`).
+Merge/dedupe rules: **Phase 2: Synthesis** in full `SKILL.md` (`../../SKILL.md` or `../mega-eval/SKILL.md`).
 
 ## Inputs and outputs
 

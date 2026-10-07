@@ -186,46 +186,7 @@ When `scripts/validate_run_artifacts.py` (or `scripts/validate_artifact.py`) is 
 
 ### Evaluation Brief Format
 
-Produce a structured brief saved as a working file (`/sessions/<session>/eval-brief.md`):
-
-```markdown
-# Evaluation Brief
-
-## Subject
-[Name of the idea/product/feature set]
-
-## Core Proposition
-[1-2 sentences: what is this, and what problem does it solve?]
-
-## Key Claims & Features
-- [Feature/claim 1]
-- [Feature/claim 2]
-- ...
-
-## Target Audience (stated or inferred)
-[Who is this for?]
-
-## Pricing/Model (if known)
-[How does it make money?]
-
-## Source Material
-- [Source 1: type, key contribution]
-- [Source 2: type, key contribution]
-
-## Open Questions
-- [Anything unclear or missing from the inputs]
-
-## Live site / design audit (Phase 1D)
-- **Primary URL for Phase 1D:** [Single `https://` marketing/product URL, or `n/a`]
-- **Audit decision:** [run | skipped] — [one-line reason: no URL, user opt-out, PDF-only inputs, etc.]
-
-## Security audit (Phase 1E)
-- **Audit decision:** [run | skipped] — [one-line reason: env opt-out, no usable evidence, no Primary URL, etc.]
-
-## AI durability audit (Phase 1F)
-- **Audit decision:** [run | skipped] — [one-line reason: env opt-out, no Primary URL, etc.]
-- **AI-surface applicability note:** [orchestrator's quick guess if easy; else `defer to 1F subagent`]
-```
+Use **Prompt ID** `phase0.brief.v1` from `references/subagent-prompts.md` for the brief markdown body. Save as a working file (`/sessions/<session>/eval-brief.md` when using sessions). Then run **Gate A** (`validate_run_artifacts.py --gate pre-phase1`).
 
 If critical information is missing (e.g., the user gave a vague one-liner), ask ONE clarifying question before proceeding. Otherwise, infer what you can and note assumptions in the brief.
 
@@ -359,15 +320,15 @@ Non-negotiable output requirements:
 
 ### Phase 1E: Security audit (optional)
 
-**Only if** Phase 0 **Audit decision** was **run** under **Security audit (Phase 1E)**. Use `references/security-audit-template.md` and the prompt in `references/subagent-prompts.md` (**Phase 1E**). The orchestrator resolves `<cso-skill-path>` to the host’s `/cso` skill (same placeholder pattern as `<hater-mode-skill-path>`). If unavailable, the subagent follows the embedded fallback checklist in `security-audit-template.md` and sets `methodology: fallback` in Meta.
+**Only if** Phase 0 **Audit decision** was **run** under **Security audit (Phase 1E)**. Use **Prompt ID** `phase1e.security.v1` from `references/subagent-prompts.md` and `references/security-audit-template.md`. The orchestrator resolves `<cso-skill-path>` to the host’s `/cso` skill (same placeholder pattern as `<hater-mode-skill-path>`). If unavailable, the subagent follows the embedded fallback checklist in `security-audit-template.md` and sets `methodology: fallback` in Meta.
 
-Spawn a subagent with instructions equivalent to the **Phase 1E** block in `references/subagent-prompts.md` (correlation header, Primary URL only — no broad WebSearch, no repo inspection, no credentialed probes; redact secrets before saving).
+Spawn a subagent with that Prompt ID (correlation header, Primary URL only — no broad WebSearch, no repo inspection, no credentialed probes; redact secrets before saving).
 
 **Output:** `<workspace>/phase1e-security-raw.md`
 
 ### Phase 1F: AI / agent durability audit (optional)
 
-**Only if** Phase 0 **Audit decision** was **run** under **AI durability audit (Phase 1F)**. Use `references/durability-audit-template.md` and the prompt in `references/subagent-prompts.md` (**Phase 1F**). Resolve `<durability-review-skill-path>` like other skill placeholders. If the external skill is missing, use the template as fallback and set `methodology: fallback` in Meta.
+**Only if** Phase 0 **Audit decision** was **run** under **AI durability audit (Phase 1F)**. Use **Prompt ID** `phase1f.durability.v1` from `references/subagent-prompts.md` and `references/durability-audit-template.md`. Resolve `<durability-review-skill-path>` like other skill placeholders. If the external skill is missing, use the template as fallback and set `methodology: fallback` in Meta.
 
 **Applicability** (whether the subject has a meaningful AI/agent surface) is decided **inside this subagent**. If none, write the **N/A** stub per template and stop — not a pipeline failure.
 
@@ -388,7 +349,7 @@ While waiting, you can start drafting the structure of the Phase 2 synthesis doc
 
 ## Phase 2: Synthesis — Critical Fixes, Design Issues, Next Steps
 
-Once Phase 1 **required** tracks (1A–1C) complete, read the Phase 1 raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent. **Optional** tracks (1D–1F) may be missing, thin, or failed — proceed with synthesis regardless; note limits where relevant.
+Once Phase 1 **required** tracks (1A–1C) complete and **Gate B** passes, read the Phase 1 raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent. **Optional** tracks (1D–1F) may be missing or thin-but-valid — proceed with synthesis and note limits; **present-invalid** optional files must be fixed before Gate B.
 
 ### Read All Phase 1 Outputs
 
@@ -414,45 +375,7 @@ Use this format so readers can jump back to raw findings tables:
 
 ### Produce the Synthesis
 
-Create `phase2-synthesis.md` with these sections:
-
-```markdown
-# Synthesis: Critical Fixes, Design Issues & Next Steps
-
-## Critical Fixes Needed
-[Issues that must be addressed before shipping or pitching. Cross-reference which Phase 1 tracks flagged each issue. Prioritize by severity and frequency of mention across tracks.]
-
-**Merge order when 1E/1F exist:** Add **Phase 1E** `Critical` and `High` findings first (with `[1E-S<n>]` tags); then **Phase 1F** `Critical` and `High` (with `[1F-D<n>]` tags); then other tracks. Dedupe against 1A as above.
-
-### Fix 1: [Name]
-- **What:** [Specific issue]
-- **Why it matters:** [Impact if not fixed]
-- **Flagged by:** [Which Phase 1 tracks — use tags above when citing 1E/1F rows]
-- **Suggested approach:** [How to fix it]
-
-### Fix 2: ...
-
-## Design Inconsistencies to Resolve
-[UI/UX issues, branding mismatches, messaging contradictions, experience gaps. Be specific — "the onboarding flow contradicts the pricing page's promise of simplicity."]
-
-**When Phase 1D exists:** Incorporate **live-site audit** findings here (and in Critical Fixes if severity warrants). Cite **Headline for synthesis** / **Design risk band** from `phase1d-design-raw.md`. Merge **Quick wins** from 1D into **Proposed Next Steps** where they do not duplicate.
-
-**1E/1F:** Security and durability findings **do not** belong in this section unless they are purely presentational (rare). Default: 1E/1F → Critical Fixes / Next Steps / Unresolved Tensions only.
-
-## Proposed Next Steps (Non-Breaking Changes)
-[Changes that improve the product/idea without disrupting what's working. Ordered by effort-to-impact ratio — quick wins first, then medium-term, then strategic.]
-
-**When 1E/1F exist:** Add 1E and 1F **Medium** (and low-effort) items here under the appropriate effort buckets, tagged `[1E-S<n>]` / `[1F-D<n>]` where helpful.
-
-### Quick Wins (days)
-### Medium-Term (weeks)
-### Strategic (months)
-
-## Unresolved Tensions
-[Legitimate disagreements between the analysis tracks. Where the hater feedback conflicts with the strengths analysis, name the tension and present both sides.]
-
-**When relevant:** Name tensions such as security vs. speed-to-market, or durability vs. model-chasing, using 1E/1F evidence.
-```
+Create `phase2-synthesis.md` with Use **Prompt ID** `phase2.synthesis.v1` from `references/subagent-prompts.md` for the section skeleton. Apply the read/dedupe/merge rules above (including 1E/1F merge order and `[1E-S<n>]` / `[1F-D<n>]` tags). Then run **Gate C** (`validate_run_artifacts.py --gate pre-phase3`).
 
 ---
 

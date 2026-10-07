@@ -26,8 +26,8 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Phase 1B subagent launched (Competitive & Market) with `run_id` + `run_log` in prompt
 - [ ] Phase 1C subagent launched (Strengths & Opportunities) with `run_id` + `run_log` in prompt
 - [ ] Phase 1D subagent launched **only if** brief says **Audit decision: run** (live-site design audit; prompt in `references/subagent-prompts.md`, template `references/design-audit-template.md`)
-- [ ] Phase 1E subagent launched **only if** brief says **Audit decision: run** under Security audit (prompt `references/subagent-prompts.md` **Phase 1E**, template `references/security-audit-template.md`)
-- [ ] Phase 1F subagent launched **only if** brief says **Audit decision: run** under AI durability audit (prompt **Phase 1F**, template `references/durability-audit-template.md`)
+- [ ] Phase 1E subagent launched **only if** brief says **Audit decision: run** under Security audit (**Prompt ID** `phase1e.security.v1`, template `references/security-audit-template.md`)
+- [ ] Phase 1F subagent launched **only if** brief says **Audit decision: run** under AI durability audit (**Prompt ID** `phase1f.durability.v1`, template `references/durability-audit-template.md`)
 - [ ] Required subagents completed (1A–1C); Phase 1D / 1E / 1F completed **or** logged thin/absent failure — **do not** block Phase 2 on 1D/1E/1F **absence** alone; **do** hard-stop if a present optional raw file fails schema validation
 - [ ] Raw outputs verified: `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, `phase1c-strengths-raw.md` (+ optional `phase1d-design-raw.md`, `phase1e-security-raw.md`, `phase1f-durability-raw.md` when those tracks ran)
 - [ ] **Gate B:** `python3 scripts/validate_run_artifacts.py --gate pre-phase2 <workspace>` exits 0 (hard-stop before Phase 2)
@@ -79,4 +79,4 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Strengths analysis is honest (not cheerleading)
 - [ ] Content outline has a clear angle (not generic)
 - [ ] All docs note where information was thin or assumptions were made
-- [ ] When available, run Gates A–D via `scripts/validate_run_artifacts.py` (covers `eval-brief`, `phase1b`, `phase1c`, `phase1d`, `phase1e`, `phase1f` when present, `phase2`, `phase3`); log `artifact_validated` / schema `quality_gate_fail` if JSONL logging is on
+- [ ] When available, run Gates A–D via `scripts/validate_run_artifacts.py` (wraps `scripts/validate_artifact.py` + `schemas/`; covers `eval-brief`, `phase1b`, `phase1c`, `phase1d`, `phase1e`, `phase1f` when present, `phase2`, `phase3`); log `artifact_validated` / schema `quality_gate_fail` if JSONL logging is on

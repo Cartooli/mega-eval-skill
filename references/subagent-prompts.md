@@ -211,8 +211,11 @@ Save the complete markdown to: <workspace>/phase1d-design-raw.md
 
 ---
 
-## Phase 1E: Security Audit Subagent (optional)
+## Prompt ID: `phase1e.security.v1`
 
+**Purpose:** Observation-only security posture audit (optional live-site track).
+**Inputs:** `run_id`, `run_log`, `eval_brief`, `primary_url`, `cso_skill_path`, `references_path`
+**Output artifact:** `phase1e-security-raw.md` (plus optional `phase1e-malicious-signals.md`)
 **When to use:** Parent run recorded **Audit decision: run** under **Security audit (Phase 1E)** and did **not** opt out (`MEGA_EVAL_SECURITY_AUDIT` off). **Observation-only** — not a penetration test, not compliance certification. **No** credential testing, rate-limit probing, or intrusive actions.
 
 ```
@@ -259,8 +262,11 @@ Save the malicious signals stub (only if signals found) to: <workspace>/phase1e-
 
 ---
 
-## Phase 1F: AI / Agent Durability Audit Subagent (optional)
+## Prompt ID: `phase1f.durability.v1`
 
+**Purpose:** AI/agent durability audit of the public surface (optional live-site track).
+**Inputs:** `run_id`, `run_log`, `eval_brief`, `primary_url`, `durability_review_skill_path`, `references_path`
+**Output artifact:** `phase1f-durability-raw.md`
 **When to use:** Parent run recorded **Audit decision: run** under **AI durability audit (Phase 1F)** and did **not** opt out (`MEGA_EVAL_DURABILITY_AUDIT` off). Focus: resilience to model/API/provider **change** for AI/agent surfaces — not general business vendor risk (that stays in Phase 1B).
 
 ```
@@ -350,9 +356,12 @@ Note: Do NOT produce a .docx yet — just the raw markdown. The parent pipeline 
 
 ---
 
-## Prompt Derivation Engine Subagent
+## Prompt ID: `prompt.derivation.v1`
 
-Use this when you need to decompose a request into a structured prompt spec before execution. Can be called at any phase boundary or standalone.
+**Purpose:** Decompose a request into a schema-validated Prompt Derivation Engine JSON spec.
+**Inputs:** `run_id`, `run_log`, `user_request`, `artifacts`, `preferences`, `prompt_derivation_skill_path`, `repo_root`
+**Output artifact:** `prompt-derivation-spec.json`
+**When to use:** Decompose a request into a structured prompt spec before execution. Can be called at any phase boundary or standalone.
 
 ```
 You are running the Prompt Derivation Engine — converting a user request into a
@@ -385,4 +394,101 @@ Important:
 - Use the enum values defined in the schema — do not invent new ones
 - Be honest about uncertainty_level and failure_modes
 - Save the complete JSON spec to: <workspace>/prompt-derivation-spec.json
+```
+
+
+---
+
+## Prompt ID: `phase0.brief.v1`
+
+**Purpose:** Normalize inputs into a single Evaluation Brief markdown artifact.
+**Inputs:** user text, uploaded documents, URLs, env opt-out flags
+**Output artifact:** `eval-brief.md`
+
+```
+Produce a structured Evaluation Brief saved as markdown (prefer /sessions/<session>/eval-brief.md when using sessions).
+
+# Evaluation Brief
+
+## Subject
+[Name of the idea/product/feature set]
+
+## Core Proposition
+[1-2 sentences: what is this, and what problem does it solve?]
+
+## Key Claims & Features
+- [Feature/claim 1]
+- [Feature/claim 2]
+- ...
+
+## Target Audience (stated or inferred)
+[Who is this for?]
+
+## Pricing/Model (if known)
+[How does it make money?]
+
+## Source Material
+- [Source 1: type, key contribution]
+- [Source 2: type, key contribution]
+
+## Open Questions
+- [Anything unclear or missing from the inputs]
+
+## Live site / design audit (Phase 1D)
+- **Primary URL for Phase 1D:** [Single https:// marketing/product URL, or n/a]
+- **Audit decision:** [run | skipped] — [one-line reason]
+
+## Security audit (Phase 1E)
+- **Audit decision:** [run | skipped] — [one-line reason]
+
+## AI durability audit (Phase 1F)
+- **Audit decision:** [run | skipped] — [one-line reason]
+- **AI-surface applicability note:** [quick guess or defer to 1F subagent]
+
+Follow root SKILL.md Phase 0 for ingestion rules, env opt-outs, and clarifying questions. After writing, run Gate A: validate_run_artifacts.py --gate pre-phase1.
+```
+
+
+---
+
+## Prompt ID: `phase2.synthesis.v1`
+
+**Purpose:** Output shape for Phase 2 synthesis markdown (orchestrator-authored; not a subagent spawn).
+**Inputs:** phase1a/1b/1c raw outputs; optional phase1d/1e/1f; merge rules from root SKILL.md Phase 2
+**Output artifact:** `phase2-synthesis.md`
+
+```
+# Synthesis: Critical Fixes, Design Issues & Next Steps
+
+## Critical Fixes Needed
+[Issues that must be addressed before shipping or pitching. Cross-reference which Phase 1 tracks flagged each issue. Prioritize by severity and frequency of mention across tracks.]
+
+**Merge order when 1E/1F exist:** Add Phase 1E Critical and High findings first (with [1E-S<n>] tags); then Phase 1F Critical and High (with [1F-D<n>] tags); then other tracks. Dedupe against 1A as in SKILL.md.
+
+### Fix 1: [Name]
+- **What:** [Specific issue]
+- **Why it matters:** [Impact if not fixed]
+- **Flagged by:** [Which Phase 1 tracks — use tags when citing 1E/1F rows]
+- **Suggested approach:** [How to fix it]
+
+### Fix 2: ...
+
+## Design Inconsistencies to Resolve
+[UI/UX issues, branding mismatches, messaging contradictions, experience gaps.]
+
+**When Phase 1D exists:** Incorporate live-site audit findings here (and in Critical Fixes if severity warrants). Cite Headline for synthesis / Design risk band from phase1d-design-raw.md.
+
+**1E/1F:** Security and durability findings do not belong in this section unless purely presentational (rare).
+
+## Proposed Next Steps (Non-Breaking Changes)
+[Ordered by effort-to-impact. When 1E/1F exist, add Medium items tagged [1E-S<n>] / [1F-D<n>].]
+
+### Quick Wins (days)
+### Medium-Term (weeks)
+### Strategic (months)
+
+## Unresolved Tensions
+[Legitimate disagreements between analysis tracks.]
+
+Follow root SKILL.md Phase 2 for read order, dedupe, and malicious-signals merge. After writing, run Gate C: validate_run_artifacts.py --gate pre-phase3.
 ```

@@ -9,7 +9,7 @@ You are running **only Phase 1E** of the mega-eval pipeline: a **report-only**, 
 
 ## Shared methodology location
 
-Resolve `references/` per [skills/README.md](../README.md). **Read:** `references/security-audit-template.md`, `references/subagent-prompts.md` (**Phase 1E** template), and `references/pipeline-checklist.md` (Phase 1 / Phase 2 expectations).
+Resolve `references/` per [skills/README.md](../README.md). **Read:** `references/security-audit-template.md`, `references/subagent-prompts.md` (**Prompt ID** `phase1e.security.v1`), and `references/pipeline-checklist.md` (Phase 1 / Phase 2 expectations).
 
 Full orchestration rules: **Phase 0** (security audit gate), **Phase 1E**, and **Phase 2** in full `SKILL.md` (`../../SKILL.md` or `../mega-eval/SKILL.md`).
 

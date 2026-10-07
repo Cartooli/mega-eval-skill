@@ -5,7 +5,7 @@ description: "Decompose any user request into a structured Prompt Derivation Eng
 
 # Prompt Derivation Engine
 
-Convert a user request (plus any attached artifacts) into a fully populated **Prompt Derivation Engine Spec** — a single JSON object conforming to `schemas/prompt-derivation-engine.schema.json`.
+Convert a user request (plus any attached artifacts) into a fully populated **Prompt Derivation Engine Spec** — a single JSON object conforming to `schemas/prompt-derivation-engine.schema.json`. When spawning as a subagent, use **Prompt ID** `prompt.derivation.v1` from `references/subagent-prompts.md`.
 
 ## When to Use
 

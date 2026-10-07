@@ -9,7 +9,7 @@ You are running **only Phase 1F** of the mega-eval pipeline: a report-only audit
 
 ## Shared methodology location
 
-Resolve `references/` per [skills/README.md](../README.md). **Read:** `references/durability-audit-template.md`, `references/subagent-prompts.md` (**Phase 1F** template), and `references/pipeline-checklist.md` (Phase 1 / Phase 2 expectations).
+Resolve `references/` per [skills/README.md](../README.md). **Read:** `references/durability-audit-template.md`, `references/subagent-prompts.md` (**Prompt ID** `phase1f.durability.v1`), and `references/pipeline-checklist.md` (Phase 1 / Phase 2 expectations).
 
 Full orchestration rules: **Phase 0** (durability audit gate), **Phase 1F**, and **Phase 2** in full `SKILL.md` (`../../SKILL.md` or `../mega-eval/SKILL.md`).
 
