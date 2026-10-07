@@ -16,6 +16,8 @@ Instead, the corpus checks a few high-value behavioral guarantees:
 - design-audit fallback stubs explicitly say what was not tested
 - synthesis artifacts preserve disagreements in `## Unresolved Tensions`
 
+Sim-pack / checklist guards (also offline) lock Gates A–D wording (`validate_run_artifacts.py` + `pre-phase*`), 1E/1F schema coverage in the checklist, and `duration_ms` on example `phase_complete` JSONL events.
+
 ## Corpus layout
 
 Each case lives in its own folder under `tests/evals/`.

@@ -87,7 +87,7 @@ See `docs/architecture/runtime-contract.md` for the authoritative capability mat
 
 This is **run feedback**, not model training: an **append-only Markdown log** so you can improve prompts and checklists over time. **Do not** silently rewrite `SKILL.md` or subagent prompts from logs—promotion goes through human review into `references/learnings.md` (see that file for promotion gates).
 
-> **Global logging rule (applies to every phase below).** When logging is on, wrap each phase in `phase_start` / `phase_complete` lines and record any `tool_error` / `retry` / `failure_mode` / `user_correction` as they occur. If `run-log.jsonl` is enabled, mirror each markdown event with its structured equivalent (`phase_start`, `phase_complete`, `prompt_selected`, `artifact_written`, `artifact_validated`, `fallback_used`, `quality_gate_fail`). The per-phase sections below only call out logging where a phase needs something *beyond* this rule.
+> **Global logging rule (applies to every phase below).** When logging is on, wrap each phase in `phase_start` / `phase_complete` lines and record any `tool_error` / `retry` / `failure_mode` / `user_correction` as they occur. If `run-log.jsonl` is enabled, mirror each markdown event with its structured equivalent (`phase_start`, `phase_complete`, `prompt_selected`, `artifact_written`, `artifact_validated`, `fallback_used`, `quality_gate_fail`). Include **`duration_ms` on every `phase_complete`** JSONL event; add `tokens_in` / `tokens_out` / `cost_usd` only when the host provides them. The per-phase sections below only call out logging where a phase needs something *beyond* this rule.
 
 When the runtime can append structured files, prefer a matching **`run-log.jsonl`** sidecar beside `run-log.md`. Use the markdown file for human review and the JSONL sidecar for structured telemetry like phase timing, prompt selection, artifact validation, and fallback paths. See `docs/architecture/observability.md` for the event model.
 
@@ -135,7 +135,7 @@ Append a timestamped line when any of these occur (not only at the end):
 | `retry` | Subagent or tool rerun |
 | `user_correction` | User asked to rewrite a section or fix factual content |
 | `assumption_flag` | Proceeded on explicit inference |
-| `quality_gate_fail` | Output too thin/generic before rework |
+| `quality_gate_fail` | Schema validation failed (prefer `details` naming `schema`) **or** output too thin/generic before rework — when logging JSONL, always pair schema failures with `artifact_validated` status `fail` |
 | `model_check` | Model fit verified vs `references/model-selection.md` — include `pass`, `compromise`, or `host_locked` and observed model names (redact tenant-specific secrets) |
 | `implicit_signal` | Large rewrite of a raw file (if you observe it) |
 | `failure_mode` | Short tag for search: `grounding`, `tool_timeout`, `scope_creep`, `format_mismatch`, etc. |
@@ -159,7 +159,20 @@ Before anything else, normalize all inputs into a single **Evaluation Brief** �
 
 If run logging is enabled (`MEGA_EVAL_LOG` not opted out): generate a `run_id` and create `run-log.md` at the chosen path with a **Meta** section (`run_id`, `started` ISO time, `workspace`, `status: in_progress`). (The Global logging rule then governs phase boundaries; if structured telemetry is on, create `run-log.jsonl` beside it via `scripts/log_event.py`.)
 
-If the target workspace already contains canonical mega-eval artifacts from an earlier or partial run, inspect them before rerunning phases. Reuse valid outputs and continue from the **first incomplete phase** when appropriate instead of regenerating everything by default. The helper script `scripts/build_eval_bundle.py` can export `eval-bundle.json` with artifact presence, phase status, and a recommended next phase.
+If the target workspace already contains canonical mega-eval artifacts from an earlier or partial run, inspect them before rerunning phases. Reuse valid outputs and continue from the **first incomplete phase** when appropriate instead of regenerating everything by default. The helper script `scripts/build_eval_bundle.py` can export `eval-bundle.json` with artifact presence, phase status, and a recommended next phase. **Before resuming**, re-run `scripts/validate_run_artifacts.py` for the next gate (`--gate pre-phase1|pre-phase2|pre-phase3|pre-phase4`) — the bundle is existence-only and must not be treated as proof of schema validity.
+
+### Artifact validation gates (hard-stop)
+
+When `scripts/validate_run_artifacts.py` (or `scripts/validate_artifact.py`) is available, **hard-stop** at these boundaries — do not launch the next phase until the gate exits 0:
+
+| Gate | When | Command |
+|------|------|---------|
+| **A** | After Phase 0, before Phase 1 | `python3 scripts/validate_run_artifacts.py --gate pre-phase1 <workspace>` |
+| **B** | After Phase 1, before Phase 2 | `python3 scripts/validate_run_artifacts.py --gate pre-phase2 <workspace>` |
+| **C** | After Phase 2, before Phase 3 | `python3 scripts/validate_run_artifacts.py --gate pre-phase3 <workspace>` |
+| **D** | After Phase 3, before Phase 4 | `python3 scripts/validate_run_artifacts.py --gate pre-phase4 <workspace>` |
+
+**Layered optional rule (1D/1E/1F):** If the optional raw file is **absent**, skip validation for that path (do not block). If the file **exists**, validate it; on failure, hard-stop and log `artifact_validated` fail + `quality_gate_fail` with schema details when JSONL is on. Thin-but-schema-valid stubs may proceed. `phase1a-hater-raw.md` has no schema yet — do not invent one; leave it outside these gates.
 
 ### Handling Input Types
 
@@ -173,46 +186,7 @@ If the target workspace already contains canonical mega-eval artifacts from an e
 
 ### Evaluation Brief Format
 
-Produce a structured brief saved as a working file (`/sessions/<session>/eval-brief.md`):
-
-```markdown
-# Evaluation Brief
-
-## Subject
-[Name of the idea/product/feature set]
-
-## Core Proposition
-[1-2 sentences: what is this, and what problem does it solve?]
-
-## Key Claims & Features
-- [Feature/claim 1]
-- [Feature/claim 2]
-- ...
-
-## Target Audience (stated or inferred)
-[Who is this for?]
-
-## Pricing/Model (if known)
-[How does it make money?]
-
-## Source Material
-- [Source 1: type, key contribution]
-- [Source 2: type, key contribution]
-
-## Open Questions
-- [Anything unclear or missing from the inputs]
-
-## Live site / design audit (Phase 1D)
-- **Primary URL for Phase 1D:** [Single `https://` marketing/product URL, or `n/a`]
-- **Audit decision:** [run | skipped] — [one-line reason: no URL, user opt-out, PDF-only inputs, etc.]
-
-## Security audit (Phase 1E)
-- **Audit decision:** [run | skipped] — [one-line reason: env opt-out, no usable evidence, no Primary URL, etc.]
-
-## AI durability audit (Phase 1F)
-- **Audit decision:** [run | skipped] — [one-line reason: env opt-out, no Primary URL, etc.]
-- **AI-surface applicability note:** [orchestrator's quick guess if easy; else `defer to 1F subagent`]
-```
+Use **Prompt ID** `phase0.brief.v1` from `references/subagent-prompts.md` for the brief markdown body. Save as a working file (`/sessions/<session>/eval-brief.md` when using sessions). Then run **Gate A** (`validate_run_artifacts.py --gate pre-phase1`).
 
 If critical information is missing (e.g., the user gave a vague one-liner), ask ONE clarifying question before proceeding. Otherwise, infer what you can and note assumptions in the brief.
 
@@ -264,7 +238,7 @@ Each subagent receives the Evaluation Brief as input; Phase 1D/1E/1F also receiv
 
 The key efficiency principle: each subagent does ONE job thoroughly. Don't duplicate work across tracks.
 
-**Phase 1D / 1E / 1F failure isolation:** If any of 1D, 1E, or 1F fails, times out, or produces Tier C “thin” output, log `tool_error` or `failure_mode` when logging is on (scope the line to the track, e.g. 1E or 1F) — **do not** block Phase 2. Proceed once **1A–1C are complete**. **Do not** block Phase 2 on 1D, 1E, or 1F alone.
+**Phase 1D / 1E / 1F failure isolation:** If any of 1D, 1E, or 1F fails, times out, or produces Tier C “thin” output **without leaving a schema-invalid file**, log `tool_error` or `failure_mode` when logging is on (scope the line to the track, e.g. 1E or 1F) — **do not** block Phase 2 for absence or thin-but-valid stubs. Proceed once **1A–1C are complete** and **Gate B** passes. If an optional raw file **exists** and fails schema validation, **hard-stop** at Gate B (present-invalid blocks; absent/thin does not).
 
 ### Phase 1A: Hater Mode Critical Feedback
 
@@ -346,15 +320,15 @@ Non-negotiable output requirements:
 
 ### Phase 1E: Security audit (optional)
 
-**Only if** Phase 0 **Audit decision** was **run** under **Security audit (Phase 1E)**. Use `references/security-audit-template.md` and the prompt in `references/subagent-prompts.md` (**Phase 1E**). The orchestrator resolves `<cso-skill-path>` to the host’s `/cso` skill (same placeholder pattern as `<hater-mode-skill-path>`). If unavailable, the subagent follows the embedded fallback checklist in `security-audit-template.md` and sets `methodology: fallback` in Meta.
+**Only if** Phase 0 **Audit decision** was **run** under **Security audit (Phase 1E)**. Use **Prompt ID** `phase1e.security.v1` from `references/subagent-prompts.md` and `references/security-audit-template.md`. The orchestrator resolves `<cso-skill-path>` to the host’s `/cso` skill (same placeholder pattern as `<hater-mode-skill-path>`). If unavailable, the subagent follows the embedded fallback checklist in `security-audit-template.md` and sets `methodology: fallback` in Meta.
 
-Spawn a subagent with instructions equivalent to the **Phase 1E** block in `references/subagent-prompts.md` (correlation header, Primary URL only — no broad WebSearch, no repo inspection, no credentialed probes; redact secrets before saving).
+Spawn a subagent with that Prompt ID (correlation header, Primary URL only — no broad WebSearch, no repo inspection, no credentialed probes; redact secrets before saving).
 
 **Output:** `<workspace>/phase1e-security-raw.md`
 
 ### Phase 1F: AI / agent durability audit (optional)
 
-**Only if** Phase 0 **Audit decision** was **run** under **AI durability audit (Phase 1F)**. Use `references/durability-audit-template.md` and the prompt in `references/subagent-prompts.md` (**Phase 1F**). Resolve `<durability-review-skill-path>` like other skill placeholders. If the external skill is missing, use the template as fallback and set `methodology: fallback` in Meta.
+**Only if** Phase 0 **Audit decision** was **run** under **AI durability audit (Phase 1F)**. Use **Prompt ID** `phase1f.durability.v1` from `references/subagent-prompts.md` and `references/durability-audit-template.md`. Resolve `<durability-review-skill-path>` like other skill placeholders. If the external skill is missing, use the template as fallback and set `methodology: fallback` in Meta.
 
 **Applicability** (whether the subject has a meaningful AI/agent surface) is decided **inside this subagent**. If none, write the **N/A** stub per template and stop — not a pipeline failure.
 
@@ -375,7 +349,7 @@ While waiting, you can start drafting the structure of the Phase 2 synthesis doc
 
 ## Phase 2: Synthesis — Critical Fixes, Design Issues, Next Steps
 
-Once Phase 1 **required** tracks (1A–1C) complete, read the Phase 1 raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent. **Optional** tracks (1D–1F) may be missing, thin, or failed — proceed with synthesis regardless; note limits where relevant.
+Once Phase 1 **required** tracks (1A–1C) complete and **Gate B** passes, read the Phase 1 raw outputs and synthesize them into a single actionable document. This is the most judgment-intensive phase — do it yourself, not via subagent. **Optional** tracks (1D–1F) may be missing or thin-but-valid — proceed with synthesis and note limits; **present-invalid** optional files must be fixed before Gate B.
 
 ### Read All Phase 1 Outputs
 
@@ -401,45 +375,7 @@ Use this format so readers can jump back to raw findings tables:
 
 ### Produce the Synthesis
 
-Create `phase2-synthesis.md` with these sections:
-
-```markdown
-# Synthesis: Critical Fixes, Design Issues & Next Steps
-
-## Critical Fixes Needed
-[Issues that must be addressed before shipping or pitching. Cross-reference which Phase 1 tracks flagged each issue. Prioritize by severity and frequency of mention across tracks.]
-
-**Merge order when 1E/1F exist:** Add **Phase 1E** `Critical` and `High` findings first (with `[1E-S<n>]` tags); then **Phase 1F** `Critical` and `High` (with `[1F-D<n>]` tags); then other tracks. Dedupe against 1A as above.
-
-### Fix 1: [Name]
-- **What:** [Specific issue]
-- **Why it matters:** [Impact if not fixed]
-- **Flagged by:** [Which Phase 1 tracks — use tags above when citing 1E/1F rows]
-- **Suggested approach:** [How to fix it]
-
-### Fix 2: ...
-
-## Design Inconsistencies to Resolve
-[UI/UX issues, branding mismatches, messaging contradictions, experience gaps. Be specific — "the onboarding flow contradicts the pricing page's promise of simplicity."]
-
-**When Phase 1D exists:** Incorporate **live-site audit** findings here (and in Critical Fixes if severity warrants). Cite **Headline for synthesis** / **Design risk band** from `phase1d-design-raw.md`. Merge **Quick wins** from 1D into **Proposed Next Steps** where they do not duplicate.
-
-**1E/1F:** Security and durability findings **do not** belong in this section unless they are purely presentational (rare). Default: 1E/1F → Critical Fixes / Next Steps / Unresolved Tensions only.
-
-## Proposed Next Steps (Non-Breaking Changes)
-[Changes that improve the product/idea without disrupting what's working. Ordered by effort-to-impact ratio — quick wins first, then medium-term, then strategic.]
-
-**When 1E/1F exist:** Add 1E and 1F **Medium** (and low-effort) items here under the appropriate effort buckets, tagged `[1E-S<n>]` / `[1F-D<n>]` where helpful.
-
-### Quick Wins (days)
-### Medium-Term (weeks)
-### Strategic (months)
-
-## Unresolved Tensions
-[Legitimate disagreements between the analysis tracks. Where the hater feedback conflicts with the strengths analysis, name the tension and present both sides.]
-
-**When relevant:** Name tensions such as security vs. speed-to-market, or durability vs. model-chasing, using 1E/1F evidence.
-```
+Create `phase2-synthesis.md` with Use **Prompt ID** `phase2.synthesis.v1` from `references/subagent-prompts.md` for the section skeleton. Apply the read/dedupe/merge rules above (including 1E/1F merge order and `[1E-S<n>]` / `[1F-D<n>]` tags). Then run **Gate C** (`validate_run_artifacts.py --gate pre-phase3`).
 
 ---
 
@@ -583,7 +519,7 @@ This pipeline is designed to be efficient with tokens and time:
 - **Input is extremely vague:** Ask the user ONE question, then proceed with assumptions noted
 - **Too many inputs:** Summarize each, then merge. Don't try to hold 10 documents in full context.
 - **Phase 1D unavailable or thin:** Record in `phase1d-design-raw.md` and proceed; synthesis should note **design audit limits** rather than inventing visual claims.
-- **Phase 1E unavailable or thin:** Record in `phase1e-security-raw.md` (or log and proceed without blocking Phase 2); synthesis should note **security audit limits** rather than inventing findings. Do not block Phase 2 on 1E alone.
-- **Phase 1F unavailable, thin, or N/A stub:** Record in `phase1f-durability-raw.md`; if **N/A**, omit **AI Durability Posture** from the executive summary. Do not block Phase 2 on 1F alone.
+- **Phase 1E unavailable or thin:** Prefer a schema-valid thin/Tier-C file or omit the file and log; synthesis should note **security audit limits** rather than inventing findings. Do not block Phase 2 on 1E **absence** alone — but a **present invalid** `phase1e-security-raw.md` hard-stops at Gate B.
+- **Phase 1F unavailable, thin, or N/A stub:** Prefer a schema-valid N/A stub or omit the file and log; if **N/A**, omit **AI Durability Posture** from the executive summary. Do not block Phase 2 on 1F **absence** alone — but a **present invalid** `phase1f-durability-raw.md` hard-stops at Gate B.
 
 When logging is enabled, record the corresponding `tool_error`, `retry`, or `failure_mode` lines in `run-log.md` for each of the above (redact URLs and secrets).

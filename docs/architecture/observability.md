@@ -46,7 +46,8 @@ Optional fields:
 
 - `artifact_path`
 - `prompt_id`
-- `duration_ms`
+- `duration_ms` — **required on `phase_complete` when JSONL logging is on** (CLI still accepts omitted duration for other event types / backward compatibility)
+- `tokens_in` / `tokens_out` / `cost_usd` — include only when the host reports them; omit keys when unknown
 - `fallback_used`
 - `details`
 

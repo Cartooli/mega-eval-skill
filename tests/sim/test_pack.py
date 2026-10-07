@@ -86,7 +86,30 @@ def test_is_extraction_failure_allows_clean_text():
 def test_pipeline_checklist_requires_artifact_validation():
     text = (REPO_ROOT / "references" / "pipeline-checklist.md").read_text(encoding="utf-8")
     assert "validate_artifact.py" in text
+    assert "validate_run_artifacts.py" in text
     assert "schemas/" in text
+    assert "pre-phase1" in text
+    assert "pre-phase2" in text
+    assert "pre-phase3" in text
+    assert "pre-phase4" in text
+    assert "phase1e" in text
+    assert "phase1f" in text
+    assert "resume" in text.lower() or "resuming" in text.lower()
+
+
+def test_example_jsonl_phase_complete_has_duration_ms():
+    path = REPO_ROOT / "examples" / "run-feedback" / "run-log.example.jsonl"
+    import json
+
+    completes = [
+        json.loads(line)
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and '"phase_complete"' in line
+    ]
+    assert completes
+    for event in completes:
+        assert "duration_ms" in event
+        assert isinstance(event["duration_ms"], int)
 
 
 # insight: schema-gap-documented — phase1a remains deferred; 1E/1F schemas now exist

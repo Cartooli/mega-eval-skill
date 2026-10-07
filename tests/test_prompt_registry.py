@@ -41,9 +41,14 @@ def test_registry_contains_expected_prompt_ids():
     registry_ids = set(PROMPT_ID_RE.findall(registry_text))
 
     assert registry_ids == {
+        "phase0.brief.v1",
         "phase1a.hater.v1",
         "phase1b.competitive.v1",
         "phase1c.strengths.v1",
         "phase1d.design.v1",
+        "phase1e.security.v1",
+        "phase1f.durability.v1",
+        "phase2.synthesis.v1",
         "phase3.content-outline.v1",
+        "prompt.derivation.v1",
     }

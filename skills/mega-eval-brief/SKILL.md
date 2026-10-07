@@ -17,7 +17,7 @@ Read checklists and context from the mega-eval `references/` directory. Use the 
 
 Full pipeline (for cross-links): `../../SKILL.md` or `../mega-eval/SKILL.md`.
 
-**Read before running:** `references/pipeline-checklist.md` (Phase 0 section) and the **Phase 0: Input Ingestion** section of the full `SKILL.md` (includes **Live site / design audit** fields and `MEGA_EVAL_DESIGN_AUDIT` opt-out).
+**Read before running:** `references/pipeline-checklist.md` (Phase 0 section), **Prompt ID** `phase0.brief.v1` in `references/subagent-prompts.md`, and the **Phase 0: Input Ingestion** section of the full `SKILL.md` (includes live-site track decisions and env opt-outs).
 
 ## Inputs and outputs
 

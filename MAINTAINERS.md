@@ -57,6 +57,8 @@ Use the taxonomy in `SKILL.md` (`tool_error`, `user_correction`, `retry`, `failu
 - Usage: `python3 scripts/suggest_learnings.py path/to/run-log.md`
 - **`scripts/validate_artifact.py`** checks markdown artifacts against lightweight contracts in `schemas/`. Use it whenever you change artifact structure, sample runs, or prompt wording that affects required sections.
 - Usage: `python3 scripts/validate_artifact.py <artifact-path> <schema-path>`
+- **`scripts/validate_run_artifacts.py`** validates a workspace for a pipeline gate (`--gate pre-phase1|pre-phase2|pre-phase3|pre-phase4`). Prefer this for hard-stop checks during a run.
+- Usage: `python3 scripts/validate_run_artifacts.py --gate pre-phase2 <workspace>`
 - **`scripts/log_event.py`** appends structured events to `run-log.jsonl`. Use it when the runtime can emit machine-readable telemetry beside `run-log.md`.
 - Usage: `python3 scripts/log_event.py <log-path> <event-type> --run-id <id> [--phase ...] [--status ...]`
 - **`tests/test_regression_evals.py`** checks the deterministic eval corpus under `tests/evals/`. Use it to protect behavioral guarantees that are stronger than simple section validation.
