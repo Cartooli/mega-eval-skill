@@ -25,6 +25,9 @@ def test_build_event_with_optional_fields():
         artifact_path="phase2-synthesis.md",
         prompt_id="phase1b.competitive.v1",
         duration_ms=1234,
+        tokens_in=100,
+        tokens_out=50,
+        cost_usd=0.01,
         fallback_used="none",
         details="contract=phase2-synthesis",
         timestamp="2026-04-15T12:00:00Z",
@@ -39,9 +42,27 @@ def test_build_event_with_optional_fields():
         "artifact_path": "phase2-synthesis.md",
         "prompt_id": "phase1b.competitive.v1",
         "duration_ms": 1234,
+        "tokens_in": 100,
+        "tokens_out": 50,
+        "cost_usd": 0.01,
         "fallback_used": "none",
         "details": "contract=phase2-synthesis",
     }
+
+
+def test_build_event_omits_absent_token_fields():
+    event = log_event.build_event(
+        event_type="phase_complete",
+        run_id="abc12345",
+        phase="phase0",
+        status="ok",
+        duration_ms=44000,
+        timestamp="2026-04-15T12:00:00Z",
+    )
+    assert "tokens_in" not in event
+    assert "tokens_out" not in event
+    assert "cost_usd" not in event
+    assert event["duration_ms"] == 44000
 
 
 def test_append_event_writes_jsonl(tmp_path):

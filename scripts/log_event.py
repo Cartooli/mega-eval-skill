@@ -23,6 +23,9 @@ def build_event(
     artifact_path: str | None = None,
     prompt_id: str | None = None,
     duration_ms: int | None = None,
+    tokens_in: int | None = None,
+    tokens_out: int | None = None,
+    cost_usd: float | None = None,
     fallback_used: str | None = None,
     details: str | None = None,
     timestamp: str | None = None,
@@ -40,6 +43,9 @@ def build_event(
         "artifact_path": artifact_path,
         "prompt_id": prompt_id,
         "duration_ms": duration_ms,
+        "tokens_in": tokens_in,
+        "tokens_out": tokens_out,
+        "cost_usd": cost_usd,
         "fallback_used": fallback_used,
         "details": details,
     }
@@ -69,6 +75,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--artifact-path", help="Artifact path associated with the event")
     parser.add_argument("--prompt-id", help="Prompt registry ID associated with the event")
     parser.add_argument("--duration-ms", type=int, help="Duration in milliseconds")
+    parser.add_argument("--tokens-in", type=int, help="Input token count when known")
+    parser.add_argument("--tokens-out", type=int, help="Output token count when known")
+    parser.add_argument("--cost-usd", type=float, help="Estimated cost in USD when known")
     parser.add_argument("--fallback-used", help="Fallback path used by the runtime")
     parser.add_argument("--details", help="Short string with extra event context")
     parser.add_argument("--timestamp", help="Explicit timestamp override for testing")
@@ -85,6 +94,9 @@ def main() -> int:
         artifact_path=args.artifact_path,
         prompt_id=args.prompt_id,
         duration_ms=args.duration_ms,
+        tokens_in=args.tokens_in,
+        tokens_out=args.tokens_out,
+        cost_usd=args.cost_usd,
         fallback_used=args.fallback_used,
         details=args.details,
         timestamp=args.timestamp,
