@@ -11,16 +11,18 @@ The goal is not to replace human judgment. The goal is to catch structural drift
 
 ## Current scope
 
-This first pass covers:
+Covered artifacts:
 
 - `eval-brief.md`
 - `phase1b-competitive-raw.md`
 - `phase1c-strengths-raw.md`
 - `phase1d-design-raw.md`
+- `phase1e-security-raw.md`
+- `phase1f-durability-raw.md`
 - `phase2-synthesis.md`
 - `phase3-content-outline-raw.md`
 
-The contracts live under `schemas/` as JSON files and are enforced by `scripts/validate_artifact.py`.
+The contracts live under `schemas/` as JSON files and are enforced by `scripts/validate_artifact.py`. Pipeline hard-stops use `scripts/validate_run_artifacts.py` with `--gate pre-phase1|pre-phase2|pre-phase3|pre-phase4` (see root `SKILL.md`). Optional 1D/1E/1F files are validated only when present. `phase1a-hater-raw.md` remains outside schema enforcement until mega-eval owns that contract.
 
 ## Contract model
 
@@ -40,13 +42,19 @@ This keeps the validator dependency-free and easy to evolve while still giving t
 
 ## Validation workflow
 
-Run the validator directly:
+Run a single-file validator:
 
 ```bash
 python3 scripts/validate_artifact.py path/to/artifact.md path/to/schema.json
 ```
 
-Successful validation exits `0`. Validation failures print a readable error list and exit nonzero.
+Or validate a workspace for a pipeline gate:
+
+```bash
+python3 scripts/validate_run_artifacts.py --gate pre-phase2 path/to/workspace
+```
+
+Successful validation exits `0`. Validation failures print a readable error list and exit nonzero (`1` for contract failures / missing required files; `2` for usage errors).
 
 ## Why these three artifacts first
 

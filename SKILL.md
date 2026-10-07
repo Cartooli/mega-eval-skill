@@ -135,7 +135,7 @@ Append a timestamped line when any of these occur (not only at the end):
 | `retry` | Subagent or tool rerun |
 | `user_correction` | User asked to rewrite a section or fix factual content |
 | `assumption_flag` | Proceeded on explicit inference |
-| `quality_gate_fail` | Output too thin/generic before rework |
+| `quality_gate_fail` | Schema validation failed (prefer `details` naming `schema`) **or** output too thin/generic before rework — when logging JSONL, always pair schema failures with `artifact_validated` status `fail` |
 | `model_check` | Model fit verified vs `references/model-selection.md` — include `pass`, `compromise`, or `host_locked` and observed model names (redact tenant-specific secrets) |
 | `implicit_signal` | Large rewrite of a raw file (if you observe it) |
 | `failure_mode` | Short tag for search: `grounding`, `tool_timeout`, `scope_creep`, `format_mismatch`, etc. |
@@ -159,7 +159,20 @@ Before anything else, normalize all inputs into a single **Evaluation Brief** �
 
 If run logging is enabled (`MEGA_EVAL_LOG` not opted out): generate a `run_id` and create `run-log.md` at the chosen path with a **Meta** section (`run_id`, `started` ISO time, `workspace`, `status: in_progress`). (The Global logging rule then governs phase boundaries; if structured telemetry is on, create `run-log.jsonl` beside it via `scripts/log_event.py`.)
 
-If the target workspace already contains canonical mega-eval artifacts from an earlier or partial run, inspect them before rerunning phases. Reuse valid outputs and continue from the **first incomplete phase** when appropriate instead of regenerating everything by default. The helper script `scripts/build_eval_bundle.py` can export `eval-bundle.json` with artifact presence, phase status, and a recommended next phase.
+If the target workspace already contains canonical mega-eval artifacts from an earlier or partial run, inspect them before rerunning phases. Reuse valid outputs and continue from the **first incomplete phase** when appropriate instead of regenerating everything by default. The helper script `scripts/build_eval_bundle.py` can export `eval-bundle.json` with artifact presence, phase status, and a recommended next phase. **Before resuming**, re-run `scripts/validate_run_artifacts.py` for the next gate (`--gate pre-phase1|pre-phase2|pre-phase3|pre-phase4`) — the bundle is existence-only and must not be treated as proof of schema validity.
+
+### Artifact validation gates (hard-stop)
+
+When `scripts/validate_run_artifacts.py` (or `scripts/validate_artifact.py`) is available, **hard-stop** at these boundaries — do not launch the next phase until the gate exits 0:
+
+| Gate | When | Command |
+|------|------|---------|
+| **A** | After Phase 0, before Phase 1 | `python3 scripts/validate_run_artifacts.py --gate pre-phase1 <workspace>` |
+| **B** | After Phase 1, before Phase 2 | `python3 scripts/validate_run_artifacts.py --gate pre-phase2 <workspace>` |
+| **C** | After Phase 2, before Phase 3 | `python3 scripts/validate_run_artifacts.py --gate pre-phase3 <workspace>` |
+| **D** | After Phase 3, before Phase 4 | `python3 scripts/validate_run_artifacts.py --gate pre-phase4 <workspace>` |
+
+**Layered optional rule (1D/1E/1F):** If the optional raw file is **absent**, skip validation for that path (do not block). If the file **exists**, validate it; on failure, hard-stop and log `artifact_validated` fail + `quality_gate_fail` with schema details when JSONL is on. Thin-but-schema-valid stubs may proceed. `phase1a-hater-raw.md` has no schema yet — do not invent one; leave it outside these gates.
 
 ### Handling Input Types
 
@@ -264,7 +277,7 @@ Each subagent receives the Evaluation Brief as input; Phase 1D/1E/1F also receiv
 
 The key efficiency principle: each subagent does ONE job thoroughly. Don't duplicate work across tracks.
 
-**Phase 1D / 1E / 1F failure isolation:** If any of 1D, 1E, or 1F fails, times out, or produces Tier C “thin” output, log `tool_error` or `failure_mode` when logging is on (scope the line to the track, e.g. 1E or 1F) — **do not** block Phase 2. Proceed once **1A–1C are complete**. **Do not** block Phase 2 on 1D, 1E, or 1F alone.
+**Phase 1D / 1E / 1F failure isolation:** If any of 1D, 1E, or 1F fails, times out, or produces Tier C “thin” output **without leaving a schema-invalid file**, log `tool_error` or `failure_mode` when logging is on (scope the line to the track, e.g. 1E or 1F) — **do not** block Phase 2 for absence or thin-but-valid stubs. Proceed once **1A–1C are complete** and **Gate B** passes. If an optional raw file **exists** and fails schema validation, **hard-stop** at Gate B (present-invalid blocks; absent/thin does not).
 
 ### Phase 1A: Hater Mode Critical Feedback
 
@@ -583,7 +596,7 @@ This pipeline is designed to be efficient with tokens and time:
 - **Input is extremely vague:** Ask the user ONE question, then proceed with assumptions noted
 - **Too many inputs:** Summarize each, then merge. Don't try to hold 10 documents in full context.
 - **Phase 1D unavailable or thin:** Record in `phase1d-design-raw.md` and proceed; synthesis should note **design audit limits** rather than inventing visual claims.
-- **Phase 1E unavailable or thin:** Record in `phase1e-security-raw.md` (or log and proceed without blocking Phase 2); synthesis should note **security audit limits** rather than inventing findings. Do not block Phase 2 on 1E alone.
-- **Phase 1F unavailable, thin, or N/A stub:** Record in `phase1f-durability-raw.md`; if **N/A**, omit **AI Durability Posture** from the executive summary. Do not block Phase 2 on 1F alone.
+- **Phase 1E unavailable or thin:** Prefer a schema-valid thin/Tier-C file or omit the file and log; synthesis should note **security audit limits** rather than inventing findings. Do not block Phase 2 on 1E **absence** alone — but a **present invalid** `phase1e-security-raw.md` hard-stops at Gate B.
+- **Phase 1F unavailable, thin, or N/A stub:** Prefer a schema-valid N/A stub or omit the file and log; if **N/A**, omit **AI Durability Posture** from the executive summary. Do not block Phase 2 on 1F **absence** alone — but a **present invalid** `phase1f-durability-raw.md` hard-stops at Gate B.
 
 When logging is enabled, record the corresponding `tool_error`, `retry`, or `failure_mode` lines in `run-log.md` for each of the above (redact URLs and secrets).

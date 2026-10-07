@@ -10,7 +10,7 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Security audit: skip Phase 1E if `MEGA_EVAL_SECURITY_AUDIT` is `off` / `0` / `false` (otherwise default **run** when Phase 0 allows — Tier C if no URL)
 - [ ] AI durability audit: skip Phase 1F if `MEGA_EVAL_DURABILITY_AUDIT` is `off` / `0` / `false` (otherwise default **run**; applicability decided in subagent; N/A stub OK)
 - [ ] Run logging decision: skip if `MEGA_EVAL_LOG` is `off` / `0`; otherwise plan `run-log.md` path and `run_id`
-- [ ] If the workspace already has mega-eval artifacts, inspect them first (for example with `python3 scripts/build_eval_bundle.py <workspace>`) and resume from the first incomplete phase when appropriate
+- [ ] If the workspace already has mega-eval artifacts, inspect them first (for example with `python3 scripts/build_eval_bundle.py <workspace>`), then run `python3 scripts/validate_run_artifacts.py --gate <next-gate> <workspace>` before resuming — do not trust the bundle alone for schema validity
 
 ## Phase 0: Ingestion
 - [ ] All inputs parsed and content extracted
@@ -18,6 +18,7 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Brief includes **Security audit (Phase 1E)** and **AI durability audit (Phase 1F)** rows (audit decision + 1F AI-surface note or `defer to 1F subagent`)
 - [ ] Open questions noted (ask user if critical info is missing)
 - [ ] If logging: `run_id` assigned, `run-log.md` initialized, `phase_start phase0` / `phase_complete phase0` appended
+- [ ] **Gate A:** `python3 scripts/validate_run_artifacts.py --gate pre-phase1 <workspace>` exits 0 (hard-stop before Phase 1)
 
 ## Phase 1: Parallel Analysis
 - [ ] Skimmed `references/learnings.md` for applicable methodological bullets (optional)
@@ -27,8 +28,9 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Phase 1D subagent launched **only if** brief says **Audit decision: run** (live-site design audit; prompt in `references/subagent-prompts.md`, template `references/design-audit-template.md`)
 - [ ] Phase 1E subagent launched **only if** brief says **Audit decision: run** under Security audit (prompt `references/subagent-prompts.md` **Phase 1E**, template `references/security-audit-template.md`)
 - [ ] Phase 1F subagent launched **only if** brief says **Audit decision: run** under AI durability audit (prompt **Phase 1F**, template `references/durability-audit-template.md`)
-- [ ] Required subagents completed (1A–1C); Phase 1D / 1E / 1F completed **or** logged thin failure — **do not** block Phase 2 on 1D, 1E, or 1F alone
+- [ ] Required subagents completed (1A–1C); Phase 1D / 1E / 1F completed **or** logged thin/absent failure — **do not** block Phase 2 on 1D/1E/1F **absence** alone; **do** hard-stop if a present optional raw file fails schema validation
 - [ ] Raw outputs verified: `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, `phase1c-strengths-raw.md` (+ optional `phase1d-design-raw.md`, `phase1e-security-raw.md`, `phase1f-durability-raw.md` when those tracks ran)
+- [ ] **Gate B:** `python3 scripts/validate_run_artifacts.py --gate pre-phase2 <workspace>` exits 0 (hard-stop before Phase 2)
 - [ ] If logging: Phase 1 events appended (`phase_start` / `phase_complete`, errors/retries as needed)
 
 ## Phase 2: Synthesis
@@ -40,15 +42,17 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Non-breaking next steps ordered by effort-to-impact (include 1E/1F Medium items when present)
 - [ ] Unresolved tensions documented (security vs speed, durability vs model-chasing when surfaced)
 - [ ] Output written to `phase2-synthesis.md`
+- [ ] **Gate C:** `python3 scripts/validate_run_artifacts.py --gate pre-phase3 <workspace>` exits 0 (hard-stop before Phase 3)
 - [ ] If logging: `phase2` start/complete (and `user_correction` if user steered synthesis)
 
 ## Phase 3: Content Strategy
 - [ ] Subagent launched with long-form-outline skill (`run_id` + `run_log` in prompt)
 - [ ] Output verified: `phase3-content-outline-raw.md`
+- [ ] **Gate D:** `python3 scripts/validate_run_artifacts.py --gate pre-phase4 <workspace>` exits 0 (hard-stop before Phase 4)
 - [ ] If logging: Phase 3 start/complete appended
 
 ## Phase 4: Deliverable Assembly
-- [ ] **Pre-flight:** If logging, reviewed `run-log.md` and reconciled brief/synthesis with corrections
+- [ ] **Pre-flight:** If logging, reviewed `run-log.md` and reconciled brief/synthesis with corrections; Gate D already passed
 - [ ] Executive summary includes **Live Site / Product Surface** when Phase 1D informed synthesis (see full `SKILL.md`)
 - [ ] Executive summary includes optional **Security Posture** when Phase 1E ran with non-stub output, and **AI Durability Posture** when Phase 1F ran with risk band **not** `N/A` (omit AI section entirely when `N/A`)
 - [ ] `01-hater-mode-feedback.docx` created
@@ -75,4 +79,4 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Strengths analysis is honest (not cheerleading)
 - [ ] Content outline has a clear angle (not generic)
 - [ ] All docs note where information was thin or assumptions were made
-- [ ] When `scripts/validate_artifact.py` is available, validate covered markdown artifacts against `schemas/` (`eval-brief`, `phase1b`, `phase1c`, `phase1d`, `phase2`, `phase3`) before Phase 4; log `artifact_validated` / `quality_gate_fail` if JSONL logging is on
+- [ ] When available, run Gates A–D via `scripts/validate_run_artifacts.py` (covers `eval-brief`, `phase1b`, `phase1c`, `phase1d`, `phase1e`, `phase1f` when present, `phase2`, `phase3`); log `artifact_validated` / schema `quality_gate_fail` if JSONL logging is on
