@@ -6,6 +6,8 @@ This directory contains the complete output from running the mega-eval pipeline 
 **Date:** May 2026
 **Phases 1D/1E/1F:** Skipped — no primary URL in scope
 
+These markdown intermediates predate the current heading contracts in `schemas/`. `python3 scripts/validate_run_artifacts.py` fails them until the headings match those contracts. Use [`examples/sample-run/`](../sample-run/) as the gate-valid sample.
+
 ---
 
 ## Deliverables

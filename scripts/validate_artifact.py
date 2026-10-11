@@ -80,6 +80,15 @@ def load_schema(schema_path: Path) -> dict:
 def validate_text(text: str, schema: dict) -> list[str]:
     """Return validation errors for a markdown artifact."""
     errors: list[str] = []
+    heading_titles = [heading.title for heading in extract_headings(text.splitlines())]
+    seen_titles: set[str] = set()
+    reported_duplicates: set[str] = set()
+    for title in heading_titles:
+        if title in seen_titles and title not in reported_duplicates:
+            errors.append(f"Duplicate heading '{title}'.")
+            reported_duplicates.add(title)
+        seen_titles.add(title)
+
     sections = build_section_map(text)
     headings = set(sections.keys())
 

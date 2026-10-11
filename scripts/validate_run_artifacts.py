@@ -72,10 +72,16 @@ def resolve_targets(
     targets: list[Path] = []
 
     if explicit_files:
+        allowed = set(GATE_SETS[gate])
         for path in explicit_files:
             name = path.name
             if name not in ARTIFACT_SCHEMAS:
                 missing.append(f"Unknown artifact filename (no schema mapping): {name}")
+                continue
+            if name not in allowed:
+                missing.append(
+                    f"Artifact {name} is outside gate {gate} and was not schema-checked."
+                )
                 continue
             if not path.exists():
                 missing.append(f"Missing artifact: {path}")
@@ -134,7 +140,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         action="append",
         default=[],
         dest="files",
-        help="Explicit artifact path (repeatable). When set, skips workspace discovery.",
+        help=(
+            "Explicit artifact path (repeatable). When set, validates only these files, "
+            "and only when each filename belongs to the selected --gate set. "
+            "Does not scan the workspace for other required files."
+        ),
     )
     return parser.parse_args(argv)
 
@@ -168,6 +178,14 @@ def main(argv: list[str] | None = None) -> int:
 
     names = ", ".join(p.name for p in targets) or "(none)"
     print(f"Validation passed for {args.gate}: {names}.", file=sys.stderr)
+    if args.files:
+        present = {path.name for path in targets}
+        absent = sorted(GATE_REQUIRED[args.gate] - present)
+        if absent:
+            print(
+                f"Note: explicit files did not cover required {args.gate} artifacts: {', '.join(absent)}.",
+                file=sys.stderr,
+            )
     return 0
 
 

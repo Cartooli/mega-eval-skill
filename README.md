@@ -111,7 +111,7 @@ Copy the skill folder into your project:
 git clone https://github.com/Cartooli/mega-eval-skill.git
 
 # Copy into your Claude Code skills directory (include the whole references/ folder for learnings, prompts, and model-selection guidance)
-cp -r mega-eval-skill/SKILL.md mega-eval-skill/references mega-eval-skill/scripts ~/.claude/skills/mega-eval/
+cp -r mega-eval-skill/SKILL.md mega-eval-skill/references mega-eval-skill/scripts mega-eval-skill/schemas ~/.claude/skills/mega-eval/
 ```
 
 Or if you prefer, copy just the skill folder contents into any `.claude/skills/mega-eval/` directory in your project.
@@ -157,7 +157,7 @@ See **[skills/README.md](skills/README.md)** for path resolution order and artif
 
 ### Cowork (Desktop app)
 
-If a **`mega-eval.skill`** bundle is available (this repo ships [`mega-eval.skill`](mega-eval.skill) at the root), open it in Cowork and use **Copy to your skills**. If your checkout or release omits the `.skill` file, install the same **`SKILL.md` + `references/` + `scripts/`** folder your app expects, using the layout under [Manual install](#manual-install).
+If a **`mega-eval.skill`** bundle is available (this repo ships [`mega-eval.skill`](mega-eval.skill) at the root), open it in Cowork and use **Copy to your skills**. If your checkout or release omits the `.skill` file, install the same **`SKILL.md` + `references/` + `scripts/` + `schemas/`** folder your app expects, using the layout under [Manual install](#manual-install).
 
 ### Manual install
 
@@ -177,7 +177,12 @@ mega-eval-skill/
 ├── scripts/
 │   ├── ingest.py
 │   ├── build_eval_bundle.py
+│   ├── validate_artifact.py
+│   ├── validate_run_artifacts.py
+│   ├── log_event.py
+│   ├── check_references.py
 │   └── suggest_learnings.py
+├── schemas/                 # Artifact contracts used by the gate scripts
 └── skills/                  # Thin phase-only skills (see "Phase-only skills" above)
     ├── README.md
     ├── mega-eval-brief/
@@ -189,7 +194,8 @@ mega-eval-skill/
     ├── mega-eval-durability/
     ├── mega-eval-synthesis/
     ├── mega-eval-content-outline/
-    └── mega-eval-deliverables/
+    ├── mega-eval-deliverables/
+    └── mega-eval-prompt-derivation/
 ```
 
 The **single** `mega-eval` install folder (what you copy to `~/.claude/skills/mega-eval/`) is:
@@ -205,10 +211,13 @@ mega-eval/
 │   ├── durability-audit-template.md # Phase 1F durability template
 │   ├── model-selection.md       # Model tier guidance for high-quality runs
 │   └── learnings.md             # Human-reviewed methodology patterns (from run feedback)
+├── schemas/                  # Artifact contracts (required for Gates A–D)
 └── scripts/
     ├── ingest.py                  # Input file extraction helper
     ├── build_eval_bundle.py       # Optional: machine-readable bundle + run status export
-    ├── validate_artifact.py       # Optional: markdown artifact contract checks
+    ├── validate_artifact.py       # Markdown artifact contract checks
+    ├── validate_run_artifacts.py  # Gate A–D batch validation
+    ├── check_references.py        # Preflight: references/ resolves
     ├── log_event.py               # Optional: append structured run-log.jsonl events
     └── suggest_learnings.py       # Optional: print promotion candidates from run-log (stdout only)
 ```
@@ -340,7 +349,7 @@ When the runtime supports structured file appends, pair it with a **`run-log.jso
 
 The root [`SKILL.md`](SKILL.md) now explicitly tells compatible runtimes to mirror key phase events into `run-log.jsonl` when `scripts/log_event.py` is available.
 
-- **Disable logging:** set `MEGA_EVAL_LOG=off` or `MEGA_EVAL_LOG=0` in the environment before running.
+- **Disable logging:** set `MEGA_EVAL_LOG` to `off`, `0`, or `false` in the environment before running.
 - **Disable optional design audit:** set `MEGA_EVAL_DESIGN_AUDIT=off` or `MEGA_EVAL_DESIGN_AUDIT=0` to skip Phase 1D even when an HTTPS URL is present (see `SKILL.md` Phase 0).
 - **Disable optional security audit:** set `MEGA_EVAL_SECURITY_AUDIT=off` or `MEGA_EVAL_SECURITY_AUDIT=0` to skip Phase 1E.
 - **Disable optional durability audit:** set `MEGA_EVAL_DURABILITY_AUDIT=off` or `MEGA_EVAL_DURABILITY_AUDIT=0` to skip Phase 1F.
