@@ -18,8 +18,12 @@ def main() -> None:
         print("Usage: suggest_learnings.py <path-to-run-log.md>", file=sys.stderr)
         sys.exit(2)
     path = sys.argv[1]
-    with open(path, encoding="utf-8") as f:
-        text = f.read()
+    try:
+        with open(path, encoding="utf-8") as f:
+            text = f.read()
+    except FileNotFoundError:
+        print(f"Run log not found: {path}", file=sys.stderr)
+        sys.exit(2)
 
     found = False
     promo = section_after_heading(text, "Promotion candidates")

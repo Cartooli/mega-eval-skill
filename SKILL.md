@@ -186,7 +186,7 @@ When `scripts/validate_run_artifacts.py` (or `scripts/validate_artifact.py`) is 
 
 ### Evaluation Brief Format
 
-Use **Prompt ID** `phase0.brief.v1` from `references/subagent-prompts.md` for the brief markdown body. Save as a working file (`/sessions/<session>/eval-brief.md` when using sessions). Then run **Gate A** (`validate_run_artifacts.py --gate pre-phase1`).
+Use **Prompt ID** `phase0.brief.v1` from `references/subagent-prompts.md` for the brief markdown body. Save it as `<workspace>/sessions/<session>/eval-brief.md` when using sessions, or `<workspace>/eval-brief.md` otherwise. Then run **Gate A** (`validate_run_artifacts.py --gate pre-phase1`).
 
 If critical information is missing (e.g., the user gave a vague one-liner), ask ONE clarifying question before proceeding. Otherwise, infer what you can and note assumptions in the brief.
 
@@ -401,6 +401,7 @@ Non-negotiable output requirements:
 - Save the output as `phase3-content-outline-raw.md`
 - Ground the outline in Phase 1 and Phase 2 analysis rather than speculation
 - Keep the output in raw markdown; `.docx` assembly still happens in Phase 4
+- Then run **Gate D** (`validate_run_artifacts.py --gate pre-phase4`) and hard-stop until it exits 0
 
 (Global logging rule applies; also record `prompt_selected` for `phase3.content-outline.v1` when JSONL is on.)
 
@@ -472,9 +473,9 @@ When Phase 1F exited with **N/A**, **omit** the AI Durability Posture section en
 
 ### File Output
 
-All final .docx files go to the workspace output folder:
-- Save to `/sessions/<session>/mnt/.claude/` so the user can access them
-- Present each file with a computer:// link
+All final .docx files go in the same workspace directory as the markdown artifacts (`<workspace>/` or `<workspace>/sessions/<session>/`):
+- When the host exposes a session mount (Claude Cowork uses `/sessions/<session>/mnt/.claude/`), write the `.docx` files there only if that mount is the workspace the user can open
+- Present each file with a link the host understands (a `computer://` link when the host provides one)
 
 ### Efficiency Notes
 

@@ -9,7 +9,7 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Design audit: skip Phase 1D if `MEGA_EVAL_DESIGN_AUDIT` is `off` / `0` / `false` (otherwise default **on** when a primary `https://` URL is chosen in Phase 0)
 - [ ] Security audit: skip Phase 1E if `MEGA_EVAL_SECURITY_AUDIT` is `off` / `0` / `false` (otherwise default **run** when Phase 0 allows — Tier C if no URL)
 - [ ] AI durability audit: skip Phase 1F if `MEGA_EVAL_DURABILITY_AUDIT` is `off` / `0` / `false` (otherwise default **run**; applicability decided in subagent; N/A stub OK)
-- [ ] Run logging decision: skip if `MEGA_EVAL_LOG` is `off` / `0`; otherwise plan `run-log.md` path and `run_id`
+- [ ] Run logging decision: skip if `MEGA_EVAL_LOG` is `off` / `0` / `false`; otherwise plan `run-log.md` path and `run_id`
 - [ ] If the workspace already has mega-eval artifacts, inspect them first (for example with `python3 scripts/build_eval_bundle.py <workspace>`), then run `python3 scripts/validate_run_artifacts.py --gate <next-gate> <workspace>` before resuming — do not trust the bundle alone for schema validity
 
 ## Phase 0: Ingestion

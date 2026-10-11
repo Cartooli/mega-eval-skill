@@ -5,8 +5,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+DETAILS_MAX = 500
 
 
 def utc_now_iso() -> str:
@@ -47,7 +50,7 @@ def build_event(
         "tokens_out": tokens_out,
         "cost_usd": cost_usd,
         "fallback_used": fallback_used,
-        "details": details,
+        "details": _cap_details(details),
     }
 
     for key, value in optional_fields.items():
@@ -55,6 +58,13 @@ def build_event(
             event[key] = value
 
     return event
+
+
+def _cap_details(details: str | None) -> str | None:
+    """Keep details inside the run-log line cap from SKILL.md."""
+    if details is None or len(details) <= DETAILS_MAX:
+        return details
+    return details[: DETAILS_MAX - 3] + "..."
 
 
 def append_event(log_path: Path, event: dict) -> None:
@@ -86,6 +96,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    if args.event_type == "phase_complete" and args.duration_ms is None:
+        print("phase_complete requires --duration-ms.", file=sys.stderr)
+        return 1
     event = build_event(
         event_type=args.event_type,
         run_id=args.run_id,

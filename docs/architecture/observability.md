@@ -46,7 +46,7 @@ Optional fields:
 
 - `artifact_path`
 - `prompt_id`
-- `duration_ms` — **required on `phase_complete` when JSONL logging is on** (CLI still accepts omitted duration for other event types / backward compatibility)
+- `duration_ms` — **required on `phase_complete` when JSONL logging is on**. `scripts/log_event.py` exits non-zero when `phase_complete` omits `--duration-ms`. Other event types may omit it. `details` longer than 500 characters is truncated.
 - `tokens_in` / `tokens_out` / `cost_usd` — include only when the host reports them; omit keys when unknown
 - `fallback_used`
 - `details`
