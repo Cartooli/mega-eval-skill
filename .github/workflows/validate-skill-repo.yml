@@ -22,6 +22,11 @@ on:
       - "docs/brainstorms/**"
       - ".github/workflows/validate-skill-repo.yml"
 
+
+# Read-only token: these jobs only check out and validate files.
+permissions:
+  contents: read
+
 jobs:
   pytest:
     name: Run repo validation tests
