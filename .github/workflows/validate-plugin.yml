@@ -28,6 +28,11 @@ on:
       - "references/**"
       - "skills/**"
 
+
+# Read-only token: these jobs only check out and validate files.
+permissions:
+  contents: read
+
 jobs:
   validate-json:
     name: Validate marketplace & plugin JSON
