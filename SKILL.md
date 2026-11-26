@@ -7,6 +7,8 @@ description: "Run a comprehensive, multi-phase evaluation of any idea, product, 
 
 This skill orchestrates a complete evaluation of an idea, product, or feature set through six phases, producing multiple deliverable files. It is designed to run autonomously — slower and resource-efficient is fine; thoroughness matters more than speed.
 
+**When to use this vs. hater-mode:** Use hater-mode alone for a pure critical teardown; use mega-eval for the full multi-dimensional pipeline (competitive context + strengths + synthesis).
+
 ## Overview of the Pipeline
 
 ```
@@ -78,6 +80,8 @@ If these capabilities are missing, degrade explicitly rather than pretending beh
 - no WebSearch: keep Phase 1B headings, reduce confidence, avoid speculation
 - no browser tooling: use Phase 1D Tier B or Tier C
 - no `docx`: stop at validated markdown artifacts or state that Phase 4 is partial
+- no `hater-mode` skill: run the Phase 1A inline fallback (degraded mode) instead of blocking
+- no `long-form-outline` skill: run the Phase 3 inline fallback (degraded mode) instead of blocking
 
 See `docs/architecture/runtime-contract.md` for the authoritative capability matrix and fallback rules.
 
@@ -257,6 +261,8 @@ Non-negotiable output requirements:
 - Keep the analysis specific to the subject rather than generic critique
 - Follow the external hater-mode output format exactly, including its synthesis sections
 
+**Inline fallback (degraded mode):** If `<hater-mode-skill-path>` can't be located or installed, do NOT block. Run an inline equivalent pass instead: critique the brief through roughly a dozen distinct internet-audience lenses (e.g. Product Hunt, Hacker News, Reddit, X/Twitter, LinkedIn, IndieHackers, QA/testers, designers, laypersons, late adopters, plus a wildcard hater), each with simulated comments, a one-line signal, and a severity rating, followed by an executive summary and synthesis. Still save to `phase1a-hater-raw.md`, state at the top of the file that it ran as an inline fallback because the sibling skill was unavailable, and record the fallback when logging is on (`fallback_used` in JSONL).
+
 ### Phase 1B: Competitive & Market Context
 
 Use **Prompt ID** `phase1b.competitive.v1` from `references/subagent-prompts.md`.
@@ -280,7 +286,7 @@ Non-negotiable output requirements:
 
 ### Phase 1C: Strengths & Opportunities
 
-Use **Prompt ID** `phase1c.strengths.v1` from `references/subagent-prompts.md`.
+Use **Prompt ID** `phase1c.strengths.v2` from `references/subagent-prompts.md`.
 
 When you spawn the subagent, fill in:
 
@@ -292,6 +298,7 @@ Non-negotiable output requirements:
 
 - Save the output as `phase1c-strengths-raw.md`
 - Keep the tone honest rather than cheerleading
+- Apply the competitor landing-page filter to every claimed strength: keep only discriminating strengths, and say so when there are few
 - Include these headings exactly:
   - `## Core Strengths`
   - `## Growth Opportunities`
@@ -343,7 +350,9 @@ After launching subagents, wait until:
 - **If Phase 1E was launched:** `phase1e-security-raw.md` exists **or** you have logged abandonment / thin output for 1E and chosen to proceed.
 - **If Phase 1F was launched:** `phase1f-durability-raw.md` exists **or** you have logged abandonment / thin output for 1F and chosen to proceed.
 
-While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript. (Per the Global logging rule, scope any `tool_error` / `failure_mode` line to the specific track, e.g. 1E or 1F.)
+While waiting, you can start drafting the structure of the Phase 2 synthesis document. Check on subagent progress periodically using read_transcript.
+
+**Bound the wait.** Poll each subagent at most ~10 times. If a subagent hasn't produced usable output after that many checks, stop waiting on it: proceed with whatever partial or empty output exists and explicitly note the missing or incomplete track in the final report rather than polling indefinitely. For 1A–1C this means a thin file still has to pass **Gate B**; if it can't, hard-stop there as usual. (Per the Global logging rule, scope any `tool_error` / `failure_mode` line to the specific track, e.g. 1E or 1F.)
 
 ---
 
@@ -402,6 +411,8 @@ Non-negotiable output requirements:
 - Ground the outline in Phase 1 and Phase 2 analysis rather than speculation
 - Keep the output in raw markdown; `.docx` assembly still happens in Phase 4
 - Then run **Gate D** (`validate_run_artifacts.py --gate pre-phase4`) and hard-stop until it exits 0
+
+**Inline fallback (degraded mode):** If `<long-form-outline-skill-path>` can't be located or installed, do NOT block. Produce an inline equivalent outline directly from the same inputs: a publish-ready, sectioned long-form outline (hook, key points, narrative arc, preempted criticisms, differentiation, call to action). It must still meet the Phase 3 artifact contract (`schemas/phase3-content-outline.schema.json`) and pass Gate D. State in `phase3-content-outline-raw.md` that it ran as an inline fallback because the sibling skill was unavailable, and record the fallback when logging is on (`fallback_used` in JSONL).
 
 (Global logging rule applies; also record `prompt_selected` for `phase3.content-outline.v1` when JSONL is on.)
 
@@ -516,7 +527,7 @@ This pipeline is designed to be efficient with tokens and time:
 
 - **URL crawl fails:** Note it in the brief, proceed with available inputs
 - **Web search returns little:** Be honest — "Limited competitive data found" is better than fabrication
-- **Subagent timeout:** Read whatever partial output exists, note incompleteness, continue
+- **Subagent timeout / no usable output after the polling cap (~10 checks):** Stop waiting, read whatever partial or empty output exists, note the incompleteness in the final report, and continue with the remaining tracks (Gate B still applies to required 1A–1C files)
 - **Input is extremely vague:** Ask the user ONE question, then proceed with assumptions noted
 - **Too many inputs:** Summarize each, then merge. Don't try to hold 10 documents in full context.
 - **Phase 1D unavailable or thin:** Record in `phase1d-design-raw.md` and proceed; synthesis should note **design audit limits** rather than inventing visual claims.

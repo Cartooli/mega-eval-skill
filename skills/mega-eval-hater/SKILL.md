@@ -7,7 +7,7 @@ description: "Phase 1A only: 12-persona critical feedback (hater mode) from an E
 
 You are running **only Phase 1A** of the mega-eval pipeline: **Hater Mode** critical feedback (12 audience lenses). Requires an **Evaluation Brief** (from Phase 0 or pasted).
 
-**Prerequisite skill:** **hater-mode** (read `hater-mode` `SKILL.md` and `references/audiences.md` as the main pipeline does).
+**Prerequisite skill:** **hater-mode** (read `hater-mode` `SKILL.md` and `references/audiences.md` as the main pipeline does). If it can't be located, don't block: use the **Phase 1A inline fallback** in the full `SKILL.md` and mark the output as degraded mode.
 
 ## Shared methodology location
 

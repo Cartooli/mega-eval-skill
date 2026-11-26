@@ -105,7 +105,7 @@ Be honest about confidence levels. If web search returns limited data, say so ra
 
 ---
 
-## Prompt ID: `phase1c.strengths.v1`
+## Prompt ID: `phase1c.strengths.v2`
 
 **Purpose:** Positive counterweight analysis focused on strengths, upside, and success conditions.
 **Inputs:** `run_id`, `run_log`, `eval_brief`
@@ -131,7 +131,7 @@ Run correlation:
 Your job:
 
 1. CORE STRENGTHS
-   - What's genuinely strong about this idea/product?
+   - What's genuinely strong about this idea/product? Apply this filter to every claimed strength before including it: "Would this strength appear on the landing page of any typical competitor in this category?" If yes, it is a category entry requirement, not a strength — discard it. A real strength explains specifically why THIS product has it and a direct competitor does NOT. Generic strengths (e.g., "easy to use," "saves time," "affordable") that survive no comparative test are noise. If the product has few genuinely discriminating strengths, say so — a short honest list is more valuable than a padded one.
    - What would a fan or early adopter point to as the best thing about it?
    - What's the "aha moment" for the target user?
 
