@@ -5,7 +5,7 @@ description: "Phase 1C only: strengths and opportunities analysis from an Evalua
 
 # Mega-eval — Phase 1C: Strengths & opportunities only
 
-You are running **only Phase 1C** of the mega-eval pipeline: **strengths and opportunities** (honest positive counterweight to hater mode).
+You are running **only Phase 1C** of the mega-eval pipeline: **strengths and opportunities** (honest positive counterweight to hater mode). Keep only discriminating strengths: drop any strength that would appear on a typical competitor's landing page (see the **Phase 1C** template).
 
 ## Shared methodology location
 

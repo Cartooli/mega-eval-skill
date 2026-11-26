@@ -44,7 +44,7 @@ def test_registry_contains_expected_prompt_ids():
         "phase0.brief.v1",
         "phase1a.hater.v1",
         "phase1b.competitive.v1",
-        "phase1c.strengths.v1",
+        "phase1c.strengths.v2",
         "phase1d.design.v1",
         "phase1e.security.v1",
         "phase1f.durability.v1",

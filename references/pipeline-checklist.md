@@ -5,7 +5,7 @@ Use this as a quick reference while running the pipeline. Check off each step as
 ## Pre-Flight
 - [ ] **Model fit:** Read `references/model-selection.md`; confirm Phase 2 uses **frontier** tier when available; Phase 1+3 at least **strong general** (or single **frontier** if one knob). Log `model_check` if logging; else note **Model limitation** in brief when host is constrained.
 - [ ] All inputs received (text, docs, URLs)
-- [ ] Skill paths resolved for hater-mode, long-form-outline, docx (optional: `/cso`, `/durability-review` for 1E/1F — fallback templates apply if unresolved)
+- [ ] Skill paths resolved for hater-mode, long-form-outline, docx (optional: `/cso`, `/durability-review` for 1E/1F — fallback templates apply if unresolved; if hater-mode or long-form-outline is unresolved, Phase 1A / Phase 3 run their inline fallback in degraded mode instead of blocking)
 - [ ] Design audit: skip Phase 1D if `MEGA_EVAL_DESIGN_AUDIT` is `off` / `0` / `false` (otherwise default **on** when a primary `https://` URL is chosen in Phase 0)
 - [ ] Security audit: skip Phase 1E if `MEGA_EVAL_SECURITY_AUDIT` is `off` / `0` / `false` (otherwise default **run** when Phase 0 allows — Tier C if no URL)
 - [ ] AI durability audit: skip Phase 1F if `MEGA_EVAL_DURABILITY_AUDIT` is `off` / `0` / `false` (otherwise default **run**; applicability decided in subagent; N/A stub OK)
@@ -28,7 +28,7 @@ Use this as a quick reference while running the pipeline. Check off each step as
 - [ ] Phase 1D subagent launched **only if** brief says **Audit decision: run** (live-site design audit; prompt in `references/subagent-prompts.md`, template `references/design-audit-template.md`)
 - [ ] Phase 1E subagent launched **only if** brief says **Audit decision: run** under Security audit (**Prompt ID** `phase1e.security.v1`, template `references/security-audit-template.md`)
 - [ ] Phase 1F subagent launched **only if** brief says **Audit decision: run** under AI durability audit (**Prompt ID** `phase1f.durability.v1`, template `references/durability-audit-template.md`)
-- [ ] Required subagents completed (1A–1C); Phase 1D / 1E / 1F completed **or** logged thin/absent failure — **do not** block Phase 2 on 1D/1E/1F **absence** alone; **do** hard-stop if a present optional raw file fails schema validation
+- [ ] Required subagents completed (1A–1C); Phase 1D / 1E / 1F completed **or** logged thin/absent failure — **do not** block Phase 2 on 1D/1E/1F **absence** alone; **do** hard-stop if a present optional raw file fails schema validation; poll each subagent at most ~10 times, then proceed with partial output and note the gap
 - [ ] Raw outputs verified: `phase1a-hater-raw.md`, `phase1b-competitive-raw.md`, `phase1c-strengths-raw.md` (+ optional `phase1d-design-raw.md`, `phase1e-security-raw.md`, `phase1f-durability-raw.md` when those tracks ran)
 - [ ] **Gate B:** `python3 scripts/validate_run_artifacts.py --gate pre-phase2 <workspace>` exits 0 (hard-stop before Phase 2)
 - [ ] If logging: Phase 1 events appended (`phase_start` / `phase_complete`, errors/retries as needed)

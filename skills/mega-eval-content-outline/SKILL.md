@@ -7,7 +7,7 @@ description: "Phase 3 only: content strategy outline (phase3-content-outline-raw
 
 You are running **only Phase 3** of the mega-eval pipeline: a **content strategy outline** via the **long-form-outline** skill.
 
-**Prerequisite skill:** **long-form-outline** (read its `SKILL.md` and follow its phases as the main pipeline specifies).
+**Prerequisite skill:** **long-form-outline** (read its `SKILL.md` and follow its phases as the main pipeline specifies). If it can't be located, don't block: use the **Phase 3 inline fallback** in the full `SKILL.md`, mark the output as degraded mode, and still meet the Phase 3 artifact contract.
 
 ## Shared methodology location
 
